@@ -1,0 +1,228 @@
+body {
+	background: #000000;
+	color: #FF7F00;
+	font-family: courier,monospace,serif;
+}
+a {
+	color: #FF7F00;
+	text-decoration: underline;
+}
+a:visited {
+}
+a:hover {
+	 color: #FF9F3F;
+}
+form {
+	margin: 0px;
+}
+input, textarea {
+	font-family: courier,monospace,serif;
+}
+
+
+
+#topbar {
+	margin: 0.3em;
+	margin-bottom: 1em;
+	text-align: right;
+	font-size: small;
+}
+#navigation, #managerbar, #stylebar {
+	display: inline;
+	white-space: nowrap;
+	line-height: 2em;
+	padding: 3px;
+	margin-left: 1em;
+	border: 3px double #FF7F00;
+}
+#navigation strong, #managerbar strong, #stylebar strong {
+	font-weight: normal;
+}
+#navigation a, #managerbar a, #stylebar a {
+	padding: 3px;
+}
+
+
+
+#threads {
+	border: 3px double #FF7F00;
+	padding: 0px;
+	margin-bottom: 2em;
+	clear: both;
+}
+#threads h1 {
+	border-bottom: 1px solid #FF7F00;
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	padding: 0px;
+	margin: 0px;
+}
+#threadlist {
+	border-bottom: 1px solid #FF7F00;
+	padding: 9px;
+}
+#threadlist .threadlink {
+	padding-right: 0.5em;
+}
+#threadlist strong {
+	text-align: right;
+	font-weight: bold;
+}
+#oldthreadlist {
+	border-bottom: 1px solid #FF7F00;
+	padding: 9px;
+}
+#oldthreadlist .threadlink {
+	display: block;
+}
+#oldthreadlist .manage {
+	margin-left: 1em;
+}
+#threads form {
+	padding: 6px;
+}
+#threads input, #threads textarea {
+	background: #000000;
+	color: #FF7F00;
+	border: 1px solid #FF7F00;
+}
+#threads input[type=submit] {
+}
+.threadcaptcha {
+	color: #FF7F00;
+}
+
+
+#posts {
+}
+#posts .thread {
+	border: 3px double #FF7F00;
+	padding: 0px;
+	margin-bottom: 2em;
+	clear: both;
+}
+#posts .sagethread {
+	border: 1px solid #FF7F00;
+	padding: 0px;
+	margin-bottom: 2em;
+	clear: both;
+}
+#posts h2 {
+	float: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 0px 0px 0px 1em;
+	padding: 0px;
+}
+#posts h2 small {
+	font-size: 1em;
+	font-weight: normal;
+}
+#posts .threadnavigation {
+	float: right;
+}
+#posts .replies {
+	clear: both;
+	border-top: 1px solid #FF7F00;
+	margin: 0px;
+	padding: 0px;
+}
+#posts .allreplies {
+}
+#posts .finalreplies {
+	margin-top: 0.3em;
+}
+#posts .firstreply {
+	border-bottom: 1px solid #FF7F00;
+}
+#posts .repliesomitted {
+}
+
+
+
+#posts .reply, #posts .deletedreply {
+	margin: 6px 6px 1em 6px;
+}
+#posts h3 {
+	font-size: 1em;
+	font-weight: normal;
+	margin: 0px;
+	padding: 0px;
+}
+#posts h3 .replynum {
+	font-weight: bold;
+	margin-left: 0.3em;
+	margin-right: 0.3em;
+}
+#posts h3 .replynum a {
+	color: #FF7F00;
+	text-decoration: none;
+}
+#posts h3 .replynum a:hover {
+        color:#FF9F3F;
+}
+#posts h3 .postername {
+	font-weight: bold;
+}
+#posts h3 .postertrip {
+	font-weight: normal;
+}
+#posts .deletebutton {
+	position: absolute;
+	right: 0.8em;
+}
+#posts .replytext {
+	margin: 0.5em 0px 0px 3em;
+}
+#posts .replytext > :first-child {
+	margin-top: 0em;
+}
+#posts .replytext blockquote {
+	margin-left: 0em;
+}
+#posts .replytext em {
+	font-style: normal;
+	font-weight: bold;
+}
+#posts .replytext strong {
+	text-decoration: blink;
+	font-weight: bold;
+}
+#posts .replyabbrev {
+	font-weight: bold;
+	margin-left: 3em;
+	margin-bottom: 0.5em;
+}
+
+#posts form, .lastposts {
+	border-top: 1px solid #FF7F00;
+	padding: 6px;
+}
+#posts input, #posts textarea {
+	background: #000000;
+	color: #FF7F00;
+	border: 1px solid #FF7F00;
+}
+#posts input[type=submit] {
+}
+.postcaptcha {
+	color: #FF7F00;
+}
+
+
+
+#footer
+{
+        text-align: center;
+}
+
+
+
+.errorpage h1, .errorpage h2 {
+	text-align: center;
+}
+
+
+/*blahblahblah*/
+.repliesomitted,.reply,.deletedreply,form{clear:left;}

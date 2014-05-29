@@ -1,0 +1,23 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Eliminar Post</div>
+<form action="#{cgi_url}manage/delete_confirmed/#{curboard}/#{postid}" method="get">
+<?py if do_ban: ?>
+ <input type="hidden" name="ban" value="true" />
+<?py #endif ?>
+<p>
+ <b>Post /${curboard}/${postid}</b><br />
+ [<input id="a" type="checkbox" name="imageonly" value="true" /><label for="a">Sólo Imagen</label>]
+ [<input id="b" type="checkbox" name="perma" value="true" /><label for="b"><b>Permanentemente</b></label>]
+ <br />
+ <i>NOTA: Por favor evitar eliminar <b>permanentemente</b> el post al menos que sea estrictamente necesario.
+ <br />Al eliminar permanentemente un post no queda en papelera y se rompen
+ las referencias que se pueden haber hecho hacia él, especialmente en los BBS.</i>
+ <br />
+ <input type="submit" value="Eliminar" />
+</p>
+</form>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

@@ -1,0 +1,14 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Marquesina</div>
+<form action="#{cgi_url}manage/marquee" method="post">
+<table>
+ <tr><td class="postblock">Mensaje</td><td><input type="text" name="marquee_text" size="100" value="#{text}" /></td></tr>
+</table>
+<i>Para sacar el mensaje dejar en blanco.</i><br />
+<input type="submit" value="Cambiar" />
+</form>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

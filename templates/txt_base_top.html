@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>
+<?py if board: ?>
+  #{board_name}
+<?py else: ?>
+  #{title}
+<?py #endif ?>
+  </title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+  <meta http-equiv="content-language" content="ES" />
+  <meta name="revisit-after" content="14 days" />
+  <meta name="robots" content="noarchive" />
+  <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/global.css" />
+<?py if force_css == "": ?>
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/amber.css" title="Amber" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/blue_moon.css" title="Blue Moon" />
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/headline.css" title="Headline" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/mercury.css" title="Mercury" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/pseud0ch.css" title="Pseud0ch" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/tanasinn.css" title="Tanasinn" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/toothpaste.css" title="Toothpaste" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/VIPPER.css" title="VIPPER" />
+  <script type="text/javascript">//<![CDATA[
+  var style_cookie = 'weabotxt_style';
+<?py else: ?>
+  <link rel="stylesheet" type="text/css" href="#{force_css}" />
+  <script type="text/javascript">//<![CDATA[
+<?py #endif ?>
+  var ispage = #{is_page};
+  var cgi_url = '#{cgi_url}';
+  var markup_descriptions={
+  none:'Solo URLs de links y referencias \x3e\x3e.',
+  tags:'Formato simple de texto. (<a href="/ayuda.html#tags">Ayuda</a>)',
+  aa:'Solo URLs de links y referencias \x3e\x3e, y cambia la fuente a una situable para arte SJIS.',
+  dummy:'' };
+  //]]></script>
+  <script type="text/javascript" src="#{static_url}js/weabotxt.js"></script>
+  <script type="text/javascript">check_version("1");</script>
+</head>

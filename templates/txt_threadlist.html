@@ -1,0 +1,43 @@
+<?py include('templates/txt_base_top.html') ?>
+<body class="backlogpage">
+<div id="navigation">
+  <a href="#{boards_url}#{board}">Volver al BBS</a>
+</div>
+<div id="threads">
+  <h1>#{board_name}</h1>
+  <table id="oldthreadlist">
+    <thead>
+    <tr class="head">
+      <th>Num</th>
+      <th>T&iacute;tulo</th>
+      <th>Posts</th>
+      <th>&Uacute;ltimo post</th>
+      </tr>
+    </thead>
+    <tbody>
+<?py iter = 1 ?>
+<?py for thread in more_threads: ?>
+      <tr class="line#{(iter % 2)}">
+        <td align="right">#{iter}:</td>
+        <td>
+    <?py if int(thread["length"]) > 50: ?>
+        <a href="#{boards_url}#{board}/read/#{thread['id']}/l50" rel="nofollow">
+    <?py else: ?>
+        <a href="#{boards_url}#{board}/read/#{thread['id']}" rel="nofollow">
+    <?py #endif ?>
+        #{thread["subject"]}
+    <?py if thread['locked'] == '1': ?>
+        <small>(cerrado)</small>
+    <?py elif thread['locked'] == '2': ?>
+        <small>(permasage)</small>
+    <?py #endif ?>
+        </a></td>
+        <td align="right"><a href="#{boards_url}#{board}/res/#{thread['id']}.html">#{thread["length"]}</a></td>
+        <td>#{timestamps[iter-1]}</td>
+      </tr>
+    <?py iter += 1 ?>
+<?py #endfor ?>
+    </tbody>
+  </table>
+</div>
+<?py include('templates/txt_base_bottom.html') ?>

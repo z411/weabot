@@ -1,0 +1,12 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+#{page}
+<form action="#{cgi_url}manage" method="post">
+<table>
+<tr><td class="postblock">Nombre de Usuario</td><td><input type="text" name="username" /></td></tr>
+<tr><td class="postblock">Contraseña</td><td><input type="password" name="password" /><input id="submit" type="submit" name="submit" value="Entrar" /></td></tr>
+</table>
+</form></center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

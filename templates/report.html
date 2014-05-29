@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Reportar Post</title>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+</head>
+<body>
+<?py if finished: ?>
+<center>
+<br /><br /><hr />
+<h1>Post reportado.</h1>
+<hr />
+</center>
+<p><a href="javascript:void(0)" onclick="history.go(-2);return(false);">Volver</a></p>
+<?py else: ?>
+<h1>Formulario de Reporte</h1>
+<hr />
+<p>Para pedir que el post <i>${postshow}</i> se elimine,<br />
+indique la razón de por qué cree que debería ser eliminado<br />
+y presione el botón [Pedir la eliminación del post].<br />
+<a href="javascript:void(0)" onclick="history.go(-1);return(false);">Volver</a></p>
+<hr />
+<form method="post" action="">
+<p>Razón: <input type="text" name="reason" maxlength="100" size="50" /><br />
+<input type="submit" value="Pedir la eliminación del post" /></p>
+</form>
+<p>Este formulario no es para eliminar tu propio post.<br />
+    <?py if txt: ?>
+Para eliminar tu propio post debes presionar [Del]<br />
+que se encuentra a la derecha de tu post. [<a href="/ayuda_bbs.html">Más info.</a>]
+    <?py else: ?>
+Para eliminar tu propio post debes chequear la caja que<br />
+se encuentra en la parte superior izquierda de tu post<br />
+y luego presionar el botón "Eliminar" que se encuentra<br />
+al fondo de la página. [<a href="/ayuda.html">Más info.</a>]
+    <?py #endif ?>
+</p>
+<hr />
+<?py #endif ?>
+</body>
+</html>

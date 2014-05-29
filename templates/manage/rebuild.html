@@ -1,0 +1,20 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Reconstruir board</div>
+<table class="managertable">
+<tr><th>Sección</th><th>Acción</th></tr>
+<tr><td><b>Home</b></td><td>[<a href="#{cgi_url}manage/rebuild/home">Reconstruir</a>]</td></tr>
+<tr><td><b>Noticias</b></td><td>[<a href="#{cgi_url}manage/rebuild/news">Reconstruir</a>]</td></tr>
+<tr><td><b>.htaccess</b></td><td>[<a href="#{cgi_url}manage/rebuild/htaccess">Reconstruir</a>]</td></tr>
+<?py for board in boards: ?>
+<tr><td>/#{board['dir']}/ (#{board['name']})</td><td>[<a href="#{cgi_url}manage/rebuild/#{board['dir']}">Reconstruir</a>]</td></tr>
+<?py #endfor ?>
+<tr><td colspan="2" align="center">
+ <form action="#{cgi_url}manage/rebuild/!ALL" method="get"><input type="submit" value="Reconstruir todos" /></form>
+</td></tr>
+</table>
+
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

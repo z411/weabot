@@ -1,0 +1,90 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>#{board_name}@B.a.I. Móvil</h2>
+<a href="#{mobile_url}">Home</a> ·
+<?py if mode == 1: ?>
+Página Frontal ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
+<?py else: ?>
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Página Frontal</a> ·
+Lista de Hilos ·
+<?py #endif ?>
+<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Nuevo Hilo</a>
+<hr />
+<?py for thread in more_threads: ?>
+<div class="thread">
+  <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}" rel="nofollow"><strong>
+    <?py if thread['subject'] != '': ?>
+  #{thread["subject"]}
+    <?py else: ?>
+  Sin asunto
+    <?py #endif ?>
+  </strong>
+    <?py if thread['locked'] == '1': ?>
+  <small>(cerrado)</small>
+    <?py elif thread['locked'] == '2': ?>
+  <small>(permasage)</small>
+    <?py #endif ?>
+  &#91;#{int(thread["length"])-1} resp.&#93;</a><br />
+    <?py if mode == 1: ?>
+      <a href="#{mobile_url}#{board}/src/#{thread['file']}">
+       <img src="#{mobile_url}#{board}/mobile/#{thread['thumb']}" align="left" />
+      </a>
+      <strong>
+      <?py if thread['email']: ?>
+      <span class="postername"><a href="mailto:#{thread['email']}">#{thread['name']}</a></span>
+        <?py if thread['tripcode']: ?>
+      <span class="postertrip"><a href="mailto:#{thread['email']}">#{thread['tripcode']}</a></span>
+        <?py #endif ?>
+      <?py else: ?>
+      <span class="postername">#{thread['name']}</span>
+        <?py if thread['tripcode']: ?>
+      <span class="postertrip">#{thread['tripcode']}</span>
+        <?py #endif ?>
+      <?py #endif ?>
+      #{thread['timestamp_formatted']}
+      </strong> No.#{thread['id']}<br />
+      #{thread['message']}
+        <?py if thread['shortened']: ?>
+        <small>[...] (clic en Leer)</small>
+        <?py #endif ?>
+      <br />
+        <?py if thread['lastreply']: ?>
+       <span class="small_reply">
+        <strong>
+          <?py if thread['lastreply']['email']: ?>
+        <span class="postername"><a href="mailto:#{thread['lastreply']['email']}">#{thread['lastreply']['name']}</a></span>
+            <?py if thread['lastreply']['tripcode']: ?>
+        <span class="postertrip"><a href="mailto:#{thread['lastreply']['email']}">#{thread['lastreply']['tripcode']}</a></span>
+            <?py #endif ?>
+          <?py else: ?>
+        <span class="postername">#{thread['lastreply']['name']}</span>
+            <?py if thread['lastreply']['tripcode']: ?>
+        <span class="postertrip">#{thread['lastreply']['tripcode']}</span>
+            <?py #endif ?>
+          <?py #endif ?>
+        #{thread['lastreply']['timestamp_formatted']}
+        </strong> No.#{thread['lastreply']['id']}<br />
+        #{thread['lastreply']['message']}
+          <?py if thread['lastreply']['shortened']: ?>
+        [...]
+          <?py #endif ?>
+       </span>
+        <?py #endif ?>
+       <br clear="all" />
+      <hr />
+    <?py #endif ?>
+</div>
+<?py #endfor ?>
+<hr />
+<a href="#{mobile_url}">Home</a> ·
+<?py if mode == 1: ?>
+Página Frontal ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
+<?py else: ?>
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Página Frontal</a> ·
+Lista de Hilos ·
+<?py #endif ?>
+<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Nuevo Hilo</a>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

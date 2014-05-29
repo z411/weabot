@@ -1,0 +1,101 @@
+<?py include('templates/base_top.html') ?>
+<style type="text/css">
+.managenav a {
+	font-weight: bold;
+}
+
+fieldset { margin-bottom: 10px; }
+	
+legend {
+	padding: 0 2px;
+	font-weight: bold;
+	_margin: 0 -7px; /* IE Win */
+}
+label {
+	line-height: 1.8;
+	vertical-align: top;
+}
+fieldset ol {
+	margin: 0;
+	padding: 0;
+}
+	
+fieldset li {
+	list-style: none;
+	padding: 5px;
+	margin: 0;
+}
+	
+fieldset fieldset {
+	border: none;
+	margin: 3px 0 0;
+}
+	
+fieldset fieldset legend {
+	padding: 0 0 5px;
+	font-weight: normal;
+}
+	
+fieldset fieldset label {
+	display: block;
+	width: auto;
+}
+
+em {
+	font-weight: bold;
+	font-style: normal;
+	color: #f00;
+}
+
+#adminmenu {
+  font-size: 10pt;
+  text-align: left;
+  width:700px;
+  margin-top:3pt;
+}
+
+label { width: 120px; } /* Width of labels */
+fieldset fieldset label { margin-left: 123px; } /* Width plus 3 (html space) */
+
+/*\*//*/ legend { display: inline-block; } /* IE Mac legend fix */
+</style>
+<?py if validated: ?>
+  <div style="text-align: center;" class="managenav">
+    Bienvenido, <b><acronym title="Account created #{added}">#{username}</acronym></b>! Eres
+    <?py if rights == '0': ?>
+    <span class="superadministrator">Super-Administrador</span>
+    <?py elif rights == '1': ?>
+    <span class="administrator">Administrador</span>
+    <?py elif rights == '2': ?>
+    <span class="developer">Developer</span>
+    <?py elif rights == '3': ?>
+    <span class="moderator">Moderador</span>
+    <?py #endif ?>
+    de #{site_title}!<br />
+    <center>
+    <table id="adminmenu" class="reply">
+    <tr><td>Principal:</td>
+    <td>- <a href="#{cgi_url}manage">Inicio</a> - <a href="#{cgi_url}manage/changepassword">Cambiar Contrase&ntilde;a</a> - <a href="#{cgi_url}manage/logout">Cerrar Sesi&oacute;n</a> -</td></tr>
+    <tr><td>Posts:</td>
+    <td>- <a href="#{cgi_url}manage/modbrowse">Modbrowse</a> - <a href="#{cgi_url}manage/ipshow">Ver posts por IP</a> - <a href="#{cgi_url}manage/recyclebin">Papelera de Reciclaje</a> -</td></tr>
+    <tr><td>Moderaci&oacute;n:</td>
+    <td>- <a href="#{cgi_url}manage/reports">Reportes</a> - <a href="#{cgi_url}manage/ipdelete">Eliminar posts por IP</a> - <a href="#{cgi_url}manage/bans">Lista de Bans</a> - <a href="#{cgi_url}manage/filters">Filtros</a> - <a href="#{cgi_url}manage/newschannel">News Channel</a> -</td></tr>
+    <tr><td>Monitoreo:</td>
+    <td>- <a href="#{cgi_url}manage/recent_images">Im&aacute;genes Recientes</a> - <a href="#{cgi_url}manage/stats">Estad&iacute;sticas</a> -</td></tr>
+    <tr><td>Otros:</td>
+    <td>- <a href="#{cgi_url}manage/quotes">Quotes</a> -</td></tr>
+    <?py if administrator: ?>
+    <tr><td>Administraci&oacute;n:</td>
+    <td>- <a href="#{cgi_url}manage/rebuild">Reconstruir</a> - <a href="#{cgi_url}manage/news">Publicar Noticias</a> - <a href="#{cgi_url}manage/board">Opciones de Board</a> - <a href="#{cgi_url}manage/addboard">Agregar board</a> -</td></tr>
+    <?py if rights == '0' or rights == '2': ?>
+    <tr><td>Staff:</td>
+    <td>- <a href="#{cgi_url}manage/staff">Lista de Staff</a> - <a href="#{cgi_url}manage/logs">Logs</a> -</td></tr>
+    <?py #endif ?>
+    <?py #endif ?>
+    </table></center>
+  </div>
+  <hr />
+<?py #endif ?>
+#{page}
+<hr />
+<?py include('templates/base_bottom.html') ?>

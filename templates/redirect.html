@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Tu post fue procesado/title>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+ <meta http-equiv="refresh" content="2;url=#{url}" />
+</head>
+<body>
+ <div align="center">
+  <h1>Gracias por tu post.</h1>
+  <h3>${message}</h3>
+  <em>(por favor espere)</em>
+<?py if timetaken: ?>
+  <p><small>Tiempo usado: #{timetaken}</small></p>
+<?py #endif ?>
+ </div>
+</body>
+</html>

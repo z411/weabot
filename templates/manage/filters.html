@@ -1,0 +1,94 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">Filtros</div>
+<?py if mode == 0: ?>
+<table class="managertable">
+  <tr><th>ID</th><th>Boards</th><th>Tipo</th><th>Acción</th><th>Mensaje</th><th>Agregado</th><th>Por</th><th>Acción</th></tr>
+    <?py for filter in filters: ?>
+  <tr>
+   <td>#{filter['id']}</td>
+   <td>${filter['boards']}</td>
+   <td>#{filter['type_formatted']}</td>
+   <td>#{filter['action_formatted']}</td>
+   <td>${filter['reason']}</td>
+   <td>${filter['added']}</td>
+   <td>${filter['staff']}</td>
+   <td>
+    [<a href="#{cgi_url}manage/filters/add?edit=#{filter['id']}">Editar</a>]
+    [<a href="#{cgi_url}manage/filters/delete/#{filter['id']}">Eliminar</a>]
+   </td>
+  </tr>
+    <?py #endfor ?>
+  <tr><td colspan="9" align="center">
+   <form action="#{cgi_url}manage/filters/add" method="get">
+    <input type="submit" value="Agregar filtro" />
+   </form></td>
+  </tr>
+</table>
+<?py elif mode == 1: ?>
+<form name="banform" method="post">
+<p>Tipo</p>
+    <?py if edit_id > 0: ?>
+ <input type="hidden" name="edit" value="#{edit_id}" />
+    <?py #endif ?>
+<table>
+<tr>
+ <td class="postblock"><input type="radio" name="type" value="0"#{checked(startvalues['type'] == '0')} />Palabra</td>
+ <td>Regex: <input type="text" name="word" value="${startvalues['word']}" /></td>
+</tr>
+<tr>
+ <td class="postblock"><input type="radio" name="type" value="1"#{checked(startvalues['type'] == '1')} />Nombre/Tripcode</td>
+ <td>Nombre: <input type="text" name="name" value="${startvalues['name']}" /> (regex)<br />
+     Tripcode: <input type="text" name="trip" value="${startvalues['trip']}" /> (incluir separadores)</td></tr>
+</table>
+<br />
+<p>Aplicar a</p>
+<ul>
+ <li><input type="checkbox" name="board_all" value="1"#{checked(startvalues['where'] == '')} /><b>Todos los Boards</b></li>
+    <?py for board in boards: ?>
+ <li><input type="checkbox" name="board_#{board['dir']}" value="1"#{checked(board['dir'] in startvalues['where'])} />${board['name']}</li>
+    <?py #endfor ?>
+</ul><br />
+<label for="reason">Mensaje</label> <input type="text" size="40" name="reason" value="#{startvalues['reason']}" /><br />
+<p>Acción</p>
+<table>
+<tr>
+ <td class="postblock"><input type="radio" name="action" value="0"#{checked(startvalues['action'] == '0')} />Abortar Post</td>
+ <td> </td>
+</tr>
+<tr>
+ <td class="postblock"><input type="radio" name="action" value="1"#{checked(startvalues['action'] == '1')} />Reemplazar</td>
+ <td>Cambiar a: <input type="text" name="changeto" value="#{startvalues['changeto']}" /></td>
+</tr>
+<tr>
+ <td class="postblock"><input type="radio" name="action" value="2"#{checked(startvalues['action'] == '2')} />Auto-ban</td>
+ <td>Expira en #segundos: <input type="text" name="seconds" value="#{startvalues['seconds']}" />
+    <a href="#" onclick="document.banform.seconds.value=\'0\';return false;">Sin expirar</a>
+    <a href="#" onclick="document.banform.seconds.value=\'3600\';return false;">1hr</a>
+    <a href="#" onclick="document.banform.seconds.value=\'18000\';return false;">5hr</a>
+    <a href="#" onclick="document.banform.seconds.value=\'36000\';return false;">10hr</a>
+    <a href="#" onclick="document.banform.seconds.value=\'86400\';return false;">1d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'172800\';return false;">2d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'259200\';return false;">3d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'604800\';return false;">1w</a>
+    <a href="#" onclick="document.banform.seconds.value=\'1209600\';return false;">2w</a>
+    <a href="#" onclick="document.banform.seconds.value=\'2592000\';return false;">30d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'31536000\';return false;">1yr</a><br />
+    <input type="checkbox" name="blind" value="1"#{checked(startvalues['blind'] == '1')} />Ciego</td>
+</tr>
+<tr>
+  <td class="postblock"><input type="radio" name="action" value="3"#{checked(startvalues['action'] == '3')} />Redireccionar</td>
+  <td>URL: <input type="text" name="redirect_url" value="#{startvalues['redirect_url']}" /><br />
+      Tiempo en #segundos: <input type="text" name="redirect_time" value="#{startvalues['redirect_time']}" />
+  </td>
+</tr>
+</table>
+<br />
+<input type="submit" name="add" value="#{submit}" />
+</form>
+<?py #endif ?>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Error@B.a.I.</title>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<style type="text/css">
+.error { color: red; font-weight: bold; font-size: 16pt; }
+.sub { font-weight: bold; }
+</style>
+</head>
+<body>
+<?py if exception: ?>
+<p class="error">ERROR : Ha ocurrido un error inesperado.</p>
+<p>
+Versión: weabot
+<?py include('templates/revision.html') ?>
+<br />
+Tipo: ${exception}<br />
+Detalle: ${error}<br />
+Traceback:<br />
+<blockquote>
+  <?py for line in detail: ?>
+  <em>${line[0]}(${line[1]})</em> : <b>${line[2]}</b> : ${line[3]}<br />
+  <?py #endfor ?>
+</blockquote></p>
+<p class="sub">Te recordamos que el software está en desarrollo y estamos
+siempre haciendo lo posible para arreglar los problemas lo antes posible.<br />
+Te pedimos las disculpas por cualquier inconveniente.</p>
+<hr />
+<p>weabot dijo "Perdón."<br />
+<a href="#{home_url}">Volver al home</a></p>
+<?py else: ?>
+<p class="error">ERROR : #{error}</p>
+<p class="sub">Por favor presiona Atrás y soluciona el problema.</p>
+<hr />
+<?py #endif ?>
+</body>
+</html>

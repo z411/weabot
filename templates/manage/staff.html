@@ -1,0 +1,47 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">Staff</div>
+<?py if mode == 0: ?>
+  <table class="managertable">
+   <tr><th>ID</th><th>Nombre</th><th>Nivel</th><th>Última Actividad</th><th>Acción</th></tr>
+    <?py for member in staff: ?>
+   <tr><td>${member['id']}</td>
+   <td>${member['username']}</td>
+   <td>${member['rights']}</td>
+   <td>${member['lastactive']}</td>
+   <td>
+    <a href="#{cgi_url}manage/staff/edit/#{member['id']}">Editar</a>
+    <a href="#{cgi_url}manage/staff/delete/#{member['id']}">Eliminar</a>
+   </td></tr>
+    <?py #endfor ?>
+   <tr><td colspan="5" align="center">
+    <form action="#{cgi_url}manage/staff/add" method="get">
+      <input type="submit" value="Agregar" />
+    </form>
+   </td></tr>
+  </table>
+
+<?py elif mode == 1: ?>
+  <form action="#{cgi_url}manage/staff/#{action}" method="post">
+  <table>
+  <tr><td class="postblock">Nombre</td><td><input type="text" name="username" value="${member_username}" /></td></tr>
+    <?py if not member: ?>
+  <tr><td class="postblock">Contraseña</td><td><input type="password" name="password" /></td></tr>
+    <?py #endif ?>
+  <tr><td class="postblock">Nivel</td><td>
+   <select name="rights">
+    <option value="3"#{selected(member_rights == '3')}>Moderador</option>
+    <option value="2"#{selected(member_rights == '2')}>Developer</option>
+    <option value="1"#{selected(member_rights == '1')}>Administrador</option>
+    <option value="0"#{selected(member_rights == '0')}>Super-Administrador</option>
+   </select>
+  </td></tr>
+  <tr><td> </td><td><input type="submit" name="submit" value="${submit}" /></td></tr>
+  </table>
+  </form>
+<?py #endif ?>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

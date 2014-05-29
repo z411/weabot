@@ -1,0 +1,12 @@
+DirectoryIndex index.html
+ErrorDocument 403 #{cgi_url}banned/#{dir}
+<?py if ips: ?>
+
+<Files *>
+order allow,deny
+    <?py for ip in ips: ?>
+deny from #{ip}
+    <?py #endfor ?>
+allow from all
+</Files>
+<?py #endif ?>

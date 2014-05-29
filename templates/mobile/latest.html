@@ -1,0 +1,30 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>Ultimos Posts@B.a.I. Móvil</h2>
+<p>
+<a href="#{mobile_url}">Home</a>
+<hr />
+<?py for post in latest_posts: ?>
+    <?py if post['parentid'] != '0': ?>
+      <?py if len(post['subject']) > 0: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['parentid']}##{post['id']}">#{post['subject']}</a><br />
+      <?py elif len(post['message']) > 2: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['parentid']}##{post['id']}">#{post['message']}</a><br />
+      <?py else: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['parentid']}##{post['id']}"> Post ##{post['id']}</a><br />
+      <?py #endif ?>
+    <?py else: ?>
+      <?py if len(post['subject']) > 0: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['id']}##{post['id']}" class="op">#{post['subject']}</a><br />
+      <?py elif len(post['message']) > 2: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['id']}##{post['id']}" class="op">#{post['message']}</a><br />
+      <?py else: ?>
+        #{post['boards.name']}: <a href="#{cgi_url}mobileread/#{post['dir']}/#{post['id']}##{post['id']}" class="op"> Post ##{post['id']}</a><br />
+      <?py #endif ?>
+    <?py #endif ?>
+<?py #endfor ?>
+<hr />
+<a href="#{mobile_url}">Home</a>
+</p>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

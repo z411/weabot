@@ -1,0 +1,12 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Mostrar por IP</div>
+<form action="#{cgi_url}manage/ipshow" method="post">
+<table>
+ <tr><td class="postblock">Dirección IP</td><td><input type="text" name="ip" /><input type="submit" value="Mostrar posts" /></td></tr>
+</table>
+</form>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

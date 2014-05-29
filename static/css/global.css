@@ -1,0 +1,157 @@
+body {
+	margin: 0;
+	padding: 8px;
+	margin-bottom: auto;
+}
+
+blockquote blockquote {
+	margin-left: 0em;
+}
+
+form {
+	margin-bottom: 0px;
+}
+
+.postarea {
+	text-align: center;
+}
+
+.postarea table {
+	margin: 0px auto;
+	text-align: left;
+}
+
+del, .spoiler {
+	background-color: #000; color: #000; text-decoration:none;
+}
+del a, .spoiler a {
+	color: #000;
+}
+del:hover, .spoiler:hover {
+	color: #FFF;
+}
+
+.aa {
+  white-space: pre;
+  text-align: left;
+  font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
+}
+.sjis {
+  text-align: left;
+  font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
+}
+
+.thumb {
+	border: none;
+	float: left;
+	margin: 2px 20px;
+}
+
+.nothumb {
+	float: left;
+	background: #eee;
+	border: 2px dashed #aaa;
+	text-align: center;
+	margin: 2px 20px;
+	padding: 1em 0.5em 1em 0.5em;
+}
+
+/* blockquote:last-child
+.reply blockquote {
+	margin-bottom: 0em;
+} */
+.reply {
+	padding-right: 4pt;
+}
+
+.reflink a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.reflink a:hover{
+	color: #800000;
+}
+.reply .filesize, .reply .thumbnailmsg {
+	margin-left: 20px;
+}
+
+.userdelete {
+	float: right;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.doubledash {
+ 	vertical-align: top;
+	clear: both;
+	float: left;
+}
+
+.superadministrator {
+	color: #800080 !important;
+	font-weight: bold;
+}
+
+.administrator {
+	color: #800080 !important;
+	font-weight: bold;
+}
+
+.moderator {
+	color: #FF0000 !important;
+	font-weight: bold;
+}
+
+.vip {
+	color: #336600 !important;
+	font-weight: bold;
+}
+
+.developer {
+  color: #FF9900 !important;
+  font-weight: bold;
+}
+.deletedreply {
+  color: #999;
+}
+
+.modnewstitle {
+  padding-left: 35pt;
+  padding-right: 35pt;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.modnewsmessage {
+  padding-left: 50pt;
+  padding-right: 50pt;
+}
+
+.banned {
+  font-weight: bold;
+  color: #FF0000;
+}
+.noanimation {
+  color: #FF9999;
+}
+.noborder {
+  border-style: none;
+}
+#anuncio {
+  background-color: #000;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  font-weight: bold;
+  font-size: 24pt; 
+  color: #FFF;
+  display: none;
+  padding: 3pt 0;
+  overflow: hidden;
+  border-bottom: 1px solid #FFF;
+  white-space: nowrap;
+}
+#anuncio .title { text-align:center; color: red; text-decoration: blink; margin: 0;}
+#anunciosmall { width: 400px; height: 24px; background: url('img/scroller1.gif'); color: #F33; margin: 0 auto; border: solid 1px #000; font-weight:bold; font-size: 14pt; }

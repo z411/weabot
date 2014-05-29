@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>#{header}</title>
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<link rel="shortcut icon" href="logo/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" />
+<style type="text/css">
+h2{margin:0;padding:0;font-size:20px;}
+h3{margin:0 0 0.5em 0;padding:0;font-style:italic;font-weight:normal;font-size:14px;}
+#newsarea{text-align:left;padding:0 5em 0 5em;}
+.message{margin-bottom:2em;}
+</style>
+</head>
+<body>
+<center>
+<img src="#{logo}" alt="#{header}" />
+<div class="header">#{header}</div>
+<div class="slogan">#{slogan}</div>
+<hr />
+Noticias
+<hr />
+<a href="#{home_url}home.html">Volver</a><br />
+<br />
+<?py if posts: ?>
+<div id="newsarea">
+    <?py for post in posts: ?>
+  <h2><a href="##{post['id']}" name="#{post['id']}">#</a> #{post['title']}</h2>
+  <h3>#{post['nameblock']}</h3>
+  <p class="message">#{post['message']}</p>
+    <?py #endfor ?>
+<?py #endif ?>
+</div>
+<br />
+<a href="#{home_url}home.html">Volver</a>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

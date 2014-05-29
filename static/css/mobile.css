@@ -1,0 +1,48 @@
+html, body {
+  font-size: 12pt;
+  background-color: #1B3345;
+  color: #FFF;
+  margin: 0;
+  padding: 0;
+}
+
+h1,h2,h3,h4,h5,p {padding:3%; margin-left: 2%;}
+
+img {
+  margin: 2%;
+}
+a {color: #EFD279;
+
+    padding: 5%;}
+a:hover {color: #D00;}
+.reply {
+  background-color: #3B6B94;
+  color: #FFF;
+  margin: 4px 0px;
+  padding: 2px;
+}
+blockquote{
+  margin: 4px 2px 0px 2px;
+}
+.postername {
+  color: #AFD775;
+  font-weight: bold;
+}
+.subject {
+  font-size: 13pt;
+  color: #DE9D7F;
+  font-weight: bold;
+}
+.deleted {
+  color: #999;
+}
+.small_reply {
+  background-color: #3B6B94;
+  color: #FFF;
+  padding: 2px 2px 2px 4px;
+  margin: 10px 20px 0px 20px;
+  font-size: 10pt;
+  display: block;
+  float: left;
+}
+.unkfunc { color: #BDF46C; }

@@ -1,0 +1,103 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>#{board_name}@B.a.I. Móvil</h2>
+<a href="#{mobile_url}">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}">Página Frontal</a> ·
+<a href="#{cgi_url}mobilelist/#{board}">Lista de Hilos</a> ·
+<a href="#{cgi_url}mobilenew/#{board}">Nuevo Hilo</a>
+<hr />
+ [<a name="top" href="#bottom">Ir al final</a>]
+<?py for thread in threads: ?>
+  <div class="thread">
+    <?py for post in thread['posts']: ?>
+      <?py if int(post['parentid']) == 0: ?>
+        <?py if post['subject'] != '': ?>
+          <span class="subject">#{post["subject"]}</span>
+        <?py else: ?>
+          <span class="subject">Sin asunto</span>
+        <?py #endif ?>
+        <?py if post['locked'] == '1': ?>
+      <small>(cerrado)</small>
+        <?py elif post['locked'] == '2': ?>
+      <small>(permasage)</small>
+        <?py #endif ?>
+        <?py if post['email']: ?>
+      <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
+          <?py if post['tripcode']: ?>
+      <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
+          <?py #endif ?>
+        <?py else: ?>
+      <span class="postername">#{post['name']}</span>
+          <?py if post['tripcode']: ?>
+      <span class="postertrip">#{post['tripcode']}</span>
+          <?py #endif ?>
+        <?py #endif ?>
+        #{post['timestamp_formatted']}
+        <a href="javascript:insert('>>#{post['id']}\r\n');">No.#{post['id']}</a>
+      <?py else: ?>
+    <div class="reply">
+      <?py #endif ?>
+    <a name="#{post['id']}"></a>
+      <?py if post['IS_DELETED'] == '0': ?>
+          <?py if int(post['parentid']) != 0: ?>
+          <span class="subject">#{post['subject']}</span>
+            <?py if post['email']: ?>
+          <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
+              <?py if post['tripcode']: ?>
+          <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
+              <?py #endif ?>
+            <?py else: ?>
+          <span class="postername">#{post['name']}</span>
+              <?py if post['tripcode']: ?>
+          <span class="postertrip">#{post['tripcode']}</span>
+              <?py #endif ?>
+            <?py #endif ?>
+            #{post['timestamp_formatted']}
+          <a href="javascript:insert('>>#{post['id']}\r\n');">No.#{post['id']}</a>
+          <?py #endif ?>
+      <br />
+          <?py if post['file'] != '': ?>
+    <a href="#{board}/src/#{post['file']}"><img src="#{board}/mobile/#{post['thumb']}" align="left" /></a>
+          <?py #endif ?>
+    <blockquote>#{post['message']}</blockquote>
+          <?py if post['file'] != '': ?>
+    <br clear="left" />
+          <?py #endif ?>
+      <?py elif post['IS_DELETED'] == '1': ?>
+    <span class="deleted">No.#{post['id']} eliminado por el usuario.</span>
+      <?py elif post['IS_DELETED'] == '2': ?>
+    <span class="deleted">No.#{post['id']} eliminado por staff.</span>
+      <?py #endif ?>
+      <?py if int(post['parentid']) != 0: ?>
+    </div>
+      <?py #endif ?>
+    <?py #endfor ?>
+  <hr />
+</div>
+<?py #endfor ?>
+[<a name="bottom" href="#top">Ir al principio</a>]
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" />
+  <input type="hidden" name="parent" value="#{replythread}" />
+  <input type="hidden" name="mobile" value="true" />
+  <div style="display:none;">Trampa (deja estos campos en blanco):
+   <input type="text" name="name" size="19" maxlength="75" />
+   <input type="text" name="email" size="19" maxlength="75" />
+  </div>
+  <table>
+   <tr><td>Nombre</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
+   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
+   <tr><td>Asunto</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
+   <tr><td>Mensaje</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
+   <tr><td>Archivo</td><td><input type="file" name="file" size="25" /></td></tr>
+   <tr><td>Clave</td><td><input type="password" name="password" size="8" maxlength="8" /></td></tr>
+   <tr><td> </td><td><input type="submit" value="Responder" /></td></tr>
+  </table>
+</form>
+<script type="text/javascript">set_inputs("postform");</script>
+<a href="#{mobile_url}">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}">Página Frontal</a> ·
+<a href="#{cgi_url}mobilelist/#{board}">Lista de Hilos</a> ·
+<a href="#{cgi_url}mobilenew/#{board}">Nuevo Hilo</a>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

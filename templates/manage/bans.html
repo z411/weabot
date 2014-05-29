@@ -1,0 +1,84 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">Bans</div>
+<?py if mode == 0: ?>
+ <form action="#{cgi_url}manage/ban/" name="banform" method="post">
+ <table><tr>
+  <td class="postblock">Dirección IP</td>
+  <td><input type="text" name="ip" /><input type="submit" value="Ir al formulario de ban" /></td>
+ </tr></table>
+ </form>
+ <br />
+ <table class="managertable">
+  <tr>
+  <th>Dirección IP</th>
+  <th>Máscara de Red</th>
+  <th>Boards</th>
+  <th>Agregado</th>
+  <th>Expira</th>
+  <th>Ciego</th>
+  <th>Puesto por</th>
+  <th>Razón</th>
+  <th>Nota</th>
+  <th>Acción</th>
+  </tr>
+    <?py for ban in bans: ?>
+  <tr>
+  <td>${ban['ip']}</td>
+  <td>${ban['netmask']}</td>
+  <td>${ban['boards']}</td>
+  <td>${ban['added']}</td>
+  <td>${ban['until']}</td>
+  <td>${ban['blind']}</td>
+  <td>${ban['staff']}</td>
+  <td>${ban['reason']}</td>
+  <td>${ban['note']}</td>
+  <td>
+   [<a href="#{cgi_url}manage/ban?ip=#{ban['ip']}&amp;edit=#{ban['id']}">Editar</a>]
+   [<a href="#{cgi_url}manage/bans/delete/#{ban['id']}">Eliminar</a>]
+  </td>
+  </tr>
+    <?py #endfor ?>
+ </table>
+<?py elif mode == 1: ?>
+ <form action="#{cgi_url}manage/ban" name="banform" method="post">
+ <table>
+  <tr><td class="postblock">IP</td><td><input type="text" name="ip" value="${ip}" /></td></tr>
+  <tr><td class="postblock">Máscara de Red</td><td><input type="text" name="netmask" value="${startvalues['netmask']}" /></td></tr>
+  <tr><td class="postblock">Board(s)</td><td>
+    <input type="checkbox" name="board_all" value="1"#{checked(startvalues['where'] == '')} /><b>Todos los Boards</b><br /><br />
+    <?py for board in boards: ?>
+    <input type="checkbox" name="board_#{board['dir']}" value="1"#{checked(board['dir'] in startvalues['where'])} />${board['name']}<br />
+    <?py #endfor ?>
+    <?py if edit_id > 0: ?>
+   <input type="hidden" name="edit" value="${edit_id}" />
+    <?py #endif ?>
+  </td></tr>
+  <tr><td class="postblock">Mensaje</td><td><textarea name="reason">${startvalues['reason']}</textarea></td></tr>
+  <tr><td class="postblock">Nota para Staff</td><td><input type="text" name="note" value="${startvalues['note']}" /></td></tr>
+  <tr><td class="postblock">Ciego</td><td><input type="checkbox" name="blind" value="1"#{checked(startvalues['blind'] == '1')} /></td></tr>
+  <tr><td class="postblock">Expira en #segundos</td><td><input type="text" name="seconds" value="#{startvalues['seconds']}" />
+    <br />
+    <a href="#" onclick="document.banform.seconds.value=\'0\';return false;">Sin expirar</a>
+    <a href="#" onclick="document.banform.seconds.value=\'3600\';return false;">1hr</a>
+    <br />
+    <a href="#" onclick="document.banform.seconds.value=\'18000\';return false;">5hr</a>
+    <a href="#" onclick="document.banform.seconds.value=\'36000\';return false;">10hr</a>
+    <br />
+    <a href="#" onclick="document.banform.seconds.value=\'86400\';return false;">1d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'172800\';return false;">2d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'259200\';return false;">3d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'604800\';return false;">1w</a>
+    <br />
+    <a href="#" onclick="document.banform.seconds.value=\'1209600\';return false;">2w</a>
+    <a href="#" onclick="document.banform.seconds.value=\'2592000\';return false;">30d</a>
+    <a href="#" onclick="document.banform.seconds.value=\'31536000\';return false;">1yr</a></td></tr>
+</table>
+<input type="submit" value="Colocar Ban" />
+</form>
+<?py #endif ?>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

@@ -1,0 +1,50 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">Reportes</div>
+<?py if message: ?>
+${message}
+<?py #endif ?>
+<form name="boardForm" method="get" action="#{cgi_url}manage/reports/0">
+<table>
+ <tr><td class="postblock">Board</td><td>
+  <select name="board">
+   <option value="all">Todos los Boards</option>
+<?py for board in boards: ?>
+   <option value="#{board['dir']}"#{selected(board['checked'])}></option>
+<?py #endfor ?>
+  </select>
+  <input type="submit" value="Mostrar" />
+ </td></tr>
+</table>
+</form>
+ 
+<form name="ignoreForm" method="post" action="#{cgi_url}manage/reports/#{currentpage}">
+<?py if curboard: ?>
+<input type="hidden" name="board" value="#{board}" />
+<?py #endif ?>
+<br />
+<table class="managertable">
+<tr><th> </th><th> </th><th>Date</th><th>Board</th><th>ID Post</th><th>IP Poster</th><th>Razon</th><th>IP Reporter</th></tr>
+<?py for report in reports: ?>
+ <tr>
+  <td> <a href="#{cgi_url}manage/reports/#{currentpage}/ignore/#{report['id']}">X</a> </td>
+  <td><input type="checkbox" name="i#{report['id']}" value="1" /></td>
+  <td>${report['timestamp_formatted']}</td>
+  <td>/${report['board']}/</td>
+  <td><a href="#{report['link']}">&gt;&gt;#{report['postid']}</a></td>
+  <td>${report['ip']}</td>
+  <td>${report['reason']}</td>
+  <td>${report['reporterip']}</td>
+ </tr>
+<?py #endfor ?>
+ <tr><td colspan="8" align="center">
+  <input name="ignore" type="submit" value="Ignorar seleccionados" />
+ </td>
+ </tr>
+</table>
+</form> 
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

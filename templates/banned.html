@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Acceso prohibido@B.a.I.</title>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<style type="text/css">
+.error { color: red; font-weight: bold; font-size: 16pt; }
+.sub { font-weight: bold; }
+</style>
+</head>
+<body>
+<p class="error">ERROR : Se te ha prohibido el acceso</p>
+<p class="sub">Lo sentimos, tu IP (#{ip}) o red están en lista negra.</p>
+<ul>
+<?py if reason != "": ?>
+  <li><b>#{reason}</b></li> 
+<?py #endif ?>
+ <li>Tu ban fue puesto el <b>#{added}</b>.</li>
+<?py if expire != "": ?>
+  <li>Se te concederá nuevamente el acceso en la siguiente fecha y hora: <b>#{expire}</b>.</li>
+<?py #endif ?>
+</ul>
+<hr />
+</body>
+</html>

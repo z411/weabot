@@ -1,0 +1,20 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+ <b>BANDEJA DE ENTRADA</b><br />
+ Reportes:
+<?py if int(reports) > 0: ?>
+ <a href="#{cgi_url}manage/reports"><span class="banned"><b>#{reports}</b></span></a>
+<?py else: ?>
+ 0
+<?py #endif ?>
+<br />
+<b>NOTICIAS DEL STAFF</b>
+</center>
+<?py for post in posts: ?>
+ #{post['id']}: #{post['nameblock']}<br />
+ <div class="modnewstitle">#{post['title']}</div>
+ <div class="modnewsmessage">#{post['message']}</div><br />
+<?py #endfor ?>
+<hr />
+<?py include('templates/base_bottom.html') ?>

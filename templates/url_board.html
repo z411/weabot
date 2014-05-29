@@ -1,0 +1,160 @@
+<?py include('templates/txt_base_top.html') ?>
+<body class="mainpage">
+<div class="adminbar">
+  [<a href="#{home_url}home.html">Home</a>] [<a href="#{cgi_url}manage">Administrar</a>]
+</div>
+<?py if navbar: ?>
+  <?py include('templates/navbar.html') ?>
+<?py #endif ?>
+<br>
+
+<div id="titlebox" class="outerbox">
+  <div class="innerbox">
+    <h1><img src="#{banner_url}" width="#{banner_width}" height="#{banner_height}" alt="Logo"><br>#{board_name}@B.a.I.</h1>
+    <div class="threadnavigation">
+      <a href="#menu" title="Jump to thread list">&#9632;</a>
+      <a href="#1" title="Jump to next thread">&#9660;</a>
+    </div>
+    <div id="rules">
+      #{postarea_extra_html_top}
+    </div>
+  </div>
+</div>
+<div id="stylebox" class="outerbox">
+  <div class="innerbox">
+    <strong>Estilo del board:</strong>  <a href="javascript:set_stylesheet('Blue Moon')">Blue Moon</a>  <a href="javascript:set_stylesheet('Headline')">Headline</a>  <a href="javascript:set_stylesheet('Pseud0ch')">Pseud0ch</a>  <a href="javascript:set_stylesheet('VIPPER')">VIPPER</a> 
+  </div>
+</div>
+
+<a name="newthread"></a>
+<div id="createbox" class="outerbox">
+  <div class="innerbox">
+    <h2>Nuevo Link</h2>
+    <form id="threadform" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="board" value="#{board}">
+      <input type="hidden" name="password" value="">
+      <table>
+        <tbody> 
+          <tr>
+            <td>Link (obligatorio):</td>
+            <td>
+              <input type="text" name="subject" size="46" maxlength="100">
+              <input type="submit" value="Crear nuevo thread">
+            </td>
+          </tr>
+          <tr>
+            <td> Nombre:  </td>
+            <td>
+              <input type="text" name="name" size="19" maxlength="100"><span class="capcodecheckbox"></span> Link:
+              <input type="text" name="email" size="19" maxlength="100">
+            </td> 
+          </tr>
+          <tr> 
+            <td> Descripci&oacute;n: </td> 
+            <td>
+              <input type="text" name="message" size="46" maxlength="100">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form> 
+  </div>
+</div> 
+
+<?py if threads: ?>
+<div id="posts">
+    <?py titer = 1 ?>
+    <?py for thread in threads: ?>
+  <a name="#{titer}"></a>
+  <div class="thread">
+    <h2></h2>
+    <div class="threadnavigation"> <a href="#menu" title="Saltar a la lista de threads">&#9632;</a>
+    
+        <?py if titer > 1: ?>
+    <a href="##{titer - 1}" title="Saltar al thread anterior">&#9650;</a>
+        <?py else: ?>
+    <a href="##{len(threads)}" title="Saltar al thread anterior">&#9650;</a>
+        <?py #endif ?>
+    
+        <?py if titer < len(threads): ?>
+    <a href="##{titer + 1}" title="Saltar al siguiente thread">&#9660;</a>
+        <?py else: ?>
+    <a href="#1" title="Saltar al siguiente thread">&#9660;</a>
+        <?py #endif ?>
+    
+    </div>
+    <div class="replies">
+        <?py for post in thread['posts']: ?>
+          <?py if post['num'] == 1: ?>
+      <div class="firstreply">
+          <?py elif post['num'] == 2: ?>
+      </div>
+              <?py if thread['omitted'] > 0: ?>
+      <div class="repliesomitted"></div>
+              <?py #endif ?>
+      <div class="finalreplies">
+          <?py #endif ?>
+          <?py if post['IS_DELETED'] == '1': ?>
+        <div class="deletedreply"> <h3> <span class="replynum">#{post['num']}</span> Post eliminado por el usuario.  </h3> </div>
+          <?py elif post['IS_DELETED'] == '2': ?>
+        <div class="deletedreply"> <h3> <span class="replynum">#{post['num']}</span> Post eliminado por moderador.  </h3> </div>
+          <?py else: ?>
+        <div class="reply">
+          <h3> <span class="replynum"><a title="Quote post number in reply" href="javascript:insert('&gt;&gt;#{post['num']}',#{thread['id']})">#{post['num']}</a></span>
+          Nombre:  #{post['nameblock']}
+              <?py if post['iphash']: ?>
+          ID: #{post['iphash']}
+              <?py #endif ?>
+              <?py if post['locked'] == '1': ?>
+          <img src="#{boards_url}static/css/locked.gif">
+              <?py elif post['locked'] == '2': ?>
+          <img src="#{boards_url}static/css/permasage.gif">
+              <?py #endif ?>
+              <?py if int(post['parentid']) == 0: ?>
+            <span class="dnb|#{board}|#{post['id']}|y|#{post['locked']}"></span>
+              <?py else: ?>
+            <span class="dnb|#{board}|#{post['id']}|n"></span>
+              <?py #endif ?>
+          <span class="deletebutton"> [<a href="javascript:delete_post(#{post['num']},#{post['id']})">Del</a>]  </span> </h3>
+          <div class="replytext">
+            <p><big><a href="#{thread['posts'][0]['subject']}" rel="nofollow">#{thread['posts'][0]['subject']}</a></big> #{post['message']}</p>
+          </div>
+        </div>
+              <?py if post['shortened']: ?>
+        <div class="replyabbrev">Post muy largo. Clic para ver el <a href="#{cgi_url}read/#{board}/#{thread['id']}/#{post['id']}" rel="nofollow">post</a> o el <a href="#{boards_url}#{board}/res/#{thread['id']}.html">thread completo</a>.</div>
+              <?py #endif ?>
+              <?py if post['banned'] != '': ?>
+        <p><span class="banned"><b>#{post['banned']}<br>(ESTE USUARIO FUE BANEADO POR ESTE POST)</b></span></p>
+              <?py #endif ?>
+          <?py #endif ?>
+        <?py #endfor ?>
+      </div>
+    </div>
+    <form id="postform#{thread['id']}" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="board" value="#{board}">
+      <input type="hidden" name="parent" value="#{thread['id']}">
+      <input type="hidden" name="password" value="">
+      <table>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>
+              <div class="threadlinks">
+                <a href="#{boards_url}#{board}/res/#{thread['id']}.html">Thread completo (#{thread['length']} respuestas)</a>
+                <a href="#menu">Lista de threads</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+    <script type="text/javascript">set_inputs("postform#{thread['id']}");</script>
+  </div>
+        <?py titer += 1 ?>
+    <?py #endfor ?>
+</div>
+<?py #endif ?>
+<br>
+<div id="page_navigator">#{page_navigator}</div>
+<script type="text/javascript">set_inputs("threadform");</script>
+<?py include('templates/txt_base_bottom.html') ?>

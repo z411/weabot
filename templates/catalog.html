@@ -1,0 +1,23 @@
+<?py include('templates/base_top.html') ?>
+&#91;<a href="#{boards_url}#{board}/">Volver al IB</a>&#93;<div class="extramode">Catálogo</div>
+<div style="margin: 1em auto;">
+<table border="1" align="center">
+<?py count = 0 ?>
+<?py for thread in threads: ?>
+    <?py if count == 0: ?>
+ <tr>
+    <?py #endif ?>
+  <td><a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />#{int(thread['length'])-1}</td>
+    <?py if count == 9: ?>
+ </tr>
+        <?py count = 0 ?>
+    <?py else: ?>
+        <?py count = count + 1 ?>
+    <?py #endif ?>
+<?py #endfor ?>
+<?py if count != 0: ?>
+ </tr>
+<?py #endif ?>
+</table>
+</div>
+<?py include('templates/base_bottom.html') ?>

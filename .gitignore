@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.cache
 
 # C extensions
 *.so
@@ -33,9 +34,6 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-
-# Translations
-*.mo
 
 # Mr Developer
 .mr.developer.cfg

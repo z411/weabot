@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta http-equiv="content-language" content="ES" />
+<meta name="revisit-after" content="14 days" />
+<meta name="robots" content="noarchive" />
+<title>#{header}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" />
+</head>
+<body>
+<center>
+<img src="#{logo}" alt="#{header}" />
+<div class="header">#{header}</div>
+<div class="slogan">#{slogan}</div>
+<hr />
+<h3>Secciones</h3>
+<?py include('templates/boardlist.html') ?>
+<h3>Últimos posts:</h3>
+<?py include('templates/latest.html') ?>
+<h3>Últimas noticias:</h3>
+<?py if latest_news: ?>
+    <?py for article in latest_news: ?>
+  <center><b>#{article['title']}</b></center>
+  #{article['message']}<br /><br />
+  <i> by #{article['nameblock']}</i><hr />
+    <?py #endfor ?>
+  [ <a href="news.html">More news</a> ]</span>
+<?py else: ?>
+No hay noticias.
+<?py #endif ?>
+<hr />
+<div id="statistics">
+  <b>Posts:</b> #{total_posts} &middot;
+  <b>Hilos:</b> #{total_threads} &middot;
+  <b>Respuestas:</b> #{total_replies} &middot;
+  <b>Im&aacute;genes:</b> #{total_images}
+</div>
+<hr />
+</center>
+<?py include('templates/base_bottom.html') ?>

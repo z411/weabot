@@ -1,0 +1,63 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">Opciones de Board</div>
+<?py if mode == 0: ?>
+  <table class="managertable">
+  <tr><th>Seccion</th><th>Accion</th></tr>
+    <?py for board in boards: ?>
+  <tr><td>/#{board['dir']}/ (#{board['name']})</td><td>[<a href="#{cgi_url}manage/board/#{board['dir']}">Configurar</a>]</td></tr>
+    <?py #endfor ?>
+  </table>
+<?py elif mode == 1: ?>
+ <form action="#{cgi_url}manage/board/#{board['dir']}" method="post">
+ <table>
+ <tr><td class="postblock">Nombre</td><td><input type="text" name="name" value="#{board['name']}" /></td></tr>
+ <tr><td class="postblock">Tipo</td><td>
+  <select name="type">
+  <option value="0">Imageboard</option>
+  <option value="1"#{selected(board['board_type'] == '1')}>Textboard</option>
+  </select>
+ </td></tr>
+ <tr><td class="postblock">Nombre por defecto</td><td><input type="text" name="anonymous" size="60" maxlength="60" value="#{board['anonymous']}" /></td></tr>
+ <tr><td class="postblock">Título por defecto</td><td><input type="text" name="subject" size="60" maxlength="60" value="#{board['subject']}" /></td></tr>
+ <tr><td class="postblock">Mensaje por defecto</td><td><input type="text" name="message" size="60" maxlength="60" value="#{board['message']}" /></td></tr>
+ <tr><td class="postblock">Caracter de Tripcode</td><td><input type="text" name="tripcode_character" maxlength="5" value="#{board['tripcode_character']}" /></td></tr>
+ <tr><td class="postblock">Anónimo forzado</td><td><input type="checkbox" name="forced_anonymous" value="1"#{checked(board['forced_anonymous'] == '1')} /></td></tr>
+ <tr><td class="postblock">Desactivar asunto</td><td><input type="checkbox" name="disable_subject" value="1"#{checked(board['disable_subject'] == '1')} /></td></tr>
+ <tr><td class="postblock">Papelera de Reciclaje</td><td><input type="checkbox" name="recyclebin" value="1"#{checked(board['recyclebin'] == '1')} /></td></tr>
+ <tr><td class="postblock">ID</td><td><select name="useid">
+  <option value="0">Desactivado</option>
+  <option value="1"#{selected(board['useid'] == '1')}>Activado</option>
+  <option value="2"#{selected(board['useid'] == '2')}>Activado por hilo</option>
+  <option value="3"#{selected(board['useid'] == '3')}>Activado (excepto sage)</option>
+  <option value="4"#{selected(board['useid'] == '4')}>Activado por hilo (excepto sage)</option>
+ </select></td></tr>
+ <tr><td class="postblock">Secreto</td><td><input type="checkbox" name="secret" value="1"#{checked(board['secret'] == '1')} /></td></tr>
+ <tr><td class="postblock">Cerrable</td><td><input type="checkbox" name="lockable" value="1"#{checked(board['lockable'] == '1')} /></td></tr>
+ <tr><td class="postblock">HTML de la parte superior</td><td><textarea name="postarea_extra_html_top" rows="10" cols="50">${board['postarea_extra_html_top']}</textarea>
+  <br /><input type="checkbox" name="postarea_extra_always" value="1"#{checked(board['postarea_extra_always'] == '1')} />Mostrar Siempre
+ </td></tr>
+ <tr><td class="postblock">HTML de la parte inferior</td><td><textarea name="postarea_extra_html_bottom" rows="10" cols="50">${board['postarea_extra_html_bottom']}</textarea></td></tr>
+ <tr><td class="postblock">Permitir imágenes</td><td><input type="checkbox" name="allow_images" value="1"#{checked(board['allow_images'] == '1')} /> (al crear hilo)</td></tr>
+ <tr><td class="postblock">Permitir respuesta con imagen</td><td><input type="checkbox" name="allow_image_replies" value="1"#{checked(board['allow_image_replies'] == '1')} /> (al responder)</td></tr>
+ <tr><td class="postblock">Botón "Sin Imagen"</td><td><input type="checkbox" name="allow_noimage" value="1"#{checked(board['allow_noimage'] == '1')} /> (permite crear hilos sin imagen)</td></tr>
+ <tr><td class="postblock">Permitir spoilers</td><td><input type="checkbox" name="allow_spoilers" value="1"#{checked(board['allow_spoilers'] == '1')} /></td></tr>
+ <tr><td class="postblock">Permitir oekaki</td><td><input type="checkbox" name="allow_oekaki" value="1"#{checked(board['allow_oekaki'] == '1')} /></td></tr>
+ <tr><td class="postblock">Forzar CSS</td><td><input type="text" name="force_css" size="60" value="#{board['force_css']}" /><br />(dejar en blanco para usar CSS normales)</td></tr>
+ <tr><td class="postblock">Tipos de archivo</td>
+ <td>
+    <?py for filetype in filetypes: ?>
+    <input type="checkbox" name="filetype#{filetype['ext']}" value="1"#{checked(filetype['ext'] in supported_filetypes)} />${filetype['ext'].upper()}<br />
+    <?py #endfor ?>
+ </td>
+ </tr>
+ <tr><td class="postblock">Tamaño Máximo (kilobytes)</td><td><input type="text" name="maxsize" value="#{board['maxsize']}" /></td></tr>
+ </table>
+ <input type="submit" value="Guardar cambios" />
+</form>
+<?py #endif ?>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

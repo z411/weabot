@@ -1,0 +1,68 @@
+<?py include('templates/base_top.html') ?>
+<center><a href="#{cgi_url}manage/ipshow">Volver</a></center>
+<?py for post in posts: ?>
+    <table>
+    <tbody>
+    <tr>
+    <td class="doubledash">
+      &#0168;
+    </td>
+    <td class="reply" id="reply#{post['id']}">
+    <a name="#{post['id']}"></a>
+    <label>
+    <?py if post['subject'] != '': ?>
+      <span class="filetitle">#{post['subject']}</span>
+    <?py #endif ?>
+      #{post['nameblock']}
+    </label>
+    <span class="reflink">
+    <?py if post['parentid'] == '0': ?>
+    <a href="#{boards_url}#{post['dir']}/res/#{post['id']}.html##{post['id']}">No. #{post['id']}</a>
+    <?py else: ?>
+    <a href="#{boards_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}">No. #{post['id']}</a>
+    <?py #endif ?>
+    </span>
+    <?py if modbrowse: ?>
+    [#{post['ip']}]
+    <?py #endif ?>
+    <?py if post['locked'] != '0': ?>
+    <img src="#{boards_url}static/css/locked.gif" />
+    <?py #endif ?>
+    <?py if post['file'] != '': ?>
+    <br />
+    <span class="filesize">Archivo: <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{boards_url}#{post['dir']}/thumb/#{post['thumb']}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">#{post['file']}</a>&ndash;(#{post['file_size_formatted']}, #{post['image_width']}x#{post['image_height']})</span>
+    <br />
+        <?py if post['thumb'] != 'spoil': ?>
+        <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{boards_url}#{post['dir']}/thumb/#{post['thumb']}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">
+        <span id="thumb#{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" alt="#{post['id']}" class="thumb" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /></span>
+        <?py else: ?>
+        <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{spoil_image}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">
+        <span id="thumb#{post['id']}"><img src="#{spoil_image}" alt="#{post['id']}" class="thumb" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /></span>
+        <?py #endif ?>
+    </a>
+    <?py #endif ?>
+    <blockquote>
+    #{post['message']}
+    </blockquote>
+    <?py if post['animation'] == '-1': ?>
+    <blockquote><span class="noanimation">(No Animation)</span>
+        <?py if replythread: ?>
+        &nbsp;-&nbsp;<a href="#postbox" onClick="oek_edit('#{post['file']}', #{post['id']}, #{post['image_width']}, #{post['image_height']});">Edit</a>
+        <?py #endif ?>
+    </blockquote>
+    <?py elif post['animation'] != '': ?>
+    <blockquote><a href="#{cgi_url}oekaki/animation/#{post['dir']}/#{post['animation']}">View Animation</a>
+        <?py if replythread: ?>
+        &nbsp;-&nbsp;<a href="#postbox" onClick="oek_edit('#{post['file']}', #{post['id']}, #{post['image_width']}, #{post['image_height']});">Edit</a>
+        <?py #endif ?>
+    </blockquote>
+    <?py #endif ?>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+<?py #endfor ?>
+<br clear="left" />
+<hr />
+<center><a href="#{cgi_url}manage/ipshow">Volver</a></center>
+<?py include('templates/base_bottom.html') ?>
