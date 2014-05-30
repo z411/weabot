@@ -984,7 +984,7 @@ class Server(object):
 
     def _setupSocket(self):
         if self._bindAddress is None: # Run as a normal FastCGI?
-            isFCGI = False
+            isFCGI = True
 
             if isFCGI:
                 sock = socket.fromfd(FCGI_LISTENSOCK_FILENO, socket.AF_INET,
