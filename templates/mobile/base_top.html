@@ -2,9 +2,12 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
- <title>#{board_name}@B.a.I. Movil</title>
+ <title>#{board_name}@B.a.I. Móvil</title>
  <link rel="stylesheet" href="#{static_url}css/mobile.css" />
  <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+<?py if board == 'zonavip': ?>
+ <style type="text/css">body,textarea{font-family:IPAMonaPGothic,Mona,'MS PGothic',YOzFontAA97 !important;}</style>
+<?py #endif ?>
  <script type="text/javascript" src="#{static_url}js/mobile.js"></script>
 </head>

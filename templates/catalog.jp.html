@@ -1,23 +1,39 @@
 <?py include('templates/base_top.jp.html') ?>
-&#91;<a href="#{boards_url}#{board}/">掲示板に戻る</a>&#93;<div class="extramode">カタログモード</div>
-<div style="margin: 1em auto;">
-<table border="1" align="center">
-<?py count = 0 ?>
-<?py for thread in threads: ?>
-    <?py if count == 0: ?>
- <tr>
-    <?py #endif ?>
-  <td><a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />#{int(thread['length'])-1}</td>
-    <?py if count == 9: ?>
- </tr>
-        <?py count = 0 ?>
-    <?py else: ?>
-        <?py count = count + 1 ?>
-    <?py #endif ?>
-<?py #endfor ?>
-<?py if count != 0: ?>
- </tr>
+&#91;<a href="#{boards_url}#{board}/">掲示板に戻る</a>&#93;
+<?py if i_sort == '': ?>
+<b><a href="?">カタログ</a></b>
+<?py else: ?>
+<a href="?">カタログ</a>
 <?py #endif ?>
-</table>
+<?py if i_sort == '1': ?>
+<b><a href="?sort=1">新順</a></b>
+<?py else: ?>
+<a href="?sort=1">新順</a>
+<?py #endif ?>
+<?py if i_sort == '2': ?>
+<b><a href="?sort=2">古順</a></b>
+<?py else: ?>
+<a href="?sort=2">古順</a>
+<?py #endif ?>
+<?py if i_sort == '3': ?>
+<b><a href="?sort=3">多順</a></b>
+<?py else: ?>
+<a href="?sort=3">多順</a>
+<?py #endif ?>
+<?py if i_sort == '4': ?>
+<b><a href="?sort=4">少順</a></b>
+<?py else: ?>
+<a href="?sort=4">少順</a>
+<?py #endif ?>
+<div class="extramode">カタログモード</div>
+<div id="catalog" style="margin: 1em auto;">
+<?py for thread in threads: ?>
+ <div class="thread">
+  <a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />
+  <div class="replies">レス${int(thread['length'])-1}件 ${thread['expires_formatted']}頃消え</div>
+  <p class="filetitle">${thread['subject']}</p>
+  <p>${thread['message']}</p>
+ </div>
+<?py #endfor ?>
 </div>
 <?py include('templates/base_bottom.html') ?>

@@ -1,0 +1,204 @@
+<?py include('templates/base_top.0.html') ?>
+<img style="position:absolute;top:15px;left:15px;" src="/0/junk/carrito.gif" />
+<a name="postbox"></a><div class="postarea">
+<?py if not replythread or postarea_extra_always: ?>
+#{postarea_extra_html_top}
+<?py #endif ?>
+<form name="postform" id="postform" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" />
+<?py if replythread: ?>
+  <input type="hidden" name="parent" value="#{replythread}" />
+<?py #endif ?>
+  <div style="display:none;">Trampa (deja estos campos en blanco):
+   <input type="text" name="name" size="19" maxlength="75" />
+   <input type="text" name="email" size="19" maxlength="75" />
+   <input type="password" name="password" size="1" accesskey="p" />
+  </div>
+  <a name="nuevo"></a>
+  <table class="postform">
+    <tbody>
+<?py if not forced_anonymous: ?>
+      <tr>
+        <td class="postblock">
+          Nombre
+        </td>
+        <td>
+          <input type="text" name="fielda" class="namebox" size="15" maxlength="75" accesskey="n" />
+        </td>
+      </tr>
+<?py #endif ?>
+      <tr>
+        <td class="postblock">
+          E-mail
+        </td>
+        <td>
+          <input type="text" name="fieldb" class="mailbox" size="25" maxlength="75" accesskey="e" />
+<?py if disable_subject: ?>
+    <?py if replythread: ?>
+          <input type="submit" value="Vandalizar" accesskey="z" />
+    <?py else: ?>
+          <input type="submit" value="（　・ _・）﻿／●～*" accesskey="z" />
+    <?py #endif ?>
+<?py #endif ?>
+        </td>
+      </tr>
+<?py if not disable_subject: ?>
+      <tr>
+        <td class="postblock">
+          Asunto
+        </td>
+        <td>
+          <input type="text" name="subject" size="40" maxlength="75" accesskey="s" />
+    <?py if replythread: ?>
+          <input type="submit" value="Vandalizar" accesskey="z" />
+    <?py else: ?>
+          <input type="submit" value="（　・ _・）﻿／●～*" accesskey="z" />
+    <?py #endif ?>
+        </td>
+      </tr>
+<?py #endif ?>
+      <tr>
+        <td class="postblock">
+          Comentario
+        </td>
+        <td>
+          <textarea name="message" class="messagebox" cols="50" rows="5" accesskey="m"></textarea>
+        </td>
+      </tr>
+<?py if (replythread and allow_image_replies) or (not replythread and allow_images): ?>
+      <tr>
+        <td class="postblock">
+          Memazo
+        </td>
+        <td>
+          <input type="file" name="file" size="36" accesskey="f" />
+		  <?py if allow_spoilers: ?>
+		   [<input type="checkbox" name="spoil" id="spoil" /><label for="spoil" class="checkboxlabel">Spoiler ]</label>
+		  <?py #endif ?>
+		  <?py if allow_noimage and not replythread: ?>
+		   [<input type="checkbox" name="noimage" id="noimage" /><label for="noimage" class="checkboxlabel">Sin imagen ]</label>
+		  <?py #endif ?>
+        </td>
+      </tr>
+<?py #endif ?>
+    </tbody>
+  </table>
+  </form>
+    <span class="modboardoptions|#{board}|#{board_locked}"></span>
+    </div>
+    <script type="text/javascript">
+      set_inputs("postform");
+    </script>
+    <br clear="all" />
+    <hr size="1" />
+	<br clear="all" />
+<form id="delform" action="#{cgi_url}delete" method="post">
+<input type="hidden" name="board" value="#{board}" />
+<?py if threads: ?>
+  <?py for thread in threads: ?>
+    <div id="thread#{thread['id']}#{board}" class="thread">
+    <?py for post in thread['posts']: ?>
+      <table>
+      <tbody>
+      <tr>
+      <td class="doubledash">
+        #{post['num']}
+      </td>
+	  <td class="reply" id="reply#{post['id']}">
+      <?py if post['IS_DELETED'] == '1': ?>
+      <span class="deletedreply">No.#{post['id']} eliminado por usuario.</span><span class="dnb|#{board}|#{post['id']}|n"></span>
+      <?py elif post['IS_DELETED'] == '2': ?>
+      <span class="deletedreply">No.#{post['id']} eliminado por staff.</span><span class="dnb|#{board}|#{post['id']}|n"></span>
+      <?py else: ?>
+          <?py if reports_enable: ?>
+          <div id="rep">[<a class="rep" href="#{cgi_url}report/#{board}/#{post['id']}" rel="nofollow">rep</a>]</div>
+          <?py #endif ?>
+          <?py if post['parentid'] == '0': ?>
+          <span class="filetitle">#{post['subject']}</span>
+          <?py else: ?>
+          <span class="replytitle">#{post['subject']}</span>
+          <?py #endif ?>
+          <?py if post['locked'] == '1': ?>
+            <small>(cerrado)</small>
+          <?py elif post['locked'] == '2': ?>
+            <small>(permasage)</small>
+          <?py #endif ?>
+          Nombre:
+          <span class="postername">#{post['name']}</span>
+          <?py if post['tripcode']: ?>
+          <span class="postertrip">#{post['tripcode']}</span>
+          <?py #endif ?>
+          <?py if modbrowse: ?>
+          [#{post['ip']} (<a href="#{cgi_url}manage/ipshow?ip=#{post['ip']}">ver</a>)]
+          <?py #endif ?>
+          <?py if int(post['parentid']) == 0: ?>
+            <span class="dnb|#{board}|#{post['id']}|y|#{post['locked']}"></span>
+          <?py else: ?>
+            <span class="dnb|#{board}|#{post['id']}|n"></span> 
+		  <?py #endif ?>
+          <?py if int(post['parentid']) == 0 and not replythread: ?>
+             [<a href="#{boards_url}#{board}/res/#{post['id']}.html">Hilo completo</a>] [<a href="#nuevo">Nuevo hilo</a>]
+          <?py #endif ?>
+          <?py if post['file'] != '': ?>
+          <br />
+              <a target="_blank" href="#{images_url}#{board}/src/#{post['file']}">
+              <span id="thumb#{post['id']}">
+              <img src="#{images_url}#{board}/thumb/#{post['thumb']}" alt="#{post['id']}" class="imagen"
+                  <?py if post['image_width'] != '0': ?>
+                  width="#{post['thumb_width']}" height="#{post['thumb_height']}"
+                  <?py #endif ?>
+              />
+              </span>
+          </a>
+          <?py #endif ?>
+          <?py if post['thumb_width'] != '0': ?>
+          <blockquote style="margin-left: #{int(post['thumb_width'])+10}px;">
+          <?py else: ?>
+          <blockquote>
+          <?py #endif ?>
+            #{post['message']}
+          </blockquote>
+          <?py if not replythread and post['shortened']: ?>
+          <p><span class="texttoolong">
+              <?py if int(post['parentid']) == 0: ?>
+            Texto muy largo. Clic <a href="#{boards_url}#{board}/res/#{post['id']+'.html#'}#{post['id']}">ac&aacute;</a> para ver el post completo.
+              <?py else: ?>
+            Texto muy largo. Clic <a href="#{boards_url}#{board}/res/#{post['parentid']+'.html#'}#{post['id']}">ac&aacute;</a> para ver el post completo.
+              <?py #endif ?>
+          </span></p>
+          <?py #endif ?>
+		  <br clear="all">
+      <?py #endif ?>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+    <?py #endfor ?>
+    </div>
+    <br clear="all" />
+    <hr size="1" />
+	<br clear="all" />
+  <?py #endfor ?>
+<?py #endif ?>
+    </form>
+    <script type="text/javascript">
+      set_delpass("delform");
+    </script>
+<?py if page_navigator: ?>
+    <table border="1">
+      <tbody>
+        <tr>
+          #{page_navigator}
+        </tr>
+      </tbody>
+    </table>
+    <br />
+<?py #endif ?>
+<div class="footer" style="clear: both;">
+★ <a href="http://pyib.appspot.com/" target="_top">PyIB</a> +
+<a href="http://www.bienvenidoainternet.org" target="_top">weabot</a>
+<?py include('templates/revision.html') ?>
+★
+    </div>
+  </body>
+</html>

@@ -1,37 +1,37 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<?py from tenjin.helpers.html import * ?>
-<center>
-<div class="replymode">
-<?py if action == 'news': ?>
-  Publicar Noticia
-<?py else: ?>
-  Publicar Mensaje como Staff
-<?py #endif ?>
-</div>
-<form action="#{cgi_url}manage/#{action}/add" method="post">
-<table>
-<tr><td class="postblock">Título</td><td><input type="text" name="title" /><input type="submit" name="submit" value="Publicar" /></td></tr>
-<tr><td class="postblock">Cuerpo</td><td><textarea cols="48" rows="4" name="message"></textarea>
-<?py if action == 'news': ?>
-<br />(HTML: Usar con cuidado)
-<?py #endif ?>
-</td></tr>
-<tr><td class="postblock">Anónimo</td><td><input type="checkbox" name="anonymous" value="1"#{checked(action == 'news')} /></td></tr>
-</table>
-</form>
-<p>Mensajes:</p>
-<table class="managertable">
- <tr><th>ID</th><th>Fecha</th><th>Tíulo</th><th>Cuerpo</th></tr>
-<?py for post in posts: ?>
- <tr>
- <td>#{post['id']} [<a href="#{cgi_url}manage/#{action}/delete/#{post['id']}">Eliminar</a>]</td>
- <td>#{post['timestamp_formatted']}</td>
- <td>#{post['title']}</td>
- <td>#{post['message']}</td>
- </tr>
-<?py #endfor ?>
-</table>
-</center>
-<hr />
-<?py include('templates/base_bottom.html') ?>
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<div class="replymode">
+<?py if action == 'news': ?>
+  Publicar Noticia
+<?py else: ?>
+  Publicar Mensaje como Staff
+<?py #endif ?>
+</div>
+<form action="#{cgi_url}manage/#{action}/add" method="post">
+<table>
+<tr><td class="postblock">Título</td><td><input type="text" name="title" /><input type="submit" name="submit" value="Publicar" /></td></tr>
+<tr><td class="postblock">Cuerpo</td><td><textarea cols="48" rows="4" name="message"></textarea>
+<?py if action == 'news': ?>
+<br />(HTML: Usar con cuidado)
+<?py #endif ?>
+</td></tr>
+<tr><td class="postblock">Anónimo</td><td><input type="checkbox" name="anonymous" value="1"#{checked(action == 'news')} /></td></tr>
+</table>
+</form>
+<p>Mensajes:</p>
+<table class="managertable">
+ <tr><th>ID</th><th>Fecha</th><th>Tíulo</th><th>Cuerpo</th></tr>
+<?py for post in posts: ?>
+ <tr>
+ <td>#{post['id']} [<a href="#{cgi_url}manage/#{action}/delete/#{post['id']}">Eliminar</a>]</td>
+ <td>#{post['timestamp_formatted']}</td>
+ <td>#{post['title']}</td>
+ <td>#{post['message']}</td>
+ </tr>
+<?py #endfor ?>
+</table>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

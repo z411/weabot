@@ -1,141 +1,88 @@
 <?py include('templates/txt_base_top.html') ?>
-
 <body class="threadpage">
-<?py if threads: ?>
-    <?py for thread in threads: ?>
+<?py if threads: ?><?py for thread in threads: ?>
 <div id="navigation">
-  <a href="#{home_url}">Home</a>
-  <a href="#{boards_url}#{board}">■Volver al BBS■</a>
-  <a href="#{boards_url}#{board}/read/#{thread['id']}">Hilo completo</a>
-        <?py if thread['length'] > 100: ?>
-  <a href="#{boards_url}#{board}/read/#{thread['id']}/-100" rel="nofollow">1-</a>
-        <?py #endif ?>
-        <?py for i in range(thread['length'] / 100): ?>
-  <a href="#{boards_url}#{board}/read/#{thread['id']}/#{(i+1)*100+1}-#{(i+2)*100}" rel="nofollow">#{(i+1)*100+1}-</a>
-        <?py #endfor ?>
-        <?py if thread['length'] > 51: ?>
-  <a href="#{boards_url}#{board}/read/#{thread['id']}/l50" rel="nofollow">Últimos 50</a>
-        <?py #endif ?>
+ <a href="/bai.html">Bienvenido a Internet BBS/IB</a>
+ <a href="#{boards_url}#{board}/">■ Volver al BBS ■</a>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/">Hilo completo</a>
+ <?py if thread['length'] > 100: ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/-100" rel="nofollow">1-</a><?py #endif ?>
+ <?py for i in range(thread['length'] / 100): ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{(i+1)*100+1}-#{(i+2)*100}" rel="nofollow">#{(i+1)*100+1}-</a><?py #endfor ?>
+ <?py if thread['length'] > 51: ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/l50" rel="nofollow">Últimos 50</a><?py #endif ?>
 </div>
+<?py if thread['length'] > 1000: ?>
+<div class="rwarn">El hilo ha superado las 1000 respuestas y fue cerrado.</div>
+<?py elif thread['length'] > 900: ?>
+<div class="ywarn">El hilo ha superado las 900 respuestas. Cuando supere las 1000 será cerrado.</div>
+<?py #endif ?>
 <div id="posts">
-        <?py if thread['posts'][0]['locked'] == '2': ?>
-  <div class="sagethread">
-    <h2>#{thread['subject']} <small>(#{thread['length']}, permasage)</small></h2>
-        <?py else: ?>
-  <div class="thread">
-    <h2>#{thread['subject']} <small>(#{thread['length']})</small></h2>
-        <?py #endif ?>
-    <div class="replies">
-      <div class="allreplies">
-        <?py for post in thread['posts']: ?>
-        <a name="#{post['id']}"></a>
-            <?py if post['IS_DELETED'] == '1': ?>
-        <div class="deletedreply"> <h3> <span class="replynum">#{post['num']}</span> Post eliminado por el usuario.  </h3> </div>
-            <?py elif post['IS_DELETED'] == '2': ?>
-        <div class="deletedreply"> <h3> <span class="replynum">#{post['num']}</span> Post eliminado por staff.  </h3> </div>
-            <?py else: ?>
-        <div class="reply">
-          <h3>
-            <span class="replynum"><a title="Quote post number in reply" href="javascript:insert('&gt;&gt;#{post['num']}',#{thread['id']})">#{post['num']}</a></span> :
-              <?py if post['email']: ?>
-          <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
-                <?py if post['tripcode']: ?>
-          <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
-                <?py #endif ?>
-              <?py else: ?>
-          <span class="postername">#{post['name']}</span>
-                <?py if post['tripcode']: ?>
-          <span class="postertrip">#{post['tripcode']}</span>
-                <?py #endif ?>
-              <?py #endif ?>
-            : #{post['timestamp_formatted']}
-                <?py if post['file']: ?>
-          <span class="filesize">(Imagen: <em>#{post['file_size_formatted']}, #{post['image_width']}x#{post['image_height']}</em>)</span>
-                <?py #endif ?>
-                <?py if modbrowse: ?>
-            [#{post['ip']} (<a href="#{cgi_url}manage/ipshow?ip=#{post['ip']}">ver</a>)]
-                <?py #endif ?>
-                <?py if int(post['parentid']) == 0: ?>
-              <span class="dnb|#{board}|#{post['id']}|y|#{post['locked']}"></span>
-                <?py else: ?>
-              <span class="dnb|#{board}|#{post['id']}|n"></span>
-                <?py #endif ?>
-                <span class="deletebutton">
-                <?py if reports_enable: ?>
-          [<a class="rep" href="#{cgi_url}report/#{board}/#{post['id']}/#{post['num']}" rel="nofollow">Rep</a>]
-                <?py #endif ?>
-          [<a href="javascript:delete_post(#{post['num']},#{post['id']})">Del</a>]
-          </span> </h3>
-              <?py if post['file']: ?>
-          <a target="_blank" href="#{images_url}#{board}/src/#{post['file']}"><img src="#{images_url}#{board}/thumb/#{post['thumb']}" alt="#{post['id']}" class="thumb" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /></a>
-              <?py #endif ?>
-          <div class="replytext">
-            #{post['message']}
-          </div>
-        </div>
-            <?py #endif ?>
-        <?py #endfor ?>
-      </div>
-    </div>
-    <div class="lastposts">
-      <center><a href="#{boards_url}#{board}/read/#{thread['id']}/n#{thread['length']}-" rel="nofollow">Ver últimos posts</a></center>
-    </div>
-    <form id="postform#{thread['id']}" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="board" value="#{board}" />
-      <input type="hidden" name="parent" value="#{thread['id']}" />
-      <input type="hidden" name="password" value="" />
-      <div class="threadlinks">
-        <a href="#{boards_url}#{board}">Volver al BBS</a>
-        <a href="#{boards_url}#{board}/read/#{thread['id']}">Hilo completo</a>
-        <?py if prevrange: ?>
-        <a href="#{boards_url}#{board}/read/#{thread['id']}/#{prevrange}" rel="nofollow">Anteriores 100</a>
-        <?py #endif ?>
-        <?py if nextrange: ?>
-        <a href="#{boards_url}#{board}/read/#{thread['id']}/#{nextrange}" rel="nofollow">Próximos 100</a>
-        <?py #endif ?>
-        <?py if thread['length'] > 51: ?>
-        <a href="#{boards_url}#{board}/read/#{thread['id']}/l50" rel="nofollow">Últimos 50</a>
-        <?py #endif ?>
-      </div>
-        <?py if thread['posts'][0]['locked'] == '1': ?>
-      <big>Este hilo ha sido cerrado. Ya no se puede postear en él.</big>
-        <?py else: ?>
-      <input type="submit" value="Responder" />
-      Nombre: <input type="text" name="fielda" size="19" maxlength="75" /><span class="capcodecheckbox"></span>
-      E-mail: <input type="text" name="fieldb" size="19" maxlength="75" />
-      <div style="display:none;">Trampa (deja estos campos en blanco):
-       <input type="text" name="name" size="19" maxlength="75" />
-       <input type="text" name="email" size="19" maxlength="75" />
-      </div>
-      <small>
-        <a href="javascript:show('options#{thread['id']}')">Más opciones...</a>
-      </small>
-      <br />
-      <div style="display:none;vertical-align:top" id="options#{thread['id']}">
-        Formato:
-        <select name="markup" onchange="select_markup(this)">
-          <option value="none" >Ninguno</option>  
-          <option value="tags" selected="selected">Tags</option>
-          <option value="aa" >Text Art</option> 
-        </select>
-        <label><input type="checkbox" name="savemarkup" /> Siempre usar este formato</label>&nbsp;
-        <input type="checkbox" name="noko" id="noko" accesskey="n" /><label for="noko"  class="checkboxlabel">Redirigir al hilo</label>
-        &nbsp;&nbsp;
-        <input type="button" value="Previsualizar post" onclick="preview_post('postform#{thread['id']}','#{thread['id']}')" />
-        <br />
-        <div id="preview#{thread['id']}" class="replytext" style="display:none"></div>
-      </div>
-      <textarea name="message" cols="70" rows="5"></textarea>
-          <?py if allow_image_replies: ?>
-      <br />Archivo: <input type="file" name="file" size="45" />
-          <?py #endif ?>
-        <?py #endif ?>
-    </form>
-    
-    <script type="text/javascript">set_inputs("postform#{thread['id']}");</script>
-  </div>
-    <?py #endfor ?>
+<?py if thread['locked'] == '2': ?><div class="sagethread"><h2>#{thread['subject']} <small>(#{thread['length']}, permasage)</small></h2>
+<?py else: ?><div class="thread"><h2>#{thread['subject']} <small>(#{thread['length']})</small></h2>
+<?py #endif ?>
+<div class="replies">
+ <div class="allreplies">
+ <?py for post in thread['posts']: ?>
+ <?py if post['IS_DELETED'] == '1': ?><div class="deletedreply"><h3><span class="replynum">#{post['num']}</span> : Eliminado por el usuario.</h3></div>
+ <?py elif post['IS_DELETED'] == '2': ?><div class="deletedreply"><h3><span class="replynum">#{post['num']}</span> : Eliminado por staff.</h3></div>
+ <?py else: ?>
+ <div class="reply"><h3>
+	<span class="replynum">#{post['num']}</span> :
+	<?py if post['email']: ?><span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
+	 <?py if post['tripcode']: ?><span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span><?py #endif ?>
+	<?py else: ?><span class="postername">#{post['name']}</span>
+	 <?py if post['tripcode']: ?><span class="postertrip">#{post['tripcode']}</span><?py #endif ?>
+	<?py #endif ?>
+	<?py if board == 't': ?> : <span class="timestamp">#{post['timestamp']}</span>
+	<?py else: ?> : <span class="timestamp">#{post['timestamp_formatted']}</span><?py #endif ?>
+	<?py if post['file']: ?> <span class="filesize">(Imagen: <em>#{post['file_size']} B, #{post['image_width']}x#{post['image_height']}</em>)</span><?py #endif ?>
+	<?py if modbrowse: ?> [#{post['ip']} (<a href="#{cgi_url}manage/ipshow?ip=#{post['ip']}">ver</a>)]<?py #endif ?>
+	<?py if int(post['parentid']) == 0: ?> <span class="dnb|#{board}|#{post['id']}|y|#{post['locked']}"></span>
+	<?py else: ?> <span class="dnb|#{board}|#{post['id']}|n"></span><?py #endif ?>
+	<span class="deletebutton">
+	<?py if reports_enable: ?>[<a href="#{cgi_url}report/#{board}/#{post['id']}/#{post['num']}" rel="nofollow">Rep</a>]<?py #endif ?>
+	[<a href="javascript:delete_post(#{post['num']},#{post['id']})">Del</a>]</span></h3>
+	<?py if post['file']: ?><a target="_blank" href="#{images_url}#{board}/src/#{post['file']}"><img src="#{images_url}#{board}/thumb/#{post['thumb']}" class="thumb" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /></a><?py #endif ?>
+	<div class="replytext">#{post['message']}</div>
+ </div>
+ <?py #endif ?>
+ <?py #endfor ?>
+ </div>
+</div><br />
+<?py if thread['locked'] != '1': ?><div class="lastposts"><center><a href="#{boards_url}#{board}/read/#{thread['timestamp']}/n#{thread['length']}-" rel="nofollow">Ver últimos posts</a></center></div><?py #endif ?>
+<form id="postform#{thread['id']}" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+<input type="hidden" name="board" value="#{board}" />
+<input type="hidden" name="parent" value="#{thread['id']}" />
+<input type="hidden" name="password" value="" />
+<div class="threadlinks">
+<a href="#{boards_url}#{board}">Volver al BBS</a>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/">Hilo completo</a>
+<?py if prevrange: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{prevrange}" rel="nofollow">Anteriores 100</a>
+<?py #endif ?>
+<?py if nextrange: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{nextrange}" rel="nofollow">Próximos 100</a>
+<?py #endif ?>
+<?py if thread['length'] > 51: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/l50" rel="nofollow">Últimos 50</a>
 <?py #endif ?>
 </div>
-
+<?py if thread['locked'] == '1': ?><b>Este hilo ha sido cerrado. Ya no se puede postear en él.</b>
+<?py else: ?>
+<input type="submit" value="Responder" />
+Nombre: <input type="text" name="fielda" size="18" maxlength="75" />
+E-mail: <input type="text" name="fieldb" size="18" maxlength="75" />
+<div style="display:none;">Trampa (dejar en blanco): <input type="text" name="name" size="19" maxlength="75" /> <input type="text" name="email" size="19" maxlength="75" /></div>
+<input type="button" value="Previsualizar" onclick="preview_post('postform#{thread['id']}','#{thread['id']}')" /><br />
+<div id="preview#{thread['id']}" class="replytext" style="display:none"></div>
+<textarea name="message" cols="70" rows="5"></textarea>
+<?py if allow_image_replies: ?><br />Archivo (opcional): <input type="file" name="file" size="45" /><?py #endif ?>
+<?py #endif ?>
+</form>
+<script type="text/javascript">set_inputs("postform#{thread['id']}");</script>
+</div>
+<?py #endfor ?>
+<?py #endif ?>
+</div>
 <?py include('templates/txt_base_bottom.html') ?>

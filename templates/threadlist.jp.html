@@ -1,0 +1,20 @@
+<?py include('templates/base_top.jp.html') ?>
+&#91;<a href="#{boards_url}#{board}/">掲示板に戻る</a>&#93;<div class="extramode">スレッド一覧</div>
+<div style="margin-left:2em;margin-top:1em;margin-bottom:1em;">
+<?py for thread in more_threads: ?>
+  <a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><strong>
+    <?py if thread['subject'] != '': ?>
+  #{thread["subject"]}
+    <?py else: ?>
+  無題
+    <?py #endif ?>
+  </strong> - <em>#{thread['message'][:80]}</em></a> 
+    <?py if thread['locked'] == '1': ?>
+  <small>(cerrado)</small>
+    <?py elif thread['locked'] == '2': ?>
+  <small>(permasage)</small>
+    <?py #endif ?>
+  &#91;レス#{int(thread["length"])-1}件&#93;<br />
+<?py #endfor ?>
+</div>
+<?py include('templates/base_bottom.html') ?>

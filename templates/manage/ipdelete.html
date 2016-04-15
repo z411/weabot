@@ -1,20 +1,20 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Eliminar por IP</div>
-<form action="#{cgi_url}manage/ipdelete" name="ipdeleteform" method="post">
-<table>
- <tr><td class="postblock">Board(s)</td><td>
-  <input type="checkbox" name="board_all" value="1" /><b>Todos los Boards</b><br />
-<?py for board in boards: ?>
-  <input type="checkbox" name="board_#{board['dir']}" value="1" />#{board['name']}<br />
-<?py #endfor ?>
- </td></tr>
- <tr><td class="postblock">Dirección IP</td><td><input type="text" name="ip" />
-  <input type="submit" value="Eliminar Posts" />
- </td></tr>
-</table>
-</form>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Eliminar por IP</div>
+<form action="#{cgi_url}manage/ipdelete" name="ipdeleteform" method="post">
+<table>
+ <tr><td class="postblock">Board(s)</td><td>
+  <input type="checkbox" name="board_all" value="1" /><b>Todos los Boards</b><br />
+<?py for board in boards: ?>
+  <input type="checkbox" name="board_#{board['dir']}" value="1" />#{board['name']}<br />
+<?py #endfor ?>
+ </td></tr>
+ <tr><td class="postblock">Dirección IP</td><td><input type="text" name="ip" />
+  <input type="submit" value="Eliminar Posts" />
+ </td></tr>
+</table>
+</form>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

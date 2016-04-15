@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta name="keywords" content="bienvenido, a, internet, bbs, textboard, imageboard, morbo, gore, 2d, anime, ciencia, vip, calidad" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusi&oacute;n de distintos temas, sin necesidad de registrarse." />
+  <meta http-equiv="content-language" content="ES" />
+  <meta name="revisit-after" content="14 days" />
+  <meta name="robots" content="noarchive" />
+    <title>Listo, gané</title>
+    <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
+    <link rel="stylesheet" href="#{static_url}css/global.css" />
+<?py if force_css == "": ?>
+    <link rel="stylesheet" type="text/css" href="#{static_url}css/dickgirl.css" title="Dickgirl" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/futaba.css" title="Futaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/putaba.css" title="Putaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/burichan.css" title="Burichan" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/rene.css" title="Rene" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/allende.css" title="Allende" />
+    <script type="text/javascript">
+    var style_cookie = 'weabot_style';
+<?py else: ?>
+    <link rel="stylesheet" type="text/css" href="#{force_css}" />
+    <script type="text/javascript">
+<?py #endif ?>
+    var ispage = #{is_page};
+    var cgi_url = '#{cgi_url}';
+    </script>
+    <script type="text/javascript" src="#{static_url}js/weabot.js"></script>
+    <script type="text/javascript">check_version("1");</script>
+  </head>
+  <body>
+	<div id="caja">
+		<div class="enlaces">
+		<?py if not replythread: ?>
+			[<a href="http://bienvenidoainternet.org">Bienvenido a Internet</a>] [<a title="Zona de Calidad VIP" href="/zonavip/">Club VIP</a> / <a title="General" href="/g/">General</a> / <a title="Actualidad y noticias" href="/noticias/">Noticias</a> / <a title="Ciencias y tecnolog&iacute;a" href="/t/">Tecnolog&iacute;a</a> / <a title="Parafernalia &Ntilde;o&ntilde;a" href="/jp/">2D/General</a> / <a title="0" href="/0/">0</a> / <a title="Discusi&oacute;n de B.a.I." href="/bai/">Meta</a>]
+		<?py else: ?>
+		<div class="modo">
+			[<a href="http://bienvenidoainternet.org">Bienvenido a Internet</a>] [<a title="Zona de Calidad VIP" href="/zonavip/">Club VIP</a> / <a title="General" href="/g/">General</a> / <a title="Actualidad y noticias" href="/noticias/">Noticias</a> / <a title="Ciencias y tecnolog&iacute;a" href="/t/">Tecnolog&iacute;a</a> / <a title="Parafernalia &Ntilde;o&ntilde;a" href="/jp/">2D/General</a> / <a title="0" href="/0/">0</a> / <a title="Discusi&oacute;n de B.a.I." href="/bai/">Meta</a>]<br />
+			[<a href="#{boards_url}#{board}/">Volver al IB</a>]
+		</div>
+		<?py #endif ?>
+		</div>
+		<div class="titulo">Ganadores</div>
+		<div class="enlaces">
+			<a href="/0/trucos.htm">★ Lista de trucos ★</a>
+		</div>
+    </div>
+    <hr width="90%" size="1" class="hid" />

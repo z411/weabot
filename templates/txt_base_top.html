@@ -3,29 +3,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>
-<?py if board: ?>
-  #{board_name}
-<?py else: ?>
-  #{title}
-<?py #endif ?>
+  <?py if replythread and threads: ?>#{threads[0]['subject']} @ #{board_name}
+  <?py elif board: ?>#{board_name}@B.a.I. BBS
+  <?py else: ?>#{title}<?py #endif ?>
   </title>
   <meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+  <meta name="keywords" content="bienvenido, a, internet, bbs, imageboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusion de distintos temas, sin necesidad de registrarse." />
   <meta http-equiv="content-language" content="ES" />
   <meta name="revisit-after" content="14 days" />
-  <meta name="robots" content="noarchive" />
+  <meta name="robots" content="#{"noindex," if noindex else ""}noarchive" />
   <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="#{static_url}css/global.css" />
+  <style type="text/css">
+	body.mainpage {padding:0;margin:0;}
+	div.innermainpage {padding:8px;padding-top:0 !important;padding-bottom:0 !important;}
+<?py if board == 'zonavip': ?>	body,textarea {font-family:IPAMonaPGothic, Mona, Monapo, 'MS PGothic', YOzFontAA97 !important; font-size:16px !important;}
+	#threadlist {font-size:14px;} .deletebutton {font-size:14px !important;}<?py #endif ?>
+  </style>
 <?py if force_css == "": ?>
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/amber.css" title="Amber" />
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/blue_moon.css" title="Blue Moon" />
-  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/headline.css" title="Headline" />
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/mercury.css" title="Mercury" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/bluemoon.css" title="Blue Moon" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/headline.css" title="Headline" />
+  <?py if board == 'zonavip': ?>
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/dickgirl.css" title="Dickgirl" />
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/pseud0ch.css" title="Pseud0ch" />
+  <script type="text/javascript">//<![CDATA[
+  var style_cookie = 'weabotxt_nvipstyle';
+  <?py else: ?>
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/dickgirl.css" title="Dickgirl" />
   <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/pseud0ch.css" title="Pseud0ch" />
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/tanasinn.css" title="Tanasinn" />
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/toothpaste.css" title="Toothpaste" />
-  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/VIPPER.css" title="VIPPER" />
   <script type="text/javascript">//<![CDATA[
   var style_cookie = 'weabotxt_style';
+  <?py #endif ?>
 <?py else: ?>
   <link rel="stylesheet" type="text/css" href="#{force_css}" />
   <script type="text/javascript">//<![CDATA[
@@ -39,5 +47,6 @@
   dummy:'' };
   //]]></script>
   <script type="text/javascript" src="#{static_url}js/weabotxt.js"></script>
+  <script type="text/javascript" src="#{static_url}js/autorefresh.js"></script>
   <script type="text/javascript">check_version("1");</script>
 </head>

@@ -1,22 +1,22 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Estadísticas</div>
-${message}
-<script src="#{boards_url}static/js/sortable.js"></script>
-<hr />
-#{posts_graph}<br /><hr />
-<b>Estadisticas por board</b><br />
-<i>(clic en una columna para ordenar respectivamente)</i>
-<br /><br />
-#{posts_table}<br />
-<script type="text/javascript">
-var t = new SortableTable(document.getElementById('sortable'), 100);
-</script>
-<hr />
-#{users_graph}<br /><hr />
-<b>Usuarios Top 20</b><br /><br />
-#{users_table}<br />
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Estadísticas</div>
+${message}
+<script src="#{boards_url}static/js/sortable.js"></script>
+<hr />
+#{posts_graph}<br /><hr />
+<b>Estadisticas por board</b><br />
+<i>(clic en una columna para ordenar respectivamente)</i>
+<br /><br />
+#{posts_table}<br />
+<script type="text/javascript">
+var t = new SortableTable(document.getElementById('sortable'), 100);
+</script>
+<hr />
+#{users_graph}<br /><hr />
+<b>Usuarios Top 20</b><br /><br />
+#{users_table}<br />
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

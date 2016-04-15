@@ -1,7 +1,7 @@
 <?py include('templates/mobile/base_top.html') ?>
 <body>
 <h2>#{board_name}@B.a.I. Móvil</h2>
-<a href="#{mobile_url}">Home</a> ·
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
 <?py if mode == 1: ?>
 Página Frontal ·
 <a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
@@ -27,8 +27,8 @@ Lista de Hilos ·
     <?py #endif ?>
   &#91;#{int(thread["length"])-1} resp.&#93;</a><br />
     <?py if mode == 1: ?>
-      <a href="#{mobile_url}#{board}/src/#{thread['file']}">
-       <img src="#{mobile_url}#{board}/mobile/#{thread['thumb']}" align="left" />
+      <a href="http://bienvenidoainternet.org/#{board}/src/#{thread['file']}">
+       <img src="http://bienvenidoainternet.org/#{board}/mobile/#{thread['thumb']}" align="left" />
       </a>
       <strong>
       <?py if thread['email']: ?>
@@ -77,7 +77,7 @@ Lista de Hilos ·
 </div>
 <?py #endfor ?>
 <hr />
-<a href="#{mobile_url}">Home</a> ·
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
 <?py if mode == 1: ?>
 Página Frontal ·
 <a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·

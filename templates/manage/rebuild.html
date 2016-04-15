@@ -4,9 +4,9 @@
 <div class="replymode">Reconstruir board</div>
 <table class="managertable">
 <tr><th>Sección</th><th>Acción</th></tr>
-<tr><td><b>Home</b></td><td>[<a href="#{cgi_url}manage/rebuild/home">Reconstruir</a>]</td></tr>
-<tr><td><b>Noticias</b></td><td>[<a href="#{cgi_url}manage/rebuild/news">Reconstruir</a>]</td></tr>
-<tr><td><b>.htaccess</b></td><td>[<a href="#{cgi_url}manage/rebuild/htaccess">Reconstruir</a>]</td></tr>
+<tr><td><b>Home</b></td><td>[<a href="#{cgi_url}manage/rebuild/!HOME">Reconstruir</a>]</td></tr>
+<tr><td><b>Noticias</b></td><td>[<a href="#{cgi_url}manage/rebuild/!NEWS">Reconstruir</a>]</td></tr><tr><td><b>Archivos (índices)</b></td><td>[<a href="#{cgi_url}manage/rebuild/!KAKO">Reconstruir</a>]</td></tr>
+<tr><td><b>.htaccess</b></td><td>[<a href="#{cgi_url}manage/rebuild/!HTACCESS">Reconstruir</a>]</td></tr>
 <?py for board in boards: ?>
 <tr><td>/#{board['dir']}/ (#{board['name']})</td><td>[<a href="#{cgi_url}manage/rebuild/#{board['dir']}">Reconstruir</a>]</td></tr>
 <?py #endfor ?>

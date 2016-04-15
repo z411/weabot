@@ -1,0 +1,71 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>#{board_name}@B.a.I. Móvil</h2>
+<p>
+<hr />
+<?py for thread in threads: ?>
+<a href="#{cgi_url}mobile/#{board}">Return</a>
+<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}">Full Thread</a>
+    <?py if thread['length'] > 50: ?>
+<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/-50">1-</a>
+    <?py #endif ?>
+    <?py for i in range(thread['length'] / 50): ?>
+<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/#{(i+1)*50+1}-#{(i+2)*50}">#{(i+1)*50+1}-</a>
+    <?py #endfor ?>
+    <?py if thread['length'] > 10: ?>
+<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/l10">Last 10</a>
+    <?py #endif ?>
+<hr />
+<span class="subject">#{thread["subject"]} (#{int(thread["length"])-1})</span><br />
+    <?py for post in thread['posts']: ?>
+  <small>
+  #{post['num']}:
+    <?py if post['email']: ?>
+    <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
+      <?py if post['tripcode']: ?>
+    <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
+      <?py #endif ?>
+    <?py else: ?>
+    <span class="postername">#{post['name']}</span>
+      <?py if post['tripcode']: ?>
+    <span class="postertrip">#{post['tripcode']}</span>
+      <?py #endif ?>
+    <?py #endif ?>
+    #{post['timestamp_formatted']}
+  </small>
+  <br />#{post['message']}<br /><br />
+    <?py #endfor ?>
+<hr />
+    <a href="#{cgi_url}mobile/#{board}">Return</a>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}">Full Thread</a>
+    <?py if prevrange != '': ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/#{prevrange}">Previous 50</a>
+    <?py #endif ?>
+    <?py if nextrange != '': ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/#{nextrange}">Next 50</a>
+    <?py #endif ?>
+    <?py if thread['length'] > 10: ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/l10">Last 10</a>
+    <?py #endif ?>
+<?py #endfor ?>
+<br />
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" />
+  <input type="hidden" name="parent" value="#{replythread}" />
+  <input type="hidden" name="mobile" value="true" />
+  <div style="display:none;">Trampa (deja estos campos en blanco):
+   <input type="text" name="name" size="19" maxlength="75" />
+   <input type="text" name="email" size="19" maxlength="75" />
+  </div>
+  <table>
+   <tr><td>Name</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
+   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
+   <tr><td> </td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
+   <tr><td> </td><td><input type="submit" value="Responder" /></td></tr>
+  </table>
+  <input type="hidden" name="password" />
+</form>
+<script type="text/javascript">set_inputs("postform");</script>
+</p>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

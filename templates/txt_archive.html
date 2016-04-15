@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>
+  <?py if replythread and threads: ?>#{threads[0]['subject']} @ #{board_name}
+  <?py elif board: ?>#{board_name}@Archivo B.a.I. BBS
+  <?py else: ?>#{title}<?py #endif ?>
+  </title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+  <meta name="keywords" content="bienvenido, a, internet, bbs, imageboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusion de distintos temas, sin necesidad de registrarse." />
+  <meta http-equiv="content-language" content="ES" />
+  <meta name="robots" content="#{"noindex," if noindex else ""}noarchive" />
+  <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/bluemoon.css" title="Blue Moon" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/headline.css" title="Headline" />
+  <?py if board == 'zonavip': ?>
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/dickgirl.css" title="Dickgirl" />
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/pseud0ch.css" title="Pseud0ch" />
+  <style type="text/css">
+  body,textarea {font-family:IPAMonaPGothic, Mona, Monapo, 'MS PGothic', YOzFontAA97 !important;font-size:16px;}
+  </style>
+  <script type="text/javascript">//<![CDATA[
+  var style_cookie = 'weabotxt_nvipstyle';
+  <?py else: ?>
+  <link rel="stylesheet" type="text/css" href="#{static_url}css/txt/dickgirl.css" title="Dickgirl" />
+  <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/txt/pseud0ch.css" title="Pseud0ch" />
+  <script type="text/javascript">//<![CDATA[
+  var style_cookie = 'weabotxt_style';
+  <?py #endif ?>
+  var ispage = #{is_page};
+  var cgi_url = '#{cgi_url}';
+  //]]></script>
+  <script type="text/javascript">check_version("1");</script>
+</head>
+<body class="threadpage kako">
+<?py if threads: ?><?py for thread in threads: ?>
+<div id="navigation">
+ <a href="/bai.html">Bienvenido a Internet BBS/IB</a>
+ <a href="#{boards_url}#{board}/">■ BBS ■</a>
+ <a href="#{boards_url}#{board}/kako/">■ Volver al Archivo ■</a>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/">Hilo completo</a>
+ <?py if thread['length'] > 100: ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/-100" rel="nofollow">1-</a><?py #endif ?>
+ <?py for i in range(thread['length'] / 100): ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{(i+1)*100+1}-#{(i+2)*100}" rel="nofollow">#{(i+1)*100+1}-</a><?py #endfor ?>
+ <?py if thread['length'] > 51: ?>
+ <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/l50" rel="nofollow">Últimos 50</a><?py #endif ?>
+</div>
+<div class="rwarn">■ Este hilo se encuentra guardado en el archivo</div>
+<div id="posts">
+<h2>#{thread['subject']} <small>(#{thread['length']})</small></h2>
+<div class="replies">
+ <div class="allreplies">
+ <?py for post in thread['posts']: ?>
+ <?py if post['IS_DELETED'] == '1': ?><div class="deletedreply"><h3><span class="replynum">#{post['num']}</span> : Eliminado por el usuario.</h3></div>
+ <?py elif post['IS_DELETED'] == '2': ?><div class="deletedreply"><h3><span class="replynum">#{post['num']}</span> : Eliminado por staff.</h3></div>
+ <?py else: ?>
+ <div class="reply"><h3>
+	<span class="replynum">#{post['num']}</span> :
+	<?py if post['email']: ?><span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
+	 <?py if post['tripcode']: ?><span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span><?py #endif ?>
+	<?py else: ?><span class="postername">#{post['name']}</span>
+	 <?py if post['tripcode']: ?><span class="postertrip">#{post['tripcode']}</span><?py #endif ?>
+	<?py #endif ?>
+	<?py if board == 't': ?> : <span class="timestamp">#{post['timestamp']}</span>
+	<?py else: ?> : <span class="timestamp">#{post['timestamp_formatted']}</span><?py #endif ?>
+  </h3>
+	<div class="replytext">#{post['message']}</div>
+ </div>
+ <?py #endif ?>
+ <?py #endfor ?>
+ </div>
+</div><br />
+<div class="rwarn">■ Este hilo se encuentra guardado en el archivo</div>
+<form>
+<div class="threadlinks">
+<a href="#{boards_url}#{board}">Volver al BBS</a>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/">Hilo completo</a>
+<?py if prevrange: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{prevrange}" rel="nofollow">Anteriores 100</a>
+<?py #endif ?>
+<?py if nextrange: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{nextrange}" rel="nofollow">Próximos 100</a>
+<?py #endif ?>
+<?py if thread['length'] > 51: ?>
+<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/l50" rel="nofollow">Últimos 50</a>
+<?py #endif ?>
+</div>
+</form>
+</div>
+<?py #endfor ?>
+<?py #endif ?>
+</div>
+<?py include('templates/txt_base_bottom.html') ?>

@@ -1,20 +1,20 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Imágenes Recientes</div>
-Imágenes a mostrar:
-<a href="images=5">5</a>
-<a href="?images=10">10</a>
-<a href="?images=15">15</a>
-<a href="?images=20">20</a>
-<br />
-<?py for post in posts: ?>
-  <?py if post['parentid'] != '0': ?>
-    <a href="#{cgi_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
-  <?py else: ?>
-    <a href="#{cgi_url}#{post['dir']}/res/#{post['id']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
-  <?py #endif ?>
-<?py #endif ?>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Imágenes Recientes</div>
+Imágenes a mostrar:
+<a href="images=5">5</a>
+<a href="?images=10">10</a>
+<a href="?images=15">15</a>
+<a href="?images=20">20</a>
+<br />
+<?py for post in posts: ?>
+  <?py if post['parentid'] != '0': ?>
+    <a href="#{cgi_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
+  <?py else: ?>
+    <a href="#{cgi_url}#{post['dir']}/res/#{post['id']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
+  <?py #endif ?>
+<?py #endif ?>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

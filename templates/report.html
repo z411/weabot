@@ -2,19 +2,19 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Reportar Post</title>
+<title>Denunciar post</title>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 </head>
 <body>
 <?py if finished: ?>
 <center>
 <br /><br /><hr />
-<h1>Post reportado.</h1>
+<h1>Post denunciado.</h1>
 <hr />
 </center>
 <p><a href="javascript:void(0)" onclick="history.go(-2);return(false);">Volver</a></p>
 <?py else: ?>
-<h1>Formulario de Reporte</h1>
+<h1>Formulario de denuncia</h1>
 <hr />
 <p>Para pedir que el post <i>${postshow}</i> se elimine,<br />
 indique la razón de por qué cree que debería ser eliminado<br />
@@ -36,7 +36,14 @@ y luego presionar el botón "Eliminar" que se encuentra<br />
 al fondo de la página. [<a href="/ayuda.html">Más info.</a>]
     <?py #endif ?>
 </p>
+<p>
+Normalmente eliminamos los mensajes que son considerados<br />
+spam o flood. Si deseas pedir la prohibición de acceso<br />
+a algún usuario persistente, te recomendamos pedirlo<br />
+en <a href="/bai/">/bai/</a>.
+</p>
 <hr />
+<p><a href="mailto:burocracia@bienvenidoainternet.org">Contacto</a></p>
 <?py #endif ?>
 </body>
 </html>

@@ -158,6 +158,8 @@ function expandimg(post_id, img_url, thumb_url, img_w, img_h, thumb_w, thumb_h) 
     return true;
   
   var img_cont = document.getElementById("thumb" + post_id);
+  //var post_block = document.getElementById("reply"+post_id).getElementsByTagName("blockquote")[0];
+  var post_block = img_cont.parentElement.parentElement.getElementsByTagName("blockquote")[0];
   var img;
   
   for(var i = 0; i < img_cont.childNodes.length; i++)
@@ -173,13 +175,16 @@ function expandimg(post_id, img_url, thumb_url, img_w, img_h, thumb_w, thumb_h) 
     if( (img.getAttribute("width") == ("" + thumb_w)) && (img.getAttribute("height") == ("" + thumb_h)) ) {
       // thumbnail -> fullsize
       new_img.setAttribute("src", "" + img_url);
-      new_img.setAttribute("width", "" + img_w);
-      new_img.setAttribute("height", "" + img_h);
+      //new_img.setAttribute("width", 5);
+      //new_img.setAttribute("height", 5);
+      new_img.setAttribute("style", "max-width: "+(window.innerWidth-130)+"px;");
+      post_block.setAttribute("style", "");
     } else {
       // fullsize -> thumbnail
       new_img.setAttribute("src", "" + thumb_url);
       new_img.setAttribute("width", "" + thumb_w);
       new_img.setAttribute("height", "" + thumb_h);
+      post_block.setAttribute("style", "margin-left: "+(parseInt(thumb_w)+40)+"px;");
     }
     
     while(img_cont.lastChild)

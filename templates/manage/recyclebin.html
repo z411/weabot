@@ -17,7 +17,7 @@ ${message}
   <select name="board">
    <option value="all">Todos los Boards</option>
 <?py for board in boards: ?>
-   <option value="#{board['dir']}"#{selected(board['checked'])}></option>
+   <option value="#{board['dir']}"#{selected(board['checked'])}>${board['name']}</option>
 <?py #endfor ?>
   </select>
   <input type="submit" value="Mostrar" />
@@ -33,7 +33,7 @@ ${message}
   <tr><th> </th><th> </th><th>ID</th><th>Timestamp</th><th>Board</th><th>Tipo</th><th>IP</th><th>Mensaje</th></tr>
     <?py for post in posts: ?>
   <tr>
-   <td><a href="#{cgi_url}manage/recyclebin/#{currentpage}/delete/#{post['dir']}/#{post['id']}">X</a></td>
+   <td>     <a href="#{cgi_url}manage/recyclebin/#{currentpage}/delete/#{post['dir']}/#{post['id']}">X</a>     <a href="#{cgi_url}manage/recyclebin/#{currentpage}/restore/#{post['dir']}/#{post['id']}">R</a>   </td>
    <td><input type="checkbox" name="!i#{post['dir']}/#{post['id']}" value="1" /></td>
    <td>#{post['id']}</td>
    <td>/#{post['timestamp_formatted']}/</td>

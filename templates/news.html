@@ -5,7 +5,7 @@
 <title>#{header}</title>
 <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 <link rel="shortcut icon" href="logo/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/mainpage.css" />
 <style type="text/css">
 h2{margin:0;padding:0;font-size:20px;}
 h3{margin:0 0 0.5em 0;padding:0;font-style:italic;font-weight:normal;font-size:14px;}
@@ -26,8 +26,8 @@ Noticias
 <?py if posts: ?>
 <div id="newsarea">
     <?py for post in posts: ?>
-  <h2><a href="##{post['id']}" name="#{post['id']}">#</a> #{post['title']}</h2>
-  <h3>#{post['nameblock']}</h3>
+  <h2><a href="##{post['id']}" name="#{post['id']}">#</a> ${post['title']}</h2>
+  <h3><span class="postername">${post['name']}</span> : ${post['timestamp_formatted']}</h3>
   <p class="message">#{post['message']}</p>
     <?py #endfor ?>
 <?py #endif ?>

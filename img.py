@@ -28,7 +28,7 @@ def processImage(post, data, t, originalname, spoiler=False):
   used_filetype = None
   
   # get image information
-  content_type, width, height, size = getImageInfo(data)
+  content_type, width, height, size, duration = getImageInfo(data)
   
   # check the size is fine
   if size > int(board["maxsize"])*1024:
@@ -38,6 +38,7 @@ def processImage(post, data, t, originalname, spoiler=False):
   for filetype in board['filetypes']:
     if content_type == filetype['mime']:
       used_filetype = filetype
+      break
     
   if not used_filetype:
     raise UserError, _("File type not supported.")
@@ -86,25 +87,60 @@ def processImage(post, data, t, originalname, spoiler=False):
       # make thumbnail
       file_thumb_width, file_thumb_height = getThumbDimensions(width, height, maxsize)
       
-      # use first frame in gifs
-      if used_filetype['ext'] == 'gif':
-        file_path += '[0]'
+      if used_filetype['ffmpeg_thumb'] == '1':
+        # use ffmpeg to make thumbnail
+        logTime("Generating thumbnail")
+        
+        
+        if used_filetype['mime'][:5] == 'video':
+          duration_half = str(int(duration / 2))
+          retcode = subprocess.call([
+            './ffmpeg', '-strict', '-2', '-ss', '0', '-i', file_path,
+            '-v', 'quiet', '-an', '-vframes', '1', '-f', 'mjpeg', '-vf', 'scale=%d:%d' % (file_thumb_width, file_thumb_height),
+            '-threads', '1', file_thumb_path])       
+        elif used_filetype['mime'][:5] == 'audio':
+          # we do an exception and use png for audio waveform thumbnails since they
+          # 1. are smaller
+          # 2. allow for transparency
+          file_thumb_name = file_thumb_name[:-3] + "png"
+          file_thumb_path = file_thumb_path[:-3] + "png"
+          file_mobile_path = file_mobile_path[:-3] + "png"
+          file_cat_path = file_cat_path[:-3] + "png"
+          
+          file_thumb_width = 250
+          file_thumb_height = 180
+          retcode = subprocess.call([
+            './ffmpeg', '-i', file_path,
+            '-filter_complex', 'showwavespic=s=250x180:split_channels=1', '-frames:v', '1',
+            '-threads', '1', file_thumb_path])
+        
+        if retcode != 0:
+          os.remove(file_path)
+          raise UserError, _("Thumbnail creation failure.") + ' ('+str(retcode)+')'
+      else:
+        # use imagemagick to make thumbnail
+        # use first frame in gifs
+        if used_filetype['ext'] == 'gif':
+          file_path += '[0]'
+        
+        # generate thumbnails
+        logTime("Generating thumbnail")
+        retcode = subprocess.call([Settings.CONVERT_PATH, file_path, "-limit" , "thread", "1", "-background", "white", "-flatten", "-resize",  "%dx%d" % (file_thumb_width, file_thumb_height), "-quality", str(Settings.THUMB_QUALITY), file_thumb_path])
+        if retcode != 0:
+          os.remove(file_path)
+          raise UserError, _("Thumbnail creation failure.") + ' ('+str(retcode)+')'
       
-      # generate thumbnails
-      logTime("Generating thumbnail")
-      retcode = subprocess.call([Settings.CONVERT_PATH, file_path, "-background", "white", "-flatten", "-resize",  "%dx%d" % (file_thumb_width, file_thumb_height), "-quality", str(Settings.THUMB_QUALITY), file_thumb_path])
-      if retcode != 0:
-        raise UserError, _("Thumbnail creation failure.") + ' ('+str(retcode)+')'
-      
-      subprocess.call([Settings.CONVERT_PATH, file_path, "-resize",  "100x100", "-quality", "30", file_mobile_path])
-      
-      if not post["parentid"]:
-        subprocess.call([Settings.CONVERT_PATH, file_path, "-resize",  "50x50", "-quality", "30", file_cat_path])
-      
+      # check if thumbnail was truly created
       try:
         open(file_thumb_path)
       except:
+        os.remove(file_path)
         raise UserError, _("Thumbnail creation failure.")
+        
+      # create extra thumbnails (catalog/mobile)
+      subprocess.call([Settings.CONVERT_PATH, file_thumb_path, "-limit" , "thread", "1", "-resize",  "100x100", "-quality", "30", file_mobile_path])
+      if not post["parentid"]:
+        subprocess.call([Settings.CONVERT_PATH, file_thumb_path, "-limit" , "thread", "1", "-resize",  "150x150", "-quality", "50", file_cat_path])
       
       post["thumb"] = file_thumb_name
       post["thumb_width"] = file_thumb_width
@@ -114,10 +150,10 @@ def processImage(post, data, t, originalname, spoiler=False):
     post["thumb"] = used_filetype['image']
   
   post["file_size"] = len(data)
-  if Settings.IMAGE_SIZE_UNIT == "B":
-    post["file_size_formatted"] = str(post["file_size"]) + " B"
-  else:
-    post["file_size_formatted"] = str(long(post["file_size"] / 1024)) + " KB"
+  #if Settings.IMAGE_SIZE_UNIT == "B":
+  #  post["file_size_formatted"] = str(post["file_size"]) + " B"
+  #else:
+  #  post["file_size_formatted"] = str(long(post["file_size"] / 1024)) + " KB"
   
   # if the name changed, put the original one in the stamp
   if used_filetype['preserve_name'] == '0':
@@ -201,6 +237,7 @@ def getImageInfo(data):
   size = len(data)
   height = -1
   width = -1
+  duration = -1
   content_type = ""
 
   # handle GIFs
@@ -253,11 +290,33 @@ def getImageInfo(data):
     except ValueError:
       pass
   
+  # handle WebM
+  elif (size >= 4) and data.startswith("\x1A\x45\xDF\xA3"):
+    import json
+    
+    content_type = "video/webm"
+    p = subprocess.Popen(['./ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', '-'],
+              stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    out = p.communicate(input=data)[0]
+    info = json.loads(out)
+    
+    width = info['streams'][0]['width']
+    height = info['streams'][0]['height']
+    duration = float(info['format']['duration'])
+  
   # handle Shockwave Flash
   elif (size >= 3) and data[:3] in ["CWS", "FWS"]:
     content_type = "application/x-shockwave-flash"
 
-  return content_type, width, height, size
+  elif (size >= 64) and data[:4] == "OggS":
+    if data[28:35] == "\x01vorbis":
+      content_type = "audio/ogg"
+    elif data[28:36] == "OpusHead":
+      content_type = "audio/opus"
+    
+  return content_type, width, height, size, duration
+  
 
 def getThumbDimensions(width, height, maxsize):
   """

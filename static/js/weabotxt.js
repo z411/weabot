@@ -280,18 +280,6 @@ function delandbanlinks() {
 				}
 				dnbelements[i].appendChild(link_close);
 			}
-      else if (dnbelement.getAttribute('class') == 'capcodecheckbox') {
-				input_cap = document.createElement("input");
- 			  input_cap.setAttribute("type", "checkbox");
- 			  input_cap.setAttribute("name", "postcapcode");
-  		  input_cap.setAttribute("id", "cap");
- 			  dnbelements[i].appendChild(input_cap);
- 			  label_cap = document.createElement("label");
- 			  label_cap.setAttribute("for", "cap");
- 			  label_cap.setAttribute("class", "checkboxlabel");
- 			  label_cap.appendChild(document.createTextNode(" Capcode "));
- 			  dnbelements[i].appendChild(label_cap);
-      }
 		}
 	}
 }
@@ -302,7 +290,7 @@ function set_inputs(id) {
 			if(!fielda.value) fielda.value = space(getCookie("weabot_name"));
 			if(!fieldb.value) fieldb.value = getCookie("weabot_email");
 			if(!password.value) password.value = get_password("weabot_password");
-			if(getCookie("weabot_noko")=="1") noko.checked="true";
+			if(getCookie("weabot_noko")=="0") noko.checked="false";
 			if(markup&&!message.value) { markup.value=getCookie("weabot_markup"); select_markup(markup); }
 		}
 	}
@@ -408,7 +396,6 @@ function preview_post(formid,thread)
 
 	var text;
 	text="message="+encodeURIComponent(form.message.value);
-	text+="&markup="+encodeURIComponent(form.markup.value);
 	text+="&board="+board;
 	if(thread) text+="&parentid="+thread;
   

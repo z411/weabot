@@ -20,22 +20,28 @@ class CLT(datetime.tzinfo):
   por mientras dejo el DST como un boolean. Cuando lo fijen, dejarlo automático.
   """
   def __init__(self):
-    self.isdst = False # Cambiar si estamos en horario de verano o no
+    self.isdst = False
+    
   def utcoffset(self, dt):
-    return datetime.timedelta(hours=-4) + self.dst(dt)
+    #return datetime.timedelta(hours=-3) + self.dst(dt)
+    return datetime.timedelta(hours=-3)
+    
   def dst(self, dt):
     if self.isdst:
       return datetime.timedelta(hours=1)
     else:
       return datetime.timedelta(0)
+      
   def tzname(self,dt):
-    return "GMT -4"
+    return "GMT -3"
 
 def setBoard(dir):
   """
   Sets the board which the script is operating on by filling Settings._.BOARD
   with the data from the db.
   """
+  if not dir:
+    raise UserError, _("The specified board is invalid.")
   logTime("Seteando el board " + dir)
   board = FetchOne("SELECT * FROM `boards` WHERE `dir` = '%s' LIMIT 1" % _mysql.escape_string(dir))
   if not board:
@@ -98,7 +104,29 @@ def formatDate(t=None):
   daylist = days[Settings.LANG]
   format = "%d/%m/%y(%a)%H:%M:%S"
   
+  # TODO nijigen hack
+  try:
+    board = Settings._.BOARD
+    if board["dir"] == 'jp':
+      daylist = days['jp']
+      format = "%y/%m/%d(%a)%H:%M:%S"
+      t -= datetime.timedelta(hours=6)
+      hours = str(t.time().hour+6).zfill(2)
+    elif board["dir"] == 'world':
+      daylist = days['en']
+    elif board["dir"] == 'zonavip' or board["dir"] == 'jp':
+      t -= datetime.timedelta(hours=6)
+      hours = str(t.time().hour+6).zfill(2)
+  except:
+    pass
+  
   t = t.strftime(format)
+  
+  try:
+    if board["dir"] == 'jp' or board["dir"] == 'zonavip':
+      t = re.compile(r"\)\d\d:").sub(")"+hours+":", t)
+  except:
+    pass
   
   t = re.compile(r"mon", re.DOTALL | re.IGNORECASE).sub(daylist[0], t)
   t = re.compile(r"tue", re.DOTALL | re.IGNORECASE).sub(daylist[1], t)

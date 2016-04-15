@@ -1,23 +1,39 @@
 <?py include('templates/base_top.html') ?>
-&#91;<a href="#{boards_url}#{board}/">Volver al IB</a>&#93;<div class="extramode">Catálogo</div>
-<div style="margin: 1em auto;">
-<table border="1" align="center">
-<?py count = 0 ?>
-<?py for thread in threads: ?>
-    <?py if count == 0: ?>
- <tr>
-    <?py #endif ?>
-  <td><a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />#{int(thread['length'])-1}</td>
-    <?py if count == 9: ?>
- </tr>
-        <?py count = 0 ?>
-    <?py else: ?>
-        <?py count = count + 1 ?>
-    <?py #endif ?>
-<?py #endfor ?>
-<?py if count != 0: ?>
- </tr>
+&#91;<a href="#{boards_url}#{board}/">Volver al IB</a>&#93;
+<?py if i_sort == '': ?>
+<b><a href="?">Catálogo</a></b>
+<?py else: ?>
+<a href="?">Catálogo</a>
 <?py #endif ?>
-</table>
+<?py if i_sort == '1': ?>
+<b><a href="?sort=1">Nuevo</a></b>
+<?py else: ?>
+<a href="?sort=1">Nuevo</a>
+<?py #endif ?>
+<?py if i_sort == '2': ?>
+<b><a href="?sort=2">Viejo</a></b>
+<?py else: ?>
+<a href="?sort=2">Viejo</a>
+<?py #endif ?>
+<?py if i_sort == '3': ?>
+<b><a href="?sort=3">Más</a></b>
+<?py else: ?>
+<a href="?sort=3">Más</a>
+<?py #endif ?>
+<?py if i_sort == '4': ?>
+<b><a href="?sort=4">Menos</a></b>
+<?py else: ?>
+<a href="?sort=4">Menos</a>
+<?py #endif ?>
+<div class="extramode">Modo Catálogo</div>
+<div id="catalog" style="margin: 1em auto;">
+<?py for thread in threads: ?>
+ <div class="thread">
+  <a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />
+  <div class="replies">Respuestas: ${int(thread['length'])-1} / Expira: ${thread['expires_formatted']}</div>
+  <p class="filetitle">${thread['subject']}</p>
+  <p>${thread['message']}</p>
+ </div>
+<?py #endfor ?>
 </div>
 <?py include('templates/base_bottom.html') ?>

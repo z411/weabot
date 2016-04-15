@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Preguntas Frecuentes@B.a.I.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/subpage.css" rel="stylesheet" type="text/css" />
+<style>
+h2{text-align:center}
+</style>
+</head><body>
+<div id="k">
+<div id="top">
+<strong>Bienvenido a Internet BBS/IB</strong>
+<br />
+<small>Estadísticas</small>
+</div>
+<!-- TEXTOS -->
+<div id="text" class="api faq">
+<p style="font-size:12pt;text-align:center">No sé cómo hicimos funcionar ffmpeg, fue mágico☆</p>
+
+<div style="width: 50%; float:left">
+<h2>Mensajes por día<br /><small>(última semana)</small></h2>
+<table style="margin:0 auto"><tr><th>Día</th><th>Posts</th></tr>
+<?py for day, posts in days: ?>
+<tr><td>${day}</td><td style="text-align:right">${posts}</td></tr>
+<?py #endfor ?>
+</table>
+<br />
+<center><small><em>Para que vean que estamos muertos, pero no tan muertos.</em></small></center>
+</div>
+
+<div style="width: 50%; float:right">
+<h2>Volumen de mensajes por sección<br /><small>(últimos 3 meses)</small></h2>
+<table style="margin:0 auto"><tr><th>Sección</th><th>Porcentaje</th></tr>
+<?py for board, percent in boards_percent: ?>
+<tr><td>${board}</td><td style="text-align:right">${percent}%</td></tr>
+<?py #endfor ?>
+</table>
+</div>
+
+<br clear="both" />
+
+<h2>Sistema</h2>
+<table style="margin:0 auto">
+<tr><th>Motor BBS/IB</th><td>weabot ${weabot_ver}</td></tr>
+<tr><th>Templating</th><td>tenjin ${tenjin_ver}</td></tr>
+<tr><th>Versión de Python</th><td>${python_ver}</td></tr>
+<tr><th>Implementación</th><td>${python_impl}</td></tr>
+<tr><th>Build</th><td>${python_build} compilado en ${python_compiler}</td></tr>
+<tr><th>OS</th><td>${uname[0]} ${uname[2]}</td></tr>
+<tr><th>Release/Arq.</th><td>${uname[3]} ${uname[4]}</td></tr>
+</table>
+
+<h2>Base de datos</h2>
+<table style="margin:0 auto">
+<tr><th>Base de Datos</th><td>MySQL Community Server (GPL)</td></tr>
+<tr><th>Versión</th><td>${mysql_ver} Linux x86_64</td></tr>
+<tr><th>Mensajes totales activos</th><td>${total}</td></tr>
+<tr><th>Archivos totales activos</th><td>${total_files}</td></tr>
+<tr><th>Mensajes totales archivados (BBS)</th><td>${total_archived}</td></tr>
+<tr><th>Mensajes totales archivados (IB)</th><td>0 (RIP)</td></tr>
+</table>
+
+<br />
+<center>
+Última actualización: ${timestamp}
+<?py if not regenerated: ?>
+(en caché)
+<?py #endif ?>
+</center>
+</div>
+<!-- TEXT END -->
+</div>
+<br />
+<div id="foot">
+B.a.I. - 2010-2016 · Contacto: <a href="mailto:burocracia@bienvenidoainternet.org">burocracia@bienvenidoainternet.org</a>
+</div>
+</body>
+</html>

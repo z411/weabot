@@ -1,0 +1,39 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>#{board_name}@B.a.I. Móvil</h2>
+<p>
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Front Page</a> ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Thread List</a> ·
+New Thread
+<hr />
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" />
+  <input type="hidden" name="mobile" value="true" />
+  <div style="display:none;">Trampa (deja estos campos en blanco):
+   <input type="text" name="name" size="19" maxlength="75" />
+   <input type="text" name="email" size="19" maxlength="75" />
+  </div>
+  <table>
+   <tr><td>Name</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
+   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
+   <tr><td>Subject</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
+   <tr><td>Message</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
+<?py if board_type == '1': ?>
+   <input type="hidden" name="password" maxlength="8" />
+<?py else: ?>
+   <tr><td>File</td><td><input type="file" name="file" size="25" /></td></tr>
+   <tr><td>Password</td><td><input type="password" name="password" size="8" maxlength="8" /></td></tr>
+<?py #endif ?>
+   <tr><td> </td><td><input type="submit" value="Create New Thread" /></td></tr>
+  </table>
+</form>
+<script type="text/javascript">set_inputs("postform");</script>
+<hr />
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Front Page</a> ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Thread List</a> ·
+New Thread
+</p>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

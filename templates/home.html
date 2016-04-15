@@ -3,41 +3,67 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="KEYWORDS" content="bienvenido, a, internet, bbs, textboard, imageboard, vip, calidad, anime, videojuegos, ciencia" />
+<meta name="DESCRIPTION" content="Bienvenido a Internet es un sitio para la discusión de distintos temas, sin necesidad de registrarse." />
 <meta http-equiv="content-language" content="ES" />
 <meta name="revisit-after" content="14 days" />
 <meta name="robots" content="noarchive" />
 <title>#{header}</title>
 <link rel="shortcut icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" />
+<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" title="Dickgirl" />
+<script type="text/javascript" src="/static/js/autorefresh.js"></script>
 </head>
-<body>
+<body class="home">
 <center>
-<img src="#{logo}" alt="#{header}" />
-<div class="header">#{header}</div>
-<div class="slogan">#{slogan}</div>
-<hr />
-<h3>Secciones</h3>
-<?py include('templates/boardlist.html') ?>
-<h3>Últimos posts:</h3>
-<?py include('templates/latest.html') ?>
-<h3>Últimas noticias:</h3>
-<?py if latest_news: ?>
-    <?py for article in latest_news: ?>
-  <center><b>#{article['title']}</b></center>
-  #{article['message']}<br /><br />
-  <i> by #{article['nameblock']}</i><hr />
-    <?py #endfor ?>
-  [ <a href="news.html">More news</a> ]</span>
-<?py else: ?>
-No hay noticias.
-<?py #endif ?>
-<hr />
-<div id="statistics">
-  <b>Posts:</b> #{total_posts} &middot;
-  <b>Hilos:</b> #{total_threads} &middot;
-  <b>Respuestas:</b> #{total_replies} &middot;
-  <b>Im&aacute;genes:</b> #{total_images}
+<div id="logodiv">
+	<a href="/" target="_top"><img src="#{logo}" /></a>
+	<div class="header">#{header}</div>
+	<div class="slogan">#{slogan}</div>
 </div>
-<hr />
+<table width="100%">
+  <tr>
+    <td class="tab" width="50%" rowspan="2">
+		<div class="tabtitle" >Age recientes</div>
+		<div id="postlist" class="recent">
+		<?py iter = 1 ?>
+		<?py for thread in latest_age: ?>
+		<div class="line#{(iter % 2)}">
+		<small>${thread['board_name']}: </small><a href="${thread['url']}" class="boardlink">${thread['content']}</a> (${thread['length']})<br />
+		</div>
+		<?py iter += 1 ?>
+		<?py #endfor ?>
+		</div>
+		<audio id="machina">
+			<source src="quack.ogg" type="audio/ogg" />
+		</audio>
+		<div style="text-align:center">
+		<span id="counter"></span>
+		<label><input id="autosound" type="checkbox" checked="checked" disabled="disabled" /> Sonido</label>
+		<label><input id="autorefresh" type="checkbox" onclick="autoRefresh()" /> Auto refresh</label>
+		</div>
+	</td>
+    <td class="tab" width="50%" id="news">
+		<div class="tabtitle">Noticias</div>
+		<?py if latest_news: ?>
+		<?py for article in latest_news: ?>
+		<div class="newstitle">#{article['title']}</div>
+		<div class="new">#{article['message']}</div>
+		<div class="author">&mdash; <span class="postername">${article['name']}</span> : ${article['timestamp_formatted']}</div>
+		<?py #endfor ?>
+		<div class="more">[ <a href="noticias.html">Ver m&aacute;s noticias</a> ]</div>
+		<?py #endif ?>
+	</td>
+  </tr>
+  <tr>
+    <td class="tab">
+		<div class="tabtitle">Nuevos hilos</div>
+		<div class="threads"><?py include('templates/home_threads.html') ?></div>
+	</td>
+  </tr>
+  <tr>
+    <td class="tab" colspan="2" style="text-align:center;">■ Bienvenido a Internet - 2010-2016 ■</td>
+  </tr>
+</table>
 </center>
-<?py include('templates/base_bottom.html') ?>
+</body>
+</html>

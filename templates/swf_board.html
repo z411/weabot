@@ -1,0 +1,184 @@
+<?py include('templates/base_top.html') ?>
+<a name="postbox"></a><div class="postarea">#{postarea_extra_html_top}
+<form name="postform" id="postform" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}">
+  <input type="hidden" name="MAX_FILE_SIZE" value="#{MAX_FILE_SIZE}">
+  <table class="postform">
+    <tbody>
+<?py if not forced_anonymous: ?>
+      <tr>
+        <td class="postblock">
+          Nombre
+        </td>
+        <td>
+          <input type="text" name="name" size="22" maxlength="75" accesskey="n"><span class="capcodecheckbox"></span>
+        </td>
+      </tr>
+<?py #endif ?>
+      <tr>
+        <td class="postblock">
+          E-mail
+        </td>
+        <td>
+          <input type="text" name="email" size="22" maxlength="75" accesskey="e">
+<?py if disable_subject: ?>
+          <input type="submit" value="Crear nuevo thread" accesskey="z">
+<?py #endif ?>
+          <input type="checkbox" name="noko" id="noko" accesskey="n"><label for="noko"  class="checkboxlabel"> Noko </label>
+        </td>
+      </tr>
+<?py if not disable_subject: ?>
+      <tr>
+        <td class="postblock">
+          Asunto
+        </td>
+        <td>
+          <input type="text" name="subject" size="28" maxlength="75" accesskey="s">
+          <input type="submit" value="Crear nuevo thread" accesskey="z">
+        </td>
+      </tr>
+<?py #endif ?>
+      <tr>
+        <td class="postblock">
+          Mensaje
+        </td>
+        <td>
+          <textarea name="message" cols="48" rows="4" accesskey="m"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td class="postblock">
+          Archivo<a href="?admin" style="text-decoration: none;" accesskey="x">&nbsp;</a>
+        </td>
+        <td>
+          <input type="file" name="file" size="25" accesskey="f">
+          <input type="checkbox" name="spoil" id="spoil" accesskey="x"><label for="spoil" class="checkboxlabel"> Spoiler </label> 
+        </td>
+      </tr>
+      <!--
+      <tr>
+        <td class="postblock">
+          Opciones
+        </td>
+        <td>
+          <input type="checkbox" name="aa" id="aa"><label for="aa">Tama&ntilde;o de letra alternativo</label>
+        </td>
+      </tr>-->
+      <tr>
+        <td class="postblock">
+          Contrase&ntilde;a
+        </td>
+        <td>
+          <input type="password" name="password" size="8" accesskey="p">&nbsp;(Usada para eliminar el post)
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="rules">
+          <ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;">
+            <li>Archivos soportados: SWF</li>
+            <li>El tama&ntilde;o m&aacute;ximo es #{maxflash_display}.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </form>
+<span class="modboardoptions|#{board}|#{board_locked}"></span>
+#{postarea_extra_html_bottom}</div>
+<script type="text/javascript">
+  set_inputs("postform");
+</script>
+<hr>
+
+<form id="delform" action="#{cgi_url}delete" method="post">
+<input type="hidden" name="board" value="#{board}">
+<?py if threads: ?>
+<center>
+<table width="98%">
+<tr>
+	<td class="postblock" align="center" width="1%">
+		No.
+	</td>
+	<td class="postblock" style="text-align:center;width:25%;">
+		Nombre
+	</td>
+	<td class="postblock" align="center" width="1%">
+		Archivo
+	</td>
+	<td class="postblock" align="center" width="1%">
+		Tag
+	</td>
+	<td class="postblock" style="text-align:center;width:40%;">
+		Asunto
+	</td>
+	<td class="postblock" align="center" width="3%">
+		Tama&ntilde;o
+	</td>
+	<td class="postblock" align="center" width="1%">
+		Fecha
+	</td>
+	<td class="postblock" style="text-align:center;width:1px;">
+		Resp.
+	</td>
+	<td class="postblock" style="width:1px;">
+		&nbsp;
+	</td>
+</tr>
+    <?py for thread in threads: ?>
+    <tr>
+	  <td align="center">
+		  #{thread['id']}
+	  </td>
+	  <td>
+		  #{" ".join(thread["posts"][0]["nameblock"].split()[:-1])}
+	  </td>
+	  <td align="center">
+		  [<a href="#{boards_url}#{board}/src/#{thread["posts"][0]["file"]}" target="_blank">#{thread["posts"][0]["file"]}</a>]
+	  </td>
+	  <td align="center">
+		  tag
+	  </td>
+	  <td>
+		  #{thread["posts"][0]["subject"]}
+	  </td>
+	  <td align="center">
+		  #{thread["posts"][0]["file_size_formatted"]}
+	  </td>
+	  <td>
+		  #{thread["posts"][0]["timestamp_formatted"]}
+	  </td>
+	  <td align="center">
+		  #{thread['length']}
+	  </td>
+	  <td align="center">
+		  [<a href="#{boards_url}#{board}/res/#{thread['id']}.html">Responder</a>]
+	  </td>
+  </tr>
+    <?py #endfor ?>
+  </table>
+  </center>
+<?py #endif ?>
+    <table class="userdelete">
+      <tbody>
+        <tr>
+          <td>
+            Eliminar Post [<input type="checkbox" name="imageonly" id="imageonly"><label for="imageonly">S&oacute;lo imagen</label>]<br>Contrase&ntilde;a <input type="password" name="password" size="8">&nbsp;<input name="deletepost" value="Eliminar" type="submit">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </form>
+    <script type="text/javascript"><!--
+      set_delpass("delform");
+    //--></script>
+<?py if page_navigator: ?>
+    <table border="1">
+      <tbody>
+        <tr>
+          #{page_navigator}
+        </tr>
+      </tbody>
+    </table>
+    <br>
+<?py #endif ?>
+<?py include('templates/base_bottom.html') ?>

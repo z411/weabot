@@ -1,0 +1,39 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body>
+<h2>#{board_name}@B.a.I. Móvil</h2>
+<p>
+<a href="http://m.bienvenidoainternet.org">ホーム</a> ·
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">掲示板</a> ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">スレッド一覧</a> ·
+新スレッド
+<hr />
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" />
+  <input type="hidden" name="mobile" value="true" />
+  <div style="display:none;">Trampa (deja estos campos en blanco):
+   <input type="text" name="name" size="19" maxlength="75" />
+   <input type="text" name="email" size="19" maxlength="75" />
+  </div>
+  <table>
+   <tr><td>おなまえ</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
+   <tr><td>E-mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
+   <tr><td>題名</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
+   <tr><td>コメント</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
+<?py if board_type == '1': ?>
+   <input type="hidden" name="password" maxlength="8" />
+<?py else: ?>
+   <tr><td>添付File</td><td><input type="file" name="file" size="25" /></td></tr>
+   <tr><td>削除キー</td><td><input type="password" name="password" size="8" maxlength="8" /></td></tr>
+<?py #endif ?>
+   <tr><td> </td><td><input type="submit" value="Crear Nuevo Hilo" /></td></tr>
+  </table>
+</form>
+<script type="text/javascript">set_inputs("postform");</script>
+<hr />
+<a href="http://m.bienvenidoainternet.org">ホーム</a> ·
+<a href="#{cgi_url}mobile/#{board}" rel="nofollow">掲示板</a> ·
+<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">スレッド一覧</a> ·
+新スレッド
+</p>
+<hr />
+<?py include('templates/mobile/base_bottom.html') ?>

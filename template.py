@@ -6,7 +6,7 @@ from tenjin.helpers import * # Used when templating
 from settings import Settings
 from database import *
 
-def renderTemplate(template, template_values={}, mobile=False):
+def renderTemplate(template, template_values={}, mobile=False, noindex=False):
   """
   Run Tenjin on the supplied template name, with the extra values
   template_values (if supplied)
@@ -16,8 +16,8 @@ def renderTemplate(template, template_values={}, mobile=False):
     "board": None,
     "board_name": None,
     "is_page": "false",
+    "noindex": noindex,
     "replythread": 0,
-    "oek_finish": 0,
     "home_url": Settings.HOME_URL,
     "boards_url": Settings.BOARDS_URL,
     "images_url": Settings.IMAGES_URL,
@@ -31,7 +31,6 @@ def renderTemplate(template, template_values={}, mobile=False):
     "disable_subject": None,
     "tripcode_character": None,
     "default_style": Settings.DEFAULT_STYLE,
-    "alternate_styles": Settings.ALTERNATE_STYLES,
     "maxdimensions": Settings.MAX_DIMENSION_FOR_OP_IMAGE,
     "unique_user_posts": None,
     "page_navigator": "",
@@ -43,8 +42,14 @@ def renderTemplate(template, template_values={}, mobile=False):
   
   engine = tenjin.Engine()
   
-  if template == "board.html" or template == "threadlist.html" or template == "catalog.html" or template[0:3] in ["txt", "swf", "url"]:
+  if template == "board.html" or template == "threadlist.html" or template == "catalog.html" or template == "kako.html" or template[0:3] in ["txt", "swf", "url"]:
     board = Settings._.BOARD
+    
+    # TODO HACK
+    if board['dir'] == '0' and template == 'board.html':
+      template = template[:-4] + '0.html'
+    elif board['dir'] == 'jp' and (template == 'board.html' or template == 'catalog.html'):
+      template = template[:-4] + 'jp.html'
     
     try:
       banners = Settings.banners[board['dir']]
@@ -56,6 +61,7 @@ def renderTemplate(template, template_values={}, mobile=False):
       "board_name": board["name"],
       "board_type": board["board_type"],
       "anonymous": board["anonymous"],
+      "oek_finish": 0,
       "forced_anonymous": (board["forced_anonymous"] == '1'),
       "disable_subject": (board["disable_subject"] == '1'),
       "tripcode_character": board["tripcode_character"],
@@ -67,6 +73,7 @@ def renderTemplate(template, template_values={}, mobile=False):
       "allow_noimage": (board["allow_noimage"] == '1'),
       "allow_spoilers": (board["allow_spoilers"] == '1'),
       "allow_oekaki": (board["allow_oekaki"] == '1'),
+      "archive": (board["archive"] == '1'),
       "force_css": board["force_css"],
       "board_locked": (board["locked"] == '1'),
       "useid": board["useid"],

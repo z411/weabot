@@ -3,6 +3,7 @@ import string
 import cgi
 import re
 import pickle
+import time
 import _mysql
 
 from database import *
@@ -12,36 +13,33 @@ from post import regenerateAccess
 
 from settings import Settings
 
-def format_post(message, ip, parentid, type="none"):
+def format_post(message, ip, parentid, parent_timestamp=0):
   """
   Formats posts using the specified format
   """
   board = Settings._.BOARD
   using_markdown = False
   
-  if not type:
-    type = "tags"
-  
   # Escape any HTML if user is not using Markdown
-  if type != "tags":
-    message = cgi.escape(message)
+  #if type != "tags":
+  #  message = cgi.escape(message)
   
   message = cutText(message, Settings.POST_LINE_WIDTH)
   message = message.rstrip()[0:8000]
   
   # Don't create <a>'s if user doesn't want any HTML in post
-  if type != "none":
+  #if type != "none" and board["dir"] != "0":
+  if board["dir"] != "0":
     message = clickableURLs(message)
   
-  if type == "tags":
-    if Settings.USE_MARKDOWN:
-      message = markdown(message)
-      using_markdown = True
-    message = onlyAllowedHTML(message)
-  elif type == "aa":
-    message = "<span class=\"sjis\">" + sanitize_html(message) + "</span>"
+  if Settings.USE_MARKDOWN:
+    message = markdown(message)
+    using_markdown = True
+  message = onlyAllowedHTML(message)
     
-  message = checkRefLinks(message, parentid)
+  if board["dir"] != "0":
+    message = checkRefLinks(message, parentid, parent_timestamp)
+
   message = checkWordfilters(message, ip, board["dir"])
   
   # If user is not using markdown quotes must be created and \n changed for HTML line breaks
@@ -50,7 +48,7 @@ def format_post(message, ip, parentid, type="none"):
     message = message.replace("\n", "<br />")
   
   return message
-
+    
 def tripcode(name):
   """
   Calculate tripcode to match output of most imageboards
@@ -107,13 +105,18 @@ def tripcode(name):
 
 def iphash(ip, email, t, useid):
   board = Settings._.BOARD
+  current_t = time.time()
   
   if useid in ['3', '4'] and (email.lower() == Settings.DEFAULT_SAGE):
     return Settings.IPHASH_SAGEWORD
   else:
-    word = ""
+    # Chile: -3 hrs
+    day = int((current_t - 10800) / 86400)
+    word = ',' + str(day)
+    
     if useid not in ['1', '3']:
       word += ',' + str(t)
+      
     return hide_data(ip + word, 6, "id", Settings.SECRET)
         
 def nameBlock(post_name, post_tripcode, post_email, post_timestamp_formatted, post_iphash, post_mobile=False):
@@ -178,35 +181,13 @@ def nameBlock(post_name, post_tripcode, post_email, post_timestamp_formatted, po
 def modNameBlock(post_name, post_timestamp_formatted, post_capcode):
   nameblock = ""
   
-  if post_name == "":
-    post_anonymous = True
+  nameblock += '<span class="postername">'
+  if post_name:
+    nameblock += post_name
   else:
-    post_anonymous = False
+    nameblock += 'Staff'
   
-  # Capcodes detect
-  capcode = ''
-  capcodeclass = ''
-  if post_capcode in [1, 2, 3, 4]:
-    # Super-admin
-    capcode = _('Staff')
-    capcodeclass = ' administrator'
-    
-  if post_anonymous:
-    nameblock += '<span class="postername'+capcodeclass+'">'
-    nameblock += 'Sin Nombre'
-  else:
-    nameblock += '<span class="postername'+capcodeclass+'">'
-    if post_name:
-      nameblock += post_name
-    else:
-      nameblock += 'Sin Nombre'
-    
-  # Add capcode
-  if post_capcode > 0:
-    nameblock += '</span><span class="' + capcodeclass[1:] + '">' + ' ('+capcode+')'
-    
-  nameblock += "</span> " + post_timestamp_formatted
-    
+  nameblock += ' ★</span> ' + post_timestamp_formatted
   return nameblock
 
 def cleanString(string, escape=True, quote=False):
@@ -217,7 +198,7 @@ def cleanString(string, escape=True, quote=False):
 
 def clickableURLs(message):
   # URL
-  message = re.compile(r"( |^|:)((https?|ftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.I | re.M).sub(r'\1<a href="\2" rel="nofollow" target="_blank">\2</a>', message)
+  message = re.compile(r"( |^|:)((https?|ftp):((//)|(\\\\))+[\w\d:#!@%/;$()~_?\+-=\\\.&]*)", re.I | re.M).sub(r'\1<a href="\2" rel="nofollow" target="_blank">\2</a>', message)
   # Emails
   message = re.compile(r"( |^|:)([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6})", re.I | re.M).sub(r'\1<a href="mailto:\2" rel="nofollow">&lt;\2&gt;</a>', message)
   
@@ -238,7 +219,7 @@ def fixMobileLinks(message):
   
   return message
   
-def checkRefLinks(message, parentid):
+def checkRefLinks(message, parentid, parent_timestamp):
   """
   Check for >># links in posts and replace with the HTML to make them clickable
   """
@@ -247,7 +228,7 @@ def checkRefLinks(message, parentid):
   if board["board_type"] == '1':
     # Textboards
     if parentid != '0':
-      message = re.compile(r"&gt;&gt;(([0-9]+([,\-0-9])?)+)").sub('<a href="' + Settings.BOARDS_URL + board['dir'] + '/read/' + str(parentid) + r'/\1">&gt;&gt;\1</a>', message)
+      message = re.compile(r"&gt;&gt;(([0-9]+([,\-0-9])?)+)").sub('<a href="' + Settings.BOARDS_URL + board['dir'] + '/read/' + str(parent_timestamp) + r'/\1">&gt;&gt;\1</a>', message)
   else:
     # Imageboards
     quotes_id_array = re.findall(r"&gt;&gt;([0-9]+)", message)
@@ -377,7 +358,7 @@ def cutText(txt, where):
 
 def checkWordfilters(message, ip, board):
   fixed_ip = inet_aton(ip)
-  wordfilters = FetchAll("SELECT * FROM `filters` WHERE `type` = '0'")
+  wordfilters = FetchAll("SELECT * FROM `filters` WHERE `type` = '0' ORDER BY `id` ASC")
   for wordfilter in wordfilters:
     if wordfilter["boards"] != "":
       boards = pickle.loads(wordfilter["boards"])

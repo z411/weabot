@@ -12,7 +12,7 @@
 <b>NOTICIAS DEL STAFF</b>
 </center>
 <?py for post in posts: ?>
- #{post['id']}: #{post['nameblock']}<br />
+ #{post['id']}: <span class="postername">${post['name']}</span> : ${post['timestamp_formatted']}<br />
  <div class="modnewstitle">#{post['title']}</div>
  <div class="modnewsmessage">#{post['message']}</div><br />
 <?py #endfor ?>

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>${board_name}@B.a.I. Archivo</title>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+	<meta name="keywords" content="bienvenido, a, internet, bbs, imageboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
+	<meta name="description" content="Bienvenido a Internet es un sitio para la discusion de distintos temas, sin necesidad de registrarse." />
+	<meta http-equiv="content-language" content="ES" />
+	<meta name="robots" content="noarchive" />
+	<link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
+	<style type="text/css">
+	<?py if board == 'zonavip': ?>
+	body,textarea {font-family:IPAMonaPGothic, Mona, Monapo, 'MS PGothic', YOzFontAA97; font-size:16px;} small {font-size:12px;}
+	<?py else: ?>
+	body,textarea {font-family:Arial, Helvetica, "Nimbus Sans L", "Liberation Sans", FreeSans, sans-serif; font-size:10pt;}
+	<?py #endif ?>
+	#navigation {font-weight:bold; margin-top:1.5em;}
+	.line0, .line1 {border-bottom:solid 1px #CCC; padding:0.5em 0.25em; display:block; text-decoration:none;}
+	.line0:hover, .line1:hover {background:#FEE;}
+	.line0 {background:#EEF;} .line1 {background:#EFE;}
+	.title {font-size:30px; font-weight:bold; margin:15px 0;}
+	.cont1 {display:inline-block;}
+	.cont2 {border:solid 1px #CCC; border-bottom:none;}
+	.posts {color:#F33;}
+	.last {width:250px; float:right; text-align:right; color:#000;}
+	</style>
+</head>
+<body class="backlogpage">
+	<div id="navigation">
+	<a href="/bai.html" rel="nofollow">Bienvenido a Internet BBS/IB</a>
+	<a href="#{boards_url}#{board}" rel="nofollow">■ Volver al BBS ■</a>
+	<a href="#{home_url}archivo.html" rel="nofollow">■ Volver al archivo ■</a>
+	</div>
+	<div class="title">Archivo de ${board_name}</div>
+	<div class="cont1"><div class="cont2">
+	<?py iter = 1 ?>
+	<?py for thread in threads: ?>
+	<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/" class="line#{(iter % 2)}">${thread['timestamp']} : ${thread['subject']} <span class="posts">(${thread['length']})</span></a>
+	<?py iter += 1 ?>
+	<?py #endfor ?>
+	</div>
+	<hr />
+	Número de hilos archivados: ${len(threads)}
+	<hr />
+	Cualquier problema al <a href="mailto:burocracia@bienvenidoainternet.org">e-mail</a> o a <a href="/bai/" rel="nofollow">la sección de discusión</a><br />
+	Bienvenido a Internet &amp; weabot - 2010-2016
+	</div>
+</body>
+</html>

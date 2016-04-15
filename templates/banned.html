@@ -14,7 +14,7 @@
 <p class="sub">Lo sentimos, tu IP (#{ip}) o red están en lista negra.</p>
 <ul>
 <?py if reason != "": ?>
-  <li><b>#{reason}</b></li> 
+  <li>La razón fue: <b>#{reason}</b></li> 
 <?py #endif ?>
  <li>Tu ban fue puesto el <b>#{added}</b>.</li>
 <?py if expire != "": ?>
@@ -22,5 +22,6 @@
 <?py #endif ?>
 </ul>
 <hr />
+<p>Bajo cualquier consulta o reclamo <a href="mailto:burocracia@bienvenidoainternet.org">contáctanos</a>.</p>
 </body>
 </html>

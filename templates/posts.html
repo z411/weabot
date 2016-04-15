@@ -1,5 +1,8 @@
 <?py include('templates/base_top.html') ?>
-<center><a href="#{cgi_url}manage/ipshow">Volver</a></center>
+<div class="logo">
+${title}
+</div>
+<br />
 <?py for post in posts: ?>
     <table>
     <tbody>
@@ -13,7 +16,10 @@
     <?py if post['subject'] != '': ?>
       <span class="filetitle">#{post['subject']}</span>
     <?py #endif ?>
-      #{post['nameblock']}
+      <span class="postername">#{post['name']}</span>
+	  <?py if post['tripcode']: ?>
+		<span class="postertrip">#{post['tripcode']}</span>
+	  <?py #endif ?>
     </label>
     <span class="reflink">
     <?py if post['parentid'] == '0': ?>
@@ -21,6 +27,7 @@
     <?py else: ?>
     <a href="#{boards_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}">No. #{post['id']}</a>
     <?py #endif ?>
+    ${post['timestamp_formatted']}
     </span>
     <?py if modbrowse: ?>
     [#{post['ip']}]
@@ -30,7 +37,7 @@
     <?py #endif ?>
     <?py if post['file'] != '': ?>
     <br />
-    <span class="filesize">Archivo: <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{boards_url}#{post['dir']}/thumb/#{post['thumb']}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">#{post['file']}</a>&ndash;(#{post['file_size_formatted']}, #{post['image_width']}x#{post['image_height']})</span>
+    <span class="filesize">Archivo: <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{boards_url}#{post['dir']}/thumb/#{post['thumb']}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">#{post['file']}</a>&ndash;(#{post['file_size']} B, #{post['image_width']}x#{post['image_height']})</span>
     <br />
         <?py if post['thumb'] != 'spoil': ?>
         <a href="#{boards_url}#{post['dir']}/src/#{post['file']}" onclick="javascript:expandimg('#{post['id']}', '#{boards_url}#{post['dir']}/src/#{post['file']}', '#{boards_url}#{post['dir']}/thumb/#{post['thumb']}', '#{post['image_width']}', '#{post['image_height']}', '#{post['thumb_width']}', '#{post['thumb_height']}');return false;">
@@ -64,5 +71,5 @@
 <?py #endfor ?>
 <br clear="left" />
 <hr />
-<center><a href="#{cgi_url}manage/ipshow">Volver</a></center>
+<center>[<a href="#{cgi_url}manage/ipshow">Volver al panel</a>]</center>
 <?py include('templates/base_bottom.html') ?>

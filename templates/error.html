@@ -12,6 +12,10 @@
 <body>
 <?py if exception: ?>
 <p class="error">ERROR : Ha ocurrido un error inesperado.</p>
+<p class="sub">Esto no es normal y te pedimos que reportes el problema en
+<a href="/bai/">Discusión de B.a.I.</a> o a través de
+<a href="mailto:burocracia@bienvenidoainternet.org">nuestro e-mail</a>,
+presentando los siguientes datos y ojalá indicando qué hacer para reproducirlo:</p>
 <p>
 Versión: weabot
 <?py include('templates/revision.html') ?>
@@ -29,11 +33,12 @@ siempre haciendo lo posible para arreglar los problemas lo antes posible.<br />
 Te pedimos las disculpas por cualquier inconveniente.</p>
 <hr />
 <p>weabot dijo "Perdón."<br />
-<a href="#{home_url}">Volver al home</a></p>
+<a href="/bai.html">Bienvenido a Internet BBS/IB</a></p>
 <?py else: ?>
 <p class="error">ERROR : #{error}</p>
 <p class="sub">Por favor presiona Atrás y soluciona el problema.</p>
 <hr />
+<p>La página principal está <a href="/bai.html">aquí</a>.<br />Si esto es inusual intenta <a href="mailto:burocracia@bienvenidoainternet.org">contactarnos</a>.</p>
 <?py #endif ?>
 </body>
 </html>

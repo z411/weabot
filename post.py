@@ -2,6 +2,7 @@
 import math
 import os
 import shutil
+import time
 import threading
 import Queue
 import _mysql
@@ -25,10 +26,8 @@ class Post(object):
         "password": "",
         "file": "",
         "file_hex": "",
-        "file_mime": "",
         "file_original": "",
         "file_size": 0,
-        "file_size_formatted": "",
         "animation": "",
         "thumb": "",
         "image_width": 0,
@@ -93,20 +92,24 @@ def get_parent_post(post_id, board_id):
   else:
     raise UserError, _("The ID of the parent post is invalid.")
 
-def getThread(postid, mobile):
+def getThread(postid=0, mobile=False, timestamp=0):
   board = Settings._.BOARD
   
   database_lock.acquire()
   try:
-    postid = int(postid)
-    op_post = FetchOne("SELECT * FROM `posts` WHERE `id` = %s AND `boardid` = %s LIMIT 1" % (str(postid), board["id"]))
+    if timestamp:
+      cond = "`timestamp` = %s" % str(timestamp)
+    else:
+      cond = "`id` = %s" % str(postid)
+
+    op_post = FetchOne("SELECT IS_DELETED, email, file, file_size, id, image_height, image_width, ip, message, name, subject, thumb, thumb_height, thumb_width, timestamp_formatted, tripcode, parentid, locked, expires, expires_alert, expires_formatted, timestamp FROM `posts` WHERE %s AND `boardid` = %s AND parentid = 0 LIMIT 1" % (cond, board["id"]))
     if op_post:
       op_post['num'] = 1
       if Settings._.MODBROWSE:
         op_post['ip'] = inet_ntoa(long(op_post['ip']))
       thread = {"id": op_post["id"], "posts": [op_post], "omitted": 0, "omitted_img": 0}
 
-      replies = FetchAll("SELECT * FROM `posts` WHERE `parentid` = %s AND `boardid` = %s ORDER BY `id` ASC" % (op_post["id"], board["id"]))
+      replies = FetchAll("SELECT IS_DELETED, email, file, file_size, id, image_height, image_width, ip, message, name, subject, thumb, thumb_height, thumb_width, timestamp_formatted, tripcode, parentid, locked, expires, expires_alert, expires_formatted, timestamp FROM `posts` WHERE `parentid` = %s AND `boardid` = %s ORDER BY `id` ASC" % (op_post["id"], board["id"]))
       thread["length"] = 1
       if replies:
         for reply in replies:
@@ -120,9 +123,13 @@ def getThread(postid, mobile):
       
       # An imageboard needs subject
       if board["board_type"] in ['1', '5']:
+        thread["timestamp"] = op_post["timestamp"]
         thread["subject"] = op_post["subject"]
+        thread["locked"] = op_post["locked"]
       
       #threads = [thread]
+    else:
+      return None
   finally:
     database_lock.release()
   
@@ -201,8 +208,11 @@ def regenerateFrontPages():
     posts_query = "SELECT * FROM `posts` WHERE `boardid` = '%s' ORDER BY `bumped` DESC, CASE parentid WHEN 0 THEN id ELSE parentid END ASC, `id` ASC" % board["id"]
     posts = FetchAll(posts_query)
     
+    threads = []
     if posts:
       thread = None
+      post_num = 0
+      
       for post in posts:
         #raise Exception, post["id"]
         if post["parentid"] == '0':
@@ -213,7 +223,7 @@ def regenerateFrontPages():
               thread["length"] = post_num
               threads.append(thread)
             post_num = post["num"] = 1
-            thread = {"id": post["id"], "subject": post["subject"], "posts": [post]}
+            thread = {"id": post["id"], "timestamp": post["timestamp"], "subject": post["subject"], "posts": [post]}
           else:
             skipThread = True
         else:
@@ -221,10 +231,10 @@ def regenerateFrontPages():
             post_num += 1
             post["num"] = post_num
             thread["posts"].append(post)
-      thread["length"] = post_num
-      threads.append(thread)
-    else:
-      threads = []
+      
+      if post_num:
+        thread["length"] = post_num
+        threads.append(thread)
     
     # Count more threads until end if textboard
     if board['board_type'] == '1':
@@ -326,17 +336,16 @@ def threadList(mode=0):
     cutFactor = 150
   elif mode == 2:
     mobile = True
-    maxthreads = 500 # Settings.MAX_THREADS
+    maxthreads = 1000 # Settings.MAX_THREADS
     cutFactor = 60
   else:
     mobile = False
-    maxthreads = 500 # Settings.MAX_THREADS
+    maxthreads = 1000 # Settings.MAX_THREADS
     cutFactor = 60
   
   if board['board_type'] == '1':
     filename = "txt_threadlist.html"
-    full_threads = FetchAll("SELECT p.id, p.subject, p.locked, coalesce(x.count,1) AS length, coalesce(x.t,p.timestamp) AS last FROM `posts` AS p LEFT JOIN (SELECT parentid, count(1)+1 as count, max(timestamp) as t FROM `posts` " +\
-                          "WHERE boardid = %(board)s GROUP BY parentid) AS x ON p.id=x.parentid WHERE p.parentid = 0 AND p.boardid = %(board)s AND p.IS_DELETED = 0 ORDER BY `bumped` DESC LIMIT %(limit)s" \
+    full_threads = FetchAll("SELECT id, timestamp, subject, locked, length, last FROM `posts` WHERE parentid = 0 AND boardid = %(board)s AND IS_DELETED = 0 ORDER BY `bumped` DESC LIMIT %(limit)s" \
                            % {'board': board["id"], 'limit': maxthreads})
   else:
     filename = "threadlist.html"
@@ -376,15 +385,41 @@ def threadList(mode=0):
           thread["lastreply"] = None
   return renderTemplate(filename, {"more_threads": full_threads, "timestamps": timestamps, "mode": mode}, mobile)
 
-def catalog():
+def catalog(sort=''):
   board = Settings._.BOARD
   
-  threads = FetchAll("SELECT p.id, p.thumb, coalesce(x.count,1) AS length FROM `posts` AS p LEFT JOIN (SELECT parentid, count(1)+1 as count, max(timestamp) as t FROM `posts` " +\
-                     "WHERE boardid = %(board)s GROUP BY parentid) AS x ON p.id=x.parentid WHERE p.parentid = 0 AND p.boardid = %(board)s AND p.IS_DELETED = 0 ORDER BY `bumped` DESC" \
-                     % {'board': board["id"]})
+  if board['board_type'] != '0':
+    raise UserError, "No hay catálogo disponible para esta sección."
+    
+  cutFactor = 300
+  
+  q_sort = '`bumped` DESC'
+  if sort:
+    if sort == '1':
+      q_sort = '`timestamp` DESC'
+    elif sort == '2':
+      q_sort = '`timestamp` ASC'
+    elif sort == '3':
+      q_sort = '`length` DESC'
+    elif sort == '4':
+      q_sort = '`length` ASC'
+  
+  threads = FetchAll("SELECT id, subject, message, length, thumb, expires_formatted FROM `posts` " +\
+                     "WHERE parentid = 0 AND boardid = %(board)s AND IS_DELETED = 0 ORDER BY %(sort)s" \
+                     % {'board': board["id"], 'sort': q_sort})
+  
+  for thread in threads:
+    if len(thread['message']) > cutFactor:
+      thread['shortened'] = True
+    else:
+      thread['shortened'] = False
+    thread['message'] = thread['message'].replace('<br />', ' ')
+    thread['message'] = re.compile(r"<[^>]*?>", re.DOTALL | re.IGNORECASE).sub('', thread['message'])
+    thread['message'] = thread['message'].decode('utf-8')[:cutFactor].encode('utf-8')
+    thread['message'] = re.compile(r"&(.(?!;))*$", re.DOTALL | re.IGNORECASE).sub('', thread['message']) # Removes incomplete HTML entities
   
   # Generate catalog
-  return renderTemplate("catalog.html", {"threads": threads})
+  return renderTemplate("catalog.html", {"threads": threads, "i_sort": sort})
   
 def regenerateThreadPage(postid):
   """
@@ -392,15 +427,24 @@ def regenerateThreadPage(postid):
   """
   board = Settings._.BOARD
   
-  page = threadPage(postid)
+  thread = getThread(postid)
   
-  f = open(Settings.ROOT_DIR + board["dir"] + "/res/" + str(postid) + ".html", "w")
+  if board['board_type'] in ['1', '5']:
+    template_filename = "txt_thread.html"
+    outname = Settings.ROOT_DIR + board["dir"] + "/read/" + str(thread["timestamp"]) + ".html"
+  else:
+    template_filename = "board.html"
+    outname = Settings.ROOT_DIR + board["dir"] + "/res/" + str(postid) + ".html"
+    
+  page = renderTemplate(template_filename, {"threads": [thread], "replythread": postid}, False)
+  
+  f = open(outname, "w")
   try:
     f.write(page)
   finally:
     f.close()
   
-def threadPage(postid, mobile=False):
+def threadPage(postid, mobile=False, timestamp=0):
   board = Settings._.BOARD
   
   # TODO : Encontrar mejor forma para transformar el IP a string sólo cuando se usa Modbrowse
@@ -410,7 +454,7 @@ def threadPage(postid, mobile=False):
   else:
     template_filename = "board.html"
   
-  threads = [getThread(postid, mobile)]
+  threads = [getThread(postid, mobile, timestamp)]
   
   return renderTemplate(template_filename, {"threads": threads, "replythread": postid}, mobile)
 
@@ -419,11 +463,27 @@ def dynamicRead(parentid, ranges, mobile=False):
   board = Settings._.BOARD
   
   # get entire thread
-  thread = getThread(parentid, mobile)
+  template_fname = "txt_thread.html"
+  thread = getThread(timestamp=parentid, mobile=mobile)
+  
+  if not thread:
+    # Try the archive
+    fname = Settings.ROOT_DIR + board["dir"] + "/kako/" + str(parentid) + ".json"
+    if os.path.isfile(fname):
+      import json
+      with open(fname) as f:
+        thread = json.load(f)
+      thread['posts'] = [dict(zip(thread['keys'], row)) for row in thread['posts']]
+      template_fname = "txt_archive.html"
+    else:
+      raise UserError, 'El hilo no existe.'
+  
   filtered_thread = {
     "id": thread['id'],
+    "timestamp": thread['timestamp'],
     "length": thread['length'],
     "subject": thread['subject'],
+    "locked": thread['locked'],
     "posts": [],
   }
   
@@ -514,7 +574,7 @@ def dynamicRead(parentid, ranges, mobile=False):
     raise UserError, "No hay posts que mostrar."
 
   # render page
-  return renderTemplate("txt_thread.html", {"threads": [filtered_thread], "replythread": parentid, "prevrange": prevrange, "nextrange": nextrange}, mobile)
+  return renderTemplate(template_fname, {"threads": [filtered_thread], "replythread": parentid, "prevrange": prevrange, "nextrange": nextrange}, mobile, noindex=True)
 
 def regenerateBoard():
   """
@@ -557,7 +617,7 @@ def deletePost(postid, password, deltype='0', imageonly=False, quick=False):
   postid = int(postid)
   
   # get post
-  post = FetchOne("SELECT `id`, `parentid`, `file`, `thumb`, `animation`, `password` FROM `posts` WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (board["id"], str(postid)))
+  post = FetchOne("SELECT `id`, `timestamp`, `parentid`, `file`, `thumb`, `animation`, `password` FROM `posts` WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (board["id"], str(postid)))
   
   # abort if the post doesn't exist
   if not post:
@@ -574,13 +634,11 @@ def deletePost(postid, password, deltype='0', imageonly=False, quick=False):
   # just update the DB if we're deleting only the image
   # otherwise delete the whole post
   if imageonly:
-    UpdateDb("UPDATE `posts` SET `file` = '', `file_hex` = '' WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (board["id"], str(post['id'])))
+    UpdateDb("UPDATE `posts` SET `file` = '', `file_hex` = '', `thumb` = '', `thumb_width` = 0, `thumb_height` = 0 WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (board["id"], str(post['id'])))
   else:
     if int(post["parentid"]) == 0:
-      replies = FetchAll("SELECT `id` FROM `posts` WHERE `boardid` = %s AND `parentid` = %s" % (board["id"], str(postid)))
-      for reply in replies:
-        deletePost(reply["id"],password,deltype)
-
+      deleteReplies(post, deltype)
+    
     logTime("Deleting post " + str(postid))
     if deltype != '0':
       UpdateDb("UPDATE `posts` SET `IS_DELETED` = %s WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (deltype, board["id"], post["id"]))
@@ -588,13 +646,16 @@ def deletePost(postid, password, deltype='0', imageonly=False, quick=False):
       UpdateDb("DELETE FROM `posts` WHERE `boardid` = %s AND `id` = %s LIMIT 1" % (board["id"], post["id"]))
     
     if post['parentid'] == '0':
-      try:
+      if board['board_type'] == '1':
+        os.unlink(Settings.ROOT_DIR + board["dir"] + "/read/" + post["timestamp"] + ".html")
+      else:
         os.unlink(Settings.ROOT_DIR + board["dir"] + "/res/" + post["id"] + ".html")
-      except:
-        pass
     
     # delete post from home
-    home_remove_post(postid)
+    home_remove_post(postid, 'templates/home_posts.html')
+    if post['parentid'] == '0':
+      home_remove_post(postid, 'templates/home_threads.html')
+      
     regenerateHome()
   
   # rebuild thread and fronts if reply; rebuild only fronts if not
@@ -602,6 +663,20 @@ def deletePost(postid, password, deltype='0', imageonly=False, quick=False):
     threadUpdated(post["parentid"])
   else:
     regenerateFrontPages()
+
+def deleteReplies(thread, deltype):
+  board = Settings._.BOARD
+  
+  # delete files first
+  replies = FetchAll("SELECT `parentid`, `file`, `thumb` FROM `posts` WHERE `boardid` = %s AND `parentid` = %s AND `file` != ''" % (board["id"], thread["id"]))
+  for post in replies:
+    deleteFile(post)
+    
+  # delete all replies from DB
+  if deltype != '0':
+    UpdateDb("UPDATE `posts` SET `IS_DELETED` = %s WHERE `boardid` = %s AND `parentid` = %s" % (deltype, board["id"], thread["id"]))
+  else:
+    UpdateDb("DELETE FROM `posts` WHERE `boardid` = %s AND `parentid` = %s" % (board["id"], thread["id"]))
 
 def deleteFile(post):
   """
@@ -630,11 +705,11 @@ def deleteFile(post):
     except:
       pass
   
-  try:
-    if post["animation"] != "":
-      os.unlink(Settings.IMAGES_DIR + board["dir"] + "/src/" + post["animation"] + '.pch')
-  except:
-    pass
+  #try:
+  #  if post["animation"] != "":
+  #    os.unlink(Settings.IMAGES_DIR + board["dir"] + "/src/" + post["animation"] + '.pch')
+  #except:
+  #  pass
 
 def trimThreads():
   """
@@ -642,18 +717,79 @@ def trimThreads():
   """
   logTime("Trimming threads")
   board = Settings._.BOARD
+  archived = False
   
+  # Use limit of the board type
   if board['board_type'] == '1':
-    limit = 500
+    limit = Settings.TXT_MAX_THREADS
   else:
     limit = Settings.MAX_THREADS
-
-  op_posts = FetchAll("SELECT `id` FROM `posts` WHERE `boardid` = %s AND `parentid` = 0 AND IS_DELETED = 0 ORDER BY `bumped` DESC" % board["id"])
+  
+  # trim expiring threads first
+  if board['maxage'] != '0':
+    t = time.time()
+    
+    alert_time = int(round(int(board['maxage']) * Settings.MAX_AGE_ALERT))
+    time_limit = t + (alert_time * 86400)
+    old_ops = FetchAll("SELECT `id`, `timestamp`, `expires`, `expires_alert` FROM `posts` WHERE `boardid` = %s AND `parentid` = 0 AND IS_DELETED = 0 AND `expires` > 0 AND `expires` < %s LIMIT 50" % (board['id'], time_limit))
+    
+    for op in old_ops:
+      if t >= int(op['expires']):
+        # Trim old threads
+        if board['archive'] == '1':
+          archiveThread(op["id"])
+          archived = True
+          
+        deletePost(op["id"], None)
+      else:
+        # Add alert to threads approaching deletion
+        UpdateDb("UPDATE `posts` SET expires_alert = 1 WHERE `boardid` = %s AND `id` = %s" % (board['id'], op['id']))
+        
+      # TEST: if op['expires_alert'] != '1':
+  
+  # trim inactive threads next
+  if board['maxinactive'] != '0':
+    t = time.time()
+    
+    oldest_last = t - (int(board['maxinactive']) * 86400)
+    old_ops = FetchAll("SELECT `id` FROM `posts` WHERE `boardid` = %s AND `parentid` = 0 AND IS_DELETED = 0 AND `last` < %d LIMIT 50" % (board['id'], oldest_last))
+    
+    for op in old_ops:
+      if board['archive'] == '1':
+        archiveThread(op["id"])
+        archived = True
+      
+      #deletePost(op["id"], None)
+      
+  # select trim type by board
+  if board['board_type'] == '1':
+    trim_method = Settings.TXT_TRIM_METHOD
+  else:
+    trim_method = Settings.TRIM_METHOD
+    
+  # select order by trim
+  if trim_method == 1:
+    order = 'last DESC'
+  elif trim_method == 2:
+    order = 'bumped DESC'
+  else:
+    order = 'timestamp DESC'
+  
+  # Trim the last thread
+  op_posts = FetchAll("SELECT `id` FROM `posts` WHERE `boardid` = %s AND `parentid` = 0 AND IS_DELETED = 0 ORDER BY %s" % (board["id"], order))
   if len(op_posts) > limit:
     posts = op_posts[limit:]
     for post in posts:
+      if board['archive'] == '1':
+        archiveThread(post["id"])
+        archived = True
+        
       deletePost(post["id"], None)
-
+      pass
+  
+  if archived:
+    regenerateKako()
+  
 def autoclose_thread(parentid, t, replies):
   """
   If the thread is crossing the reply limit, close it with a message.
@@ -673,7 +809,7 @@ def autoclose_thread(parentid, t, replies):
     notice_post = Post(board["id"])
     notice_post["parentid"] = parentid
     notice_post["name"] = "Sistema"
-    notice_post["message"] = "El hilo ha sobrepasado el límite de respuestas, por favor crea otro..."
+    notice_post["message"] = "El hilo ha sobrepasado el límite de respuestas.<br />Ya que no se puede postear en él, por favor crea otro..."
     notice_post["timestamp"] = notice_post["bumped"] = t+1
     notice_post["timestamp_formatted"] = str(replylimit) + " mensajes"
     #notice_post["nameblock"] = formatting.nameBlock(notice_post["name"], "", "", notice_post["timestamp_formatted"], 0, "")
@@ -690,11 +826,19 @@ def pageNavigator(page_num, page_count, is_omitted=False):
   if page_count == 0:
     return ''
   
-  first_str = "Primera página"
-  last_str = "Última página"
-  previous_str = _("Previous")
-  next_str = _("Next")
-  omitted_str = "Resto omitido"
+  # TODO nijigen HACK
+  if board["dir"] == 'jp':
+    first_str = "最初のページ"
+    last_str = "最後のページ"
+    previous_str = "前のページ"
+    next_str = "次のページ"
+    omitted_str = "以下略"
+  else:
+    first_str = "Primera página"
+    last_str = "Última página"
+    previous_str = _("Previous")
+    next_str = _("Next")
+    omitted_str = "Resto omitido"
   
   page_navigator = "<td>"
   if page_num == 0:
@@ -705,7 +849,7 @@ def pageNavigator(page_num, page_count, is_omitted=False):
       previous = ""
     else:
       previous = previous + ".html"
-    page_navigator += '<form method="get" action="' + Settings.BOARDS_URL + board["dir"] + '/' + previous + '"><input value="'+previous_str+'" type="submit" /></form>'
+    page_navigator += '<form method="get" action="' + Settings.BOARDS_URL + board["dir"] + '/' + previous + '"><input value="'+previous_str+'" type="submit" class="psei" /></form>'
 
   page_navigator += "</td><td>"
 
@@ -727,14 +871,17 @@ def pageNavigator(page_num, page_count, is_omitted=False):
   if next == page_count:
     page_navigator += last_str + "</td>"
   else:
-    page_navigator += '<form method="get" action="' + Settings.BOARDS_URL + board["dir"] + '/' + str(next) + '.html"><input value="'+next_str+'" type="submit" /></form></td>'
+    page_navigator += '<form method="get" action="' + Settings.BOARDS_URL + board["dir"] + '/' + str(next) + '.html"><input value="'+next_str+'" type="submit" class="psei" /></form></td>'
 
   return page_navigator
 
 def flood_check(t,post,boardid):
   if not post["parentid"]:
     maxtime = t - Settings.SECONDS_BETWEEN_NEW_THREADS
-    lastpost = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `ip` = '%s' and `parentid` = 0 and `boardid` = '%s' and IS_DELETED = 0 AND timestamp > %d" % (str(post["ip"]), boardid, maxtime), 0)
+    #lastpost = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `ip` = '%s' and `parentid` = 0 and `boardid` = '%s' and IS_DELETED = 0 AND timestamp > %d" % (str(post["ip"]), boardid, maxtime), 0)
+    
+    # NO MATTER THE IP
+    lastpost = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `parentid` = 0 and `boardid` = '%s' and IS_DELETED = 0 AND timestamp > %d" % (boardid, maxtime), 0)
   else:
     maxtime = t - Settings.SECONDS_BETWEEN_REPLIES
     lastpost = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `ip` = '%s' and `parentid` != 0 and `boardid` = '%s' and IS_DELETED = 0 AND timestamp > %d" % (str(post["ip"]), boardid, maxtime), 0)
@@ -742,48 +889,74 @@ def flood_check(t,post,boardid):
   if int(lastpost[0]):
     raise UserError, _("Flood detected. Please wait a moment before posting again.")
 
-def home_add_post(message, postnum, postid, parentid, file, subject):
+def cut_home_msg(message, boardlength):
+  short_message = re.compile(r"<del>(.+)</del>", re.DOTALL | re.IGNORECASE).sub('(spoiler)', message) # Remove spoilers
+  short_message = re.compile(r"<[^>]*?>", re.DOTALL | re.IGNORECASE).sub(' ', short_message) # Removes every html tag in the message
+  limit = Settings.HOME_LASTPOSTS_LENGTH - boardlength
+  
+  # short message
+  if len(short_message) > limit:
+    short_message = short_message.decode('utf-8')[:limit].encode('utf-8') + "…"
+    short_message = re.compile(r"&(.(?!;))*$", re.DOTALL | re.IGNORECASE).sub('', short_message) # Removes incomplete HTML entities
+
+  short_message = short_message.replace("\n", " ")
+  return short_message
+
+def getLastAge(limit):
+  threads = []
+  sql = "SELECT posts.id, boards.name AS board_name, board_type, boards.dir, timestamp, bumped, length, CASE WHEN posts.subject = boards.subject THEN posts.message ELSE posts.subject END AS content FROM posts INNER JOIN boards ON boardid = boards.id WHERE parentid = 0 AND IS_DELETED = 0 AND boards.secret = 0 ORDER BY bumped DESC LIMIT %d" % limit
+  threads = FetchAll(sql)
+  
+  for post in threads:
+    post['id'] = int(post['id'])
+    post['bumped'] = int(post['bumped'])
+    post['length'] = int(post['length'])
+    post['board_type'] = int(post['board_type'])
+    post['timestamp'] = int(post['timestamp'])
+    
+    post['content'] = cut_home_msg(post['content'], len(post['board_name']))
+
+    if post['board_type'] == 1:
+      post['url'] = '/%s/read/%d/l10' % (post['dir'], post['timestamp'])
+    else:
+      post['url'] = '/%s/res/%d.html' % (post['dir'], post['id'])
+      
+  return threads
+        
+def home_add_post(post, postnum, postid, parent_post, templatefile):
   board = Settings._.BOARD
   
-  filename = 'templates/latest.html'
-  
-  f = open(filename, 'r')
+  f = open(templatefile, 'r')
   lines = f.readlines()
   f.close()
+
+  # use subject if there's one, else shorten the message
+  if post['subject'] and post['subject'] != board["subject"]:
+    short_message = post['subject']
+  else:
+    short_message = cut_home_msg(post['message'], len(board['name']))
   
   class_name = 'boardlink'
   
-  # use subject if there's one, else shorten the message
-  if subject:
-    short_message = subject
+  if post['parentid']:
+    parentid = parent_post['id']
   else:
-    short_message = re.compile(r"<del>(.+)</del>", re.DOTALL | re.IGNORECASE).sub('(spoiler)', message) # Remove spoilers
-    short_message = re.compile(r"<[^>]*?>", re.DOTALL | re.IGNORECASE).sub(' ', short_message) # Removes every html tag in the message
-    limit = Settings.HOME_LASTPOSTS_LENGTH - len(board['name'])
-    
-    # short message
-    if len(short_message) > limit:
-      short_message = short_message.decode('utf-8')[:limit].encode('utf-8') + "..."
-      short_message = re.compile(r"&(.(?!;))*$", re.DOTALL | re.IGNORECASE).sub('', short_message) # Removes incomplete HTML entities
-  
-    short_message = short_message.replace("\n", " ")
-    
-  if not parentid:
     class_name += ' op'
     parentid = postid
-  if file:
+    
+  if post['file']:
     class_name += ' file'
   
   # let's make the link
   if board['board_type'] == '1':
-    url = '/%s/read/%s' % (board['dir'], parentid)
+    url = '/%s/read/%s' % (board['dir'], parent_post['timestamp'])
     if postnum:
       url += '/%d' % postnum
   else:
     url = '/%s/res/%s.html#%s' % (board['dir'], parentid, postid)
-  
+
   # add to file
-  full_str = '%s: <a id="%s|%s" href="%s" class="%s">%s</a><br />\n' % (board['name'], board['id'], postid, url, class_name, short_message)
+  full_str = '<div class="line0"><small>%s: </small><a id="%s|%s" href="%s">%s</a></div>\n' % (board['name'], board['id'], postid, url, short_message)
   lines.insert(0, full_str)
   
   # remove last line
@@ -791,25 +964,27 @@ def home_add_post(message, postnum, postid, parentid, file, subject):
     lines.pop()
   
   # write into file
-  f = open(filename, 'w')
+  f = open(templatefile, 'w')
   f.writelines(lines)
   f.close()
 
-def home_remove_post(postid):
+def home_remove_post(postid, templatefile):
   board = Settings._.BOARD
-  
-  filename = 'templates/latest.html'
 
-  f = open(filename, 'r')
+  f = open(templatefile, 'r')
   lines = f.readlines()
   f.close()
   
   # check if the board|id is in the lines
   id_str = 'id="%s|%s"' % (board['id'], postid)
   changed = False
+  new = [l for l in lines if id_str not in l]
 
-  f = open(filename, 'w')
-  f.writelines(l for l in lines if id_str not in l)
+  f = open(templatefile, 'w')
+  if new:
+    f.writelines(new)
+  else:
+    f.write('-')
   f.close()
 
 def regenerateHome():
@@ -821,23 +996,26 @@ def regenerateHome():
   t -= datetime.timedelta(days=Settings.MAX_DAYS_THREADS)
   t = timestamp(t)
   
-  latest_news = FetchAll("SELECT `title`, `message`, `nameblock` FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC LIMIT " + str(Settings.HOME_NEWS))
-  total_threads = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `parentid` = 0 AND IS_DELETED = 0",0)
-  total_replies = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `parentid` > 0 AND IS_DELETED = 0",0)
-  total_images = FetchOne("SELECT COUNT(`thumb`) FROM `posts` WHERE CHAR_LENGTH(`thumb`) > 0 AND IS_DELETED = 0",0)
-  total_posts = int(total_threads[0]) + int(total_replies[0])
+  latest_news = FetchAll("SELECT `title`, `message`, `name`, `timestamp_formatted` FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC LIMIT " + str(Settings.HOME_NEWS))
+  latest_age = getLastAge(25)
+  #total_threads = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `parentid` = 0 AND IS_DELETED = 0",0)
+  #total_replies = FetchOne("SELECT COUNT(*) FROM `posts` WHERE `parentid` > 0 AND IS_DELETED = 0",0)
+  #total_images = FetchOne("SELECT COUNT(`thumb`) FROM `posts` WHERE CHAR_LENGTH(`thumb`) > 0 AND IS_DELETED = 0",0)
+  #total_posts = int(total_threads[0]) + int(total_replies[0])
   
   template_values = {
     'header': Settings.SITE_TITLE,
     'logo': Settings.SITE_LOGO,
     'slogan': Settings.SITE_SLOGAN,
     'latest_news': latest_news,
-    'total_posts': total_posts,
-    'total_threads': total_threads[0],
-    'total_replies': total_replies[0],
-    'total_images': total_images[0],
+    'latest_age': latest_age,
     'navbar': False,
   }
+  
+    #'total_posts': total_posts,
+    #'total_threads': total_threads[0],
+    #'total_replies': total_replies[0],
+    #'total_images': total_images[0],
   
   page_rendered = renderTemplate('home.html', template_values)
   f = open(Settings.HOME_DIR + "home.html", "w")
@@ -858,7 +1036,7 @@ def regenerateNews():
   """
   Update news.html in the boards directory with older news
   """
-  posts = FetchAll("SELECT `id`, `title`, `message`, `nameblock` FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC")
+  posts = FetchAll("SELECT * FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC")
   template_values = {
     'title': 'Noticias',
     'posts': posts,
@@ -871,7 +1049,7 @@ def regenerateNews():
   
   page_rendered = renderTemplate('news.html', template_values)
   
-  f = open(Settings.HOME_DIR + "news.html", "w")
+  f = open(Settings.HOME_DIR + "noticias.html", "w")
   try:
     f.write(page_rendered)
   finally:
@@ -918,8 +1096,16 @@ def regenerateAccess():
       f.close()
       
   return True
+  
+def regenerateKako():
+  board = Settings._.BOARD
+  
+  threads = FetchAll("SELECT * FROM archive WHERE boardid = %s ORDER BY timestamp DESC" % board['id'])
+  page = renderTemplate('kako.html', {'threads': threads})
+  with open(Settings.ROOT_DIR + board["dir"] + "/kako/index.html", "w") as f:
+    f.write(page)
 
-def make_redirect(postid, parentid, noko, mobile, timetaken=None):
+def make_redirect(postid, parentid, parent_post, noko, mobile, timetaken=None):
   board = Settings._.BOARD
   randomPhrase = getRandomLine('quotes.conf')
   
@@ -928,12 +1114,39 @@ def make_redirect(postid, parentid, noko, mobile, timetaken=None):
       
   if mobile:
     url = Settings.CGI_URL + 'mobile/' + board["dir"]
-    noko_url = "%s/mobileread/%s#%s" % (Settings.CGI_URL + board["dir"], parentid, postid)
+    if board["board_type"] == '1':
+      noko_url = "%s/mobileread/%s/%s/l10" % (Settings.CGI_URL, board["dir"], parent_post['timestamp'])
+    else:
+      noko_url = "%s/mobileread/%s/%s#%s" % (Settings.CGI_URL, board["dir"], parentid, postid)
   else:
     url = Settings.BOARDS_URL + board["dir"] + "/"
-    noko_url = "%s/res/%s.html#%s" % (Settings.BOARDS_URL + board["dir"], str(parentid), postid)
+    if board["board_type"] == '1':
+      noko_url = "%s/read/%s/l50" % (Settings.BOARDS_URL + board["dir"], str(parent_post['timestamp']))
+    else:
+      noko_url = "%s/res/%s.html#%s" % (Settings.BOARDS_URL + board["dir"], str(parentid), postid)
     
   if noko:
     url = noko_url
       
   return renderTemplate('redirect.html', {'url': url, 'message': randomPhrase, 'timetaken': round(timetaken, 2)})
+  
+def archiveThread(postid):
+  import json
+  board = Settings._.BOARD
+  
+  thread = getThread(postid, False)
+  
+  page = renderTemplate("txt_archive.html", {"threads": [thread], "replythread": postid}, False)
+  with open(Settings.ROOT_DIR + board["dir"] + "/kako/" + str(thread['timestamp']) + ".html", "w") as f:
+    f.write(page)
+  
+  thread['keys'] = ['num', 'IS_DELETED', 'name', 'tripcode', 'email', 'message', 'timestamp_formatted']
+  thread['posts'] = [[row[key] for key in thread['keys']] for row in thread['posts']]
+  try:
+    with open(Settings.ROOT_DIR + board["dir"] + "/kako/" + str(thread['timestamp']) + ".json", "w") as f:
+      json.dump(thread, f, indent=0)
+  except:
+    raise UserError, "Can't archive: %s" % thread['timestamp']
+  
+  UpdateDb("REPLACE INTO archive (id, boardid, timestamp, subject, length) VALUES ('%s', '%s', '%s', '%s', '%s')" % (thread['id'], board['id'], thread['timestamp'], _mysql.escape_string(thread['subject']), thread['length']))
+  

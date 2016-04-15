@@ -2,7 +2,7 @@
 <body>
 <h2>#{board_name}@B.a.I. Móvil</h2>
 <p>
-<a href="#{mobile_url}">Home</a> ·
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
 <?py if mode == 1: ?>
 Página Frontal ·
 <a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
@@ -16,9 +16,9 @@ Lista de Hilos ·
 <?py for thread in more_threads: ?>
 #{iter}:
     <?py if int(thread["length"]) > 10: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}/l10" rel="nofollow">
+<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10" rel="nofollow">
     <?py else: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['id']}" rel="nofollow">
+<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}" rel="nofollow">
     <?py #endif ?>
 #{thread["subject"]}
     <?py if thread['locked'] == '1': ?>
@@ -30,7 +30,7 @@ Lista de Hilos ·
     <?py iter += 1 ?>
 <?py #endfor ?>
 <hr />
-<a href="#{mobile_url}">Home</a> ·
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
 <?py if mode == 1: ?>
 Página Frontal ·
 <a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·

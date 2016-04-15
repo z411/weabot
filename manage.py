@@ -76,17 +76,26 @@ def manage(self, path_split):
             
             message = _('Rebuilt %(board)s in %(time)s seconds.') % {'board': _('all boards'), 'time': timeTaken(t1, time.time())}
             logAction(staff_account['username'], _('Rebuilt %s') % _('all boards'))
-          elif board_dir == 'home':
+          elif board_dir == '!HOME':
             t1 = time.time()
             regenerateHome()
             message = _('Rebuilt %(board)s in %(time)s seconds.') % {'board': _('home'), 'time': timeTaken(t1, time.time())}
             logAction(staff_account['username'], _('Rebuilt %s') % _('home'))
-          elif board_dir == 'news':
+          elif board_dir == '!NEWS':
             t1 = time.time()
             regenerateNews()
             message = _('Rebuilt %(board)s in %(time)s seconds.') % {'board': _('news'), 'time': timeTaken(t1, time.time())}
             logAction(staff_account['username'], _('Rebuilt %s') % _('news'))
-          elif board_dir == 'htaccess':
+          elif board_dir == '!KAKO':
+            t1 = time.time()
+            boards = FetchAll('SELECT `dir` FROM `boards` WHERE archive = 1')
+            for board in boards:
+              board = setBoard(board['dir'])
+              regenerateKako()
+            
+            message = _('Rebuilt %(board)s in %(time)s seconds.') % {'board': 'kako', 'time': timeTaken(t1, time.time())}
+            logAction(staff_account['username'], _('Rebuilt %s') % 'kako')
+          elif board_dir == '!HTACCESS':
             t1 = time.time()
             if regenerateAccess():
               message = _('Rebuilt %(board)s in %(time)s seconds.') % {'board': _('htaccess'), 'time': timeTaken(t1, time.time())}
@@ -103,7 +112,9 @@ def manage(self, path_split):
           
           template_filename = "message.html"
       elif path_split[2] == 'modbrowse':
-        return
+        if Settings.PRIVACY_LOCK:
+          return # Privacy return
+          
         board_dir = ''
         thread_id = 0
         try:
@@ -256,6 +267,7 @@ def manage(self, path_split):
           deletePost(path_split[4], None, '2', imageonly)
         else:
           deletePost(path_split[4], None, '0', imageonly)
+        #deletePost(path_split[4], None, '2', imageonly)
         regenerateHome()
             
         # Borrar reportes
@@ -581,6 +593,10 @@ def manage(self, path_split):
               board['allow_oekaki'] = '1'
             else:
               board['allow_oekaki'] = '0'
+            if 'archive' in self.formdata.keys():
+              board['archive'] = '1'
+            else:
+              board['archive'] = '0'
             board['postarea_extra_html_bottom'] = self.formdata['postarea_extra_html_bottom']
             board['force_css'] = self.formdata['force_css']
             
@@ -594,6 +610,17 @@ def manage(self, path_split):
               board['maxsize'] = int(self.formdata['maxsize'])
             except:
               raise UserError, _("Max size must be numeric.")
+              
+            try:
+              board['maxage'] = int(self.formdata['maxage'])
+            except:
+              raise UserError, _("Max age must be numeric.")
+            
+            try:
+              board['maxinactive'] = int(self.formdata['maxinactive'])
+            except:
+              raise UserError, _("Max inactivity must be numeric.")
+              
             updateBoardSettings()
             message = _('Board options successfully updated.') + ' <a href="'+Settings.CGI_URL+'manage/rebuild/'+board['dir']+'">'+_('Rebuild')+'</a>'
             template_filename = "message.html"
@@ -628,6 +655,7 @@ def manage(self, path_split):
               logAction(staff_account['username'], _('Restored post %s') % ('/' + path_split[5] + '/' + path_split[6]))
             
           if path_split[4] == 'delete':
+            return # TODO
             board = setBoard(path_split[5])
             post = FetchOne('SELECT `parentid` FROM `posts` WHERE `boardid` = ' + board['id'] + ' AND `id` = \'' + _mysql.escape_string(path_split[6]) + '\' LIMIT 1')
             if not post:
@@ -645,6 +673,7 @@ def manage(self, path_split):
         
         # Delete more than 1 post
         if 'deleteall' in self.formdata.keys():
+          return # TODO
           deleted = 0
           for key in self.formdata.keys():
             if key[:2] == '!i':
@@ -700,7 +729,7 @@ def manage(self, path_split):
         # Table
         if 'board' in self.formdata.keys() and self.formdata['board'] != 'all':
           cboard = self.formdata['board']
-          posts = FetchAll("SELECT posts.id, timestamp_formatted, IS_DELETED, posts.ip, posts.message, dir, boardid FROM `posts` INNER JOIN `boards` ON boardid = boards.id WHERE `dir` = '%s' AND IS_DELETED %s ORDER BY `timestamp` DESC LIMIT %d, %d" % (_mysql.escape_string(self.formdata['board']), _mysql.escape_string(type_condition), currentpage*pagesize, pagesize))
+          posts = FetchAll("SELECT posts.id, timestamp_formatted, IS_DELETED, INET_NTOA(posts.ip) as ip, posts.message, dir, boardid FROM `posts` INNER JOIN `boards` ON boardid = boards.id WHERE `dir` = '%s' AND IS_DELETED %s ORDER BY `timestamp` DESC LIMIT %d, %d" % (_mysql.escape_string(self.formdata['board']), _mysql.escape_string(type_condition), currentpage*pagesize, pagesize))
           try:
             totals = FetchOne("SELECT COUNT(id) FROM `posts` WHERE IS_DELETED %s AND `boardid` = %s" % (_mysql.escape_string(type_condition), _mysql.escape_string(posts[0]['boardid'])), 0)
           except:
@@ -752,16 +781,16 @@ def manage(self, path_split):
         
       elif path_split[2] == 'boardlock':
         board = setBoard(path_split[3])
-        if board['lockable']:
-          if board['locked']:
+        if int(board['lockable']):
+          if int(board['locked']):
             # Si esta cerrado... abrir
-            board['locked'] = False
+            board['locked'] = 0
             updateBoardSettings()
             message = _('Board opened successfully.')
             template_filename = "message.html"
           else:
             # Si esta abierta, cerrar
-            board['locked'] = True
+            board['locked'] = 1
             updateBoardSettings()
             message = _('Board closed successfully.')
             template_filename = "message.html"
@@ -815,6 +844,56 @@ def manage(self, path_split):
         if not action_taken:
           template_filename = "addboard.html"
           template_values = {}
+      elif path_split[2] == 'trim':
+        board = setBoard(path_split[3])
+        trimThreads()
+        
+        self.output = "done trimming"
+        return
+      elif path_split[2] == 'fixexpires':
+        board = setBoard(path_split[3])
+        
+        if int(board["maxage"]):
+          date_format = '%d/%m'
+          if board["dir"] == 'jp':
+            date_format = '%m月%d日'
+          sql = "UPDATE posts SET expires = timestamp + (%s * 86400), expires_formatted = FROM_UNIXTIME((timestamp + (%s * 86400)), '%s') WHERE boardid = %s AND parentid = 0" % (board["maxage"], board["maxage"], date_format, board["id"])
+          UpdateDb(sql)
+        
+          alert_time = int(round(int(board['maxage']) * Settings.MAX_AGE_ALERT))
+          sql = "UPDATE posts SET expires_alert = CASE WHEN UNIX_TIMESTAMP() > (expires - %d*86400) THEN 1 ELSE 0 END WHERE boardid = %s AND parentid = 0" % (alert_time, board["id"])
+          UpdateDb(sql)
+        else:
+          sql = "UPDATE posts SET expires = 0, expires_formatted = '', expires_alert = 0 WHERE boardid = %s AND parentid = 0" % (board["id"])
+          UpdateDb(sql)
+        
+        self.output = "done"
+        return
+      elif path_split[2] == 'fixid':
+        board = setBoard(path_split[3])
+        posts = FetchAll('SELECT * FROM `posts` WHERE `boardid` = %s' % board['id'])
+        self.output = "total: %d<br />" % len(posts)
+        
+        for post in posts:
+            new_timestamp_formatted = formatTimestamp(post['timestamp'])
+            
+            tim = 0
+                
+            if board["useid"] != '0':
+                new_timestamp_formatted += ' ID:' + iphash(post['ip'], post["email"], tim, board["useid"])
+            
+            self.output += "%s - %s <br />" % (post['id'], new_timestamp_formatted)
+            
+            query = "UPDATE `posts` SET timestamp_formatted = '%s' WHERE boardid = '%s' AND id = '%s'" % (new_timestamp_formatted, board['id'], post['id'])
+            UpdateDb(query)
+            
+        return
+      elif path_split[2] == 'archive':
+        t = time.time()
+        board = setBoard(path_split[3])
+        postid = int(path_split[4])
+        archiveThread(postid)
+        self.output = "todo ok %s" % str(time.time() - t)
       elif path_split[2] == 'stats':
         yesterday = time.time() - (86400) # Yesterday
         last_regen = stats.getTimestamp("!ALL")
@@ -1053,7 +1132,8 @@ def manage(self, path_split):
         template_filename = "logs.html"
         template_values = {'logs': logs}
       elif path_split[2] == 'logout':
-        message = _('Logging out...') + '<meta http-equiv="refresh" content="0;url=' + Settings.CGI_URL + 'manage" />'
+        #message = _('Logging out...') + '<meta http-equiv="refresh" content="0;url=' + Settings.CGI_URL + 'manage" />'
+        message = _('Logging out...')
         setCookie(self, 'weabot_manage', '', domain='THIS')
         setCookie(self, 'weabot_staff', '')
         template_filename = "message.html"
@@ -1178,11 +1258,13 @@ def manage(self, path_split):
             
             # Post anonimo
             if 'anonymous' in self.formdata.keys() and self.formdata['anonymous'] == '1':
-              nameblock = modNameBlock("", formatDate(t), (int(staff_account['rights']) + 1))
+              to_name = "Staff ★"
             else:
-              nameblock = modNameBlock(staff_account['username'], formatDate(t), (int(staff_account['rights']) + 1))
+              to_name = "%s ★" % staff_account['username']
+            timestamp_formatted = formatDate(t)
             
-            UpdateDb("INSERT INTO `news` (type, staffid, name, title, message, nameblock, timestamp) VALUES ('1', '"+staff_account['id']+"+', '"+staff_account['username']+"', '"+_mysql.escape_string(self.formdata['title'])+"', '"+_mysql.escape_string(message)+"', '"+nameblock+"', '"+str(timestamp(t))+"')")
+            UpdateDb("INSERT INTO `news` (type, staffid, staff_name, title, message, name, timestamp, timestamp_formatted) VALUES ('1', '%s', '%s', '%s', '%s', '%s', '%d', '%s')" % (staff_account['id'], staff_account['username'], _mysql.escape_string(self.formdata['title']), _mysql.escape_string(message), to_name, timestamp(t), timestamp_formatted))
+            
             regenerateNews()
             regenerateHome()
             message = _("Added successfully.")
@@ -1196,8 +1278,6 @@ def manage(self, path_split):
             template_filename = "message.html"
         else:
           posts = FetchAll("SELECT * FROM `news` WHERE type = '1' ORDER BY `timestamp` DESC")
-          for post in posts:
-            post['timestamp_formatted'] = formatTimestamp(post['timestamp'])
           template_filename = "news.html"
           template_values = {'action': 'news', 'posts': posts}
       elif path_split[2] == 'newschannel':
@@ -1208,9 +1288,9 @@ def manage(self, path_split):
           if path_split[3] == 'add':
             t = datetime.datetime.now()
             # Delete old posts
-            posts = FetchAll("SELECT `id` FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC LIMIT "+str(Settings.MODNEWS_MAX_POSTS)+",30")
-            for post in posts:
-              UpdateDb("DELETE FROM `news` WHERE id = " + post['id'] + "AND `type` = '0'")
+            #posts = FetchAll("SELECT `id` FROM `news` WHERE `type` = '1' ORDER BY `timestamp` DESC LIMIT "+str(Settings.MODNEWS_MAX_POSTS)+",30")
+            #for post in posts:
+            #  UpdateDb("DELETE FROM `news` WHERE id = " + post['id'] + " AND `type` = '0'")
               
             # Insert new post
             message = ''
@@ -1228,11 +1308,13 @@ def manage(self, path_split):
             
             # If it's preferred to remain Anonymous...
             if 'anonymous' in self.formdata.keys() and self.formdata['anonymous'] == '1':
-              nameblock = modNameBlock("", formatDate(t), (int(staff_account['rights']) + 1))
+              to_name = "Staff ★"
             else:
-              nameblock = modNameBlock(staff_account['username'], formatDate(t), (int(staff_account['rights']) + 1))
-              
-            UpdateDb("INSERT INTO `news` (type, staffid, name, title, message, nameblock, timestamp) VALUES ('0', '"+staff_account['id']+"+', '"+staff_account['username']+"', '"+_mysql.escape_string(self.formdata['title'])+"', '"+_mysql.escape_string(message)+"', '"+nameblock+"', '"+str(timestamp(t))+"')")
+              to_name = "%s ★" % staff_account['username']
+            timestamp_formatted = formatDate(t)
+            
+            UpdateDb("INSERT INTO `news` (type, staffid, staff_name, title, message, name, timestamp, timestamp_formatted) VALUES ('0', '%s', '%s', '%s', '%s', '%s', '%d', '%s')" % (staff_account['id'], staff_account['username'], _mysql.escape_string(self.formdata['title']), _mysql.escape_string(message), to_name, timestamp(t), timestamp_formatted))
+            
             message = _("Added successfully.")
             template_filename = "message.html"
           if path_split[3] == 'delete':            
@@ -1253,9 +1335,6 @@ def manage(self, path_split):
             posts = FetchAll("SELECT * FROM `news` WHERE type = '0' ORDER BY `timestamp` DESC")
           else:
             posts = FetchAll("SELECT * FROM `news` WHERE staffid = '"+staff_account['id']+"' AND type = '0' ORDER BY `timestamp` DESC")
-
-          for post in posts:
-            post['timestamp_formatted'] = formatTimestamp(post['timestamp'])
           
           template_filename = "news.html"
           template_values = {'action': 'newschannel', 'posts': posts}
@@ -1348,12 +1427,14 @@ def manage(self, path_split):
           'navigator': navigator}
       # Show by IP
       elif path_split[2] == 'ipshow':        
-        return
+        if Settings.PRIVACY_LOCK:
+          return # Privacy return
+          
         if 'ip' in self.formdata.keys():
           # If an IP was given...
           if self.formdata['ip'] != '':
             formatted_ip = str(inet_aton(self.formdata['ip']))
-            posts = FetchAll("SELECT posts.*, boards.dir FROM `posts` INNER JOIN `boards` ON boards.id = posts.boardid WHERE ip = '%s'" % _mysql.escape_string(formatted_ip))
+            posts = FetchAll("SELECT posts.*, boards.dir FROM `posts` INNER JOIN `boards` ON boards.id = posts.boardid WHERE ip = '%s' ORDER BY posts.timestamp DESC" % _mysql.escape_string(formatted_ip))
             if posts:
               # TODO This is ugly right now, we should try to use board.html template to hide the postbox and show everything as a reply post.
               self.output = renderTemplate("posts.html", {"title": "Actividad IP " + self.formdata['ip'], "posts": posts, "ip": self.formdata['ip']})

@@ -3,12 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
   <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta name="keywords" content="bienvenido, a, internet, bbs, textboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusi&oacute;n de distintos temas, sin necesidad de registrarse." />
   <meta http-equiv="content-language" content="ES" />
   <meta name="revisit-after" content="14 days" />
   <meta name="robots" content="noarchive" />
     <title>
 <?py if board: ?>
-    #{board_name}
+    #{board_name}@B.a.I. IB
 <?py else: ?>
     #{title}
 <?py #endif ?>
@@ -16,10 +18,11 @@
     <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
     <link rel="stylesheet" href="#{static_url}css/global.css" />
 <?py if force_css == "": ?>
-    <link rel="stylesheet" type="text/css" href="#{static_url}css/#{default_style}.css" title="#{default_style}" />
-    <?py for alternate_style in alternate_styles: ?>
-    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/#{alternate_style}.css" title="#{alternate_style}" />
-    <?py #endfor ?>
+    <link rel="stylesheet" type="text/css" href="#{static_url}css/dickgirl.css" title="Dickgirl" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/futaba.css" title="Futaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/putaba.css" title="Putaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/burichan.css" title="Burichan" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/rene.css" title="Rene" />
     <script type="text/javascript">
     var style_cookie = 'weabot_style';
 <?py else: ?>
@@ -35,13 +38,9 @@
   <body>
     <div class="adminbar">
 <?py if force_css == "": ?>
-    [<a href="#" onclick="javascript:set_stylesheet('#{default_style}');return false;">#{default_style}</a>]
-    <?py for alternate_style in alternate_styles: ?>
-      [<a href="#" onclick="javascript:set_stylesheet('#{alternate_style}');return false;">#{alternate_style}</a>]
-    <?py #endfor ?>
-    -
+      [<a href="#" onclick="javascript:set_stylesheet('Dickgirl');return false;">Dickgirl</a>] [<a href="#" onclick="javascript:set_stylesheet('Futaba');return false;">Futaba</a>] [<a href="#" onclick="javascript:set_stylesheet('Putaba');return false;">Putaba</a>] [<a href="#" onclick="javascript:set_stylesheet('Burichan');return false;">Burichan</a>] [<a href="#" onclick="javascript:set_stylesheet('Rene');return false;">Rene</a>] -
 <?py #endif ?>
-      [<a href="#{home_url}home.html">Home</a>]
+      [<a href="/bai.html">Home</a>]
     </div>
 <?py if navbar: ?>
   <?py include('templates/navbar.html') ?>
@@ -51,7 +50,7 @@
       <img src="#{banner_url}" alt="Logo" /><br />
 <?py #endif ?>
 <?py if board: ?>
-      #{board_name}
+      #{board_name}@B.a.I. IB
 <?py #endif ?>
     </div>
     <hr width="90%" size="1" />

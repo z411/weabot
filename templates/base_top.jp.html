@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta name="keywords" content="bienvenido, a, internet, bbs, textboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusi&oacute;n de distintos temas, sin necesidad de registrarse." />
+  <meta http-equiv="content-language" content="ES" />
+  <meta name="revisit-after" content="14 days" />
+  <meta name="robots" content="noarchive" />
+    <title>
+<?py if board: ?>#{board_name}@B.a.I. IB
+<?py else: ?>#{title}<?py #endif ?>
+    </title>
+	<style type="text/css">
+    body,textarea {font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important; font-size: 16px !important;}
+    </style>
+    <link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
+    <link rel="stylesheet" href="#{static_url}css/global.css" />
+<?py if force_css == "": ?>
+    <link rel="stylesheet" type="text/css" href="#{static_url}css/dickgirl.css" title="Dickgirl" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/futaba.css" title="Futaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/putaba.css" title="Putaba" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/burichan.css" title="Burichan" />
+    <link rel="alternate stylesheet" type="text/css" href="#{static_url}css/rene.css" title="Rene" />
+    <script type="text/javascript">
+    var style_cookie = 'weabot_style';
+<?py else: ?>
+    <link rel="stylesheet" type="text/css" href="#{force_css}" />
+    <script type="text/javascript">
+<?py #endif ?>
+    var ispage = #{is_page};
+    var cgi_url = '#{cgi_url}';
+    </script>
+    <script type="text/javascript" src="#{static_url}js/weabot.js"></script>
+    <script type="text/javascript">check_version("1");</script>
+  </head>
+  <body>
+    <div class="adminbar">
+<?py if force_css == "": ?>
+      [<a href="#" onclick="javascript:set_stylesheet('Dickgirl');return false;">ふたなり</a>] [<a href="#" onclick="javascript:set_stylesheet('Futaba');return false;">ふたば</a>] [<a href="#" onclick="javascript:set_stylesheet('Putaba');return false;">ぷたば</a>] [<a href="#" onclick="javascript:set_stylesheet('Burichan');return false;">ブリちゃん</a>] [<a href="#" onclick="javascript:set_stylesheet('Rene');return false;">レネ</a>] -
+<?py #endif ?>
+      [<a href="/bai.html">ホーム</a>]
+    </div>
+<?py if navbar: ?>
+  <?py include('templates/navbar.html') ?>
+<?py #endif ?>
+    <div class="logo">
+<?py if banner_url: ?>
+      <img src="#{banner_url}" alt="Logo" /><br />
+<?py #endif ?>
+<?py if board: ?>
+      #{board_name}@B.a.I. IB
+<?py #endif ?>
+    </div>
+    <hr width="90%" size="1" />

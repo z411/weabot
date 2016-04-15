@@ -1,26 +1,30 @@
 <?py include('templates/mobile/base_top.html') ?>
 <body>
 <h2>#{board_name}@B.a.I. Móvil</h2>
-<a href="#{mobile_url}">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}">Página Frontal</a> ·
-<a href="#{cgi_url}mobilelist/#{board}">Lista de Hilos</a> ·
-<a href="#{cgi_url}mobilenew/#{board}">Nuevo Hilo</a>
-<hr />
- [<a name="top" href="#bottom">Ir al final</a>]
+<div class="nav">
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}">■ Volver al IB ■</a> ·
+<a href="#{cgi_url}mobilelist/#{board}">Lista de hilos</a> ·
+<?py if not replythread: ?>
+<a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a> ·
+<?py #endif ?>
+<a name="top" href="#bottom">Ir al final</a>
+</div>
 <?py for thread in threads: ?>
   <div class="thread">
     <?py for post in thread['posts']: ?>
       <?py if int(post['parentid']) == 0: ?>
         <?py if post['subject'] != '': ?>
-          <span class="subject">#{post["subject"]}</span>
+          <span class="subject">#{post["subject"]}</span> <small>(#{int(thread["length"])-1})</small>
         <?py else: ?>
-          <span class="subject">Sin asunto</span>
+          <span class="subject">Sin asunto</span> <small>(#{int(thread["length"])-1})</small>
         <?py #endif ?>
         <?py if post['locked'] == '1': ?>
       <small>(cerrado)</small>
         <?py elif post['locked'] == '2': ?>
       <small>(permasage)</small>
         <?py #endif ?>
+		<br />
         <?py if post['email']: ?>
       <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
           <?py if post['tripcode']: ?>
@@ -57,7 +61,8 @@
           <?py #endif ?>
       <br />
           <?py if post['file'] != '': ?>
-    <a href="#{board}/src/#{post['file']}"><img src="#{board}/mobile/#{post['thumb']}" align="left" /></a>
+	Archivo: <a href="http://bienvenidoainternet.org/#{board}/src/#{post['file']}">#{post['file']}</a> (#{post['file_size']} B)<br />
+    <a href="http://bienvenidoainternet.org/#{board}/src/#{post['file']}"><img src="http://bienvenidoainternet.org/#{board}/mobile/#{post['thumb']}" align="left" /></a>
           <?py #endif ?>
     <blockquote>#{post['message']}</blockquote>
           <?py if post['file'] != '': ?>
@@ -72,10 +77,17 @@
     </div>
       <?py #endif ?>
     <?py #endfor ?>
-  <hr />
 </div>
 <?py #endfor ?>
-[<a name="bottom" href="#top">Ir al principio</a>]
+<div class="nav">
+<a href="http://m.bienvenidoainternet.org">Home</a> ·
+<a href="#{cgi_url}mobile/#{board}">■ Volver al IB ■</a> ·
+<a href="#{cgi_url}mobilelist/#{board}">Lista de hilos</a> ·
+<?py if not replythread: ?>
+<a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a> ·
+<?py #endif ?>
+<a name="bottom" href="#top">Ir al principio</a>
+</div>
 <form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
   <input type="hidden" name="board" value="#{board}" />
   <input type="hidden" name="parent" value="#{replythread}" />
@@ -86,7 +98,7 @@
   </div>
   <table>
    <tr><td>Nombre</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
-   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
+   <tr><td>E-mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
    <tr><td>Asunto</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
    <tr><td>Mensaje</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
    <tr><td>Archivo</td><td><input type="file" name="file" size="25" /></td></tr>
@@ -95,9 +107,5 @@
   </table>
 </form>
 <script type="text/javascript">set_inputs("postform");</script>
-<a href="#{mobile_url}">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}">Página Frontal</a> ·
-<a href="#{cgi_url}mobilelist/#{board}">Lista de Hilos</a> ·
-<a href="#{cgi_url}mobilenew/#{board}">Nuevo Hilo</a>
-<hr />
+
 <?py include('templates/mobile/base_bottom.html') ?>

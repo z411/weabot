@@ -30,9 +30,6 @@
 <?py elif mode == 1: ?>
 <form name="banform" method="post">
 <p>Tipo</p>
-    <?py if edit_id > 0: ?>
- <input type="hidden" name="edit" value="#{edit_id}" />
-    <?py #endif ?>
 <table>
 <tr>
  <td class="postblock"><input type="radio" name="type" value="0"#{checked(startvalues['type'] == '0')} />Palabra</td>
@@ -51,7 +48,7 @@
  <li><input type="checkbox" name="board_#{board['dir']}" value="1"#{checked(board['dir'] in startvalues['where'])} />${board['name']}</li>
     <?py #endfor ?>
 </ul><br />
-<label for="reason">Mensaje</label> <input type="text" size="40" name="reason" value="#{startvalues['reason']}" /><br />
+<label for="reason">Mensaje</label> <input type="text" size="75" name="reason" value="#{startvalues['reason']}" /><br />
 <p>Acción</p>
 <table>
 <tr>
@@ -60,7 +57,7 @@
 </tr>
 <tr>
  <td class="postblock"><input type="radio" name="action" value="1"#{checked(startvalues['action'] == '1')} />Reemplazar</td>
- <td>Cambiar a: <input type="text" name="changeto" value="#{startvalues['changeto']}" /></td>
+ <td>Cambiar a: <input type="text" name="changeto" value="#{startvalues['changeto']}" size="50" /></td>
 </tr>
 <tr>
  <td class="postblock"><input type="radio" name="action" value="2"#{checked(startvalues['action'] == '2')} />Auto-ban</td>
@@ -80,7 +77,7 @@
 </tr>
 <tr>
   <td class="postblock"><input type="radio" name="action" value="3"#{checked(startvalues['action'] == '3')} />Redireccionar</td>
-  <td>URL: <input type="text" name="redirect_url" value="#{startvalues['redirect_url']}" /><br />
+  <td>URL: <input type="text" name="redirect_url" value="#{startvalues['redirect_url']}" size="50" /><br />
       Tiempo en #segundos: <input type="text" name="redirect_time" value="#{startvalues['redirect_time']}" />
   </td>
 </tr>

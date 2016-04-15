@@ -11,6 +11,11 @@
     <?py #endfor ?>
   </table>
 <?py elif mode == 1: ?>
+ <script>
+ function pvw(elem) {
+  document.getElementById('p_'+elem).innerHTML=s=document.getElementById(elem).value;
+ }
+ </script>
  <form action="#{cgi_url}manage/board/#{board['dir']}" method="post">
  <table>
  <tr><td class="postblock">Nombre</td><td><input type="text" name="name" value="#{board['name']}" /></td></tr>
@@ -20,10 +25,10 @@
   <option value="1"#{selected(board['board_type'] == '1')}>Textboard</option>
   </select>
  </td></tr>
- <tr><td class="postblock">Nombre por defecto</td><td><input type="text" name="anonymous" size="60" maxlength="60" value="#{board['anonymous']}" /></td></tr>
- <tr><td class="postblock">Título por defecto</td><td><input type="text" name="subject" size="60" maxlength="60" value="#{board['subject']}" /></td></tr>
- <tr><td class="postblock">Mensaje por defecto</td><td><input type="text" name="message" size="60" maxlength="60" value="#{board['message']}" /></td></tr>
- <tr><td class="postblock">Caracter de Tripcode</td><td><input type="text" name="tripcode_character" maxlength="5" value="#{board['tripcode_character']}" /></td></tr>
+ <tr><td class="postblock">Nombre por defecto</td><td><input type="text" name="anonymous" size="70" maxlength="256" value="${board['anonymous']}" /></td></tr>
+ <tr><td class="postblock">Título por defecto</td><td><input type="text" name="subject" size="70" maxlength="60" value="${board['subject']}" /></td></tr>
+ <tr><td class="postblock">Mensaje por defecto</td><td><input type="text" name="message" size="70" maxlength="256" value="${board['message']}" /></td></tr>
+ <tr><td class="postblock">Caracter de Tripcode</td><td><input type="text" name="tripcode_character" maxlength="5" value="${board['tripcode_character']}" /></td></tr>
  <tr><td class="postblock">Anónimo forzado</td><td><input type="checkbox" name="forced_anonymous" value="1"#{checked(board['forced_anonymous'] == '1')} /></td></tr>
  <tr><td class="postblock">Desactivar asunto</td><td><input type="checkbox" name="disable_subject" value="1"#{checked(board['disable_subject'] == '1')} /></td></tr>
  <tr><td class="postblock">Papelera de Reciclaje</td><td><input type="checkbox" name="recyclebin" value="1"#{checked(board['recyclebin'] == '1')} /></td></tr>
@@ -36,8 +41,9 @@
  </select></td></tr>
  <tr><td class="postblock">Secreto</td><td><input type="checkbox" name="secret" value="1"#{checked(board['secret'] == '1')} /></td></tr>
  <tr><td class="postblock">Cerrable</td><td><input type="checkbox" name="lockable" value="1"#{checked(board['lockable'] == '1')} /></td></tr>
- <tr><td class="postblock">HTML de la parte superior</td><td><textarea name="postarea_extra_html_top" rows="10" cols="50">${board['postarea_extra_html_top']}</textarea>
+ <tr><td class="postblock">HTML de la parte superior</td><td><textarea id="patop" name="postarea_extra_html_top" rows="10" cols="50" oninput="pvw('patop')">${board['postarea_extra_html_top']}</textarea>
   <br /><input type="checkbox" name="postarea_extra_always" value="1"#{checked(board['postarea_extra_always'] == '1')} />Mostrar Siempre
+  <br /><div id="p_patop" style="border:1px dotted gray"></div>
  </td></tr>
  <tr><td class="postblock">HTML de la parte inferior</td><td><textarea name="postarea_extra_html_bottom" rows="10" cols="50">${board['postarea_extra_html_bottom']}</textarea></td></tr>
  <tr><td class="postblock">Permitir imágenes</td><td><input type="checkbox" name="allow_images" value="1"#{checked(board['allow_images'] == '1')} /> (al crear hilo)</td></tr>
@@ -45,6 +51,7 @@
  <tr><td class="postblock">Botón "Sin Imagen"</td><td><input type="checkbox" name="allow_noimage" value="1"#{checked(board['allow_noimage'] == '1')} /> (permite crear hilos sin imagen)</td></tr>
  <tr><td class="postblock">Permitir spoilers</td><td><input type="checkbox" name="allow_spoilers" value="1"#{checked(board['allow_spoilers'] == '1')} /></td></tr>
  <tr><td class="postblock">Permitir oekaki</td><td><input type="checkbox" name="allow_oekaki" value="1"#{checked(board['allow_oekaki'] == '1')} /></td></tr>
+ <tr><td class="postblock">Archivar</td><td><input type="checkbox" name="archive" value="1"#{checked(board['archive'] == '1')} /> (cuando el hilo se cae del board)</td></tr>
  <tr><td class="postblock">Forzar CSS</td><td><input type="text" name="force_css" size="60" value="#{board['force_css']}" /><br />(dejar en blanco para usar CSS normales)</td></tr>
  <tr><td class="postblock">Tipos de archivo</td>
  <td>
@@ -54,7 +61,10 @@
  </td>
  </tr>
  <tr><td class="postblock">Tamaño Máximo (kilobytes)</td><td><input type="text" name="maxsize" value="#{board['maxsize']}" /></td></tr>
+ <tr><td class="postblock">Edad máxima de un hilo</td><td><input type="text" name="maxage" value="#{board['maxage']}" />(días; 0 = desactivar)</td></tr>
+ <tr><td class="postblock">Inactividad máxima de un hilo</td><td><input type="text" name="maxinactive" value="#{board['maxinactive']}" />(días; 0 = desactivar)</td></tr>
  </table>
+ <br /><hr />
  <input type="submit" value="Guardar cambios" />
 </form>
 <?py #endif ?>
