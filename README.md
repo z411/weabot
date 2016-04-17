@@ -16,12 +16,14 @@ New features
 - Flexible filetypes (such as Flash)
 - Wordfilters
 - Proper markdown and HTML
+- API
 - Many bugfixes and security improvements, and other minor improvements
 
 Requirements
 ------------
 * Python 2.x
 * MySQL
+* MySQL-Python
 * WSGI/FastCGI (Optional)
 
 Installation
@@ -29,11 +31,11 @@ Installation
 1. Set up your web server to run Python scripts as CGI or FastCGI (see .htaccess example)
 2. Create a MySQL database and import the weabot.sql file
 3. Navigate to http://yoursite.com/weabot_folder/weabot.py/manage
-4. Log-in with credentials admin/123456 - then create your own staff account and delete admin
+4. Log-in with credentials admin/admin - then create your own staff account and delete admin
 
 Authors
 -------
-weabot fork by Bienvenido a Internet N.P.O. <burocracia@bienvenidoainternet.org>
+weabot fork by Bienvenido a Internet N.P.O. <burocracia@bienvenidoainternet.org>    
 Original work by tslocum <tslocum@gmail.com> https://github.com/tslocum/PyIB
 
 License
