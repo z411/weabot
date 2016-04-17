@@ -47,7 +47,7 @@ class Settings(object):
   ENABLE_RSS = False
   
   # *************** BANNER INFORMATION ***************
-  ENABLE_BANNERS = True
+  ENABLE_BANNERS = False
   banners_folder = STATIC_URL + "img/"		# Folder containing banners
   banners = {'default': [],}
   BANNER_WIDTH = 300
