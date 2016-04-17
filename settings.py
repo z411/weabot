@@ -13,17 +13,17 @@ class Settings(object):
   LANG = "es"
   
   # *************** PATH INFORMATION ***************
-  NAME = ""
-  DOMAIN = ""
-  ROOT_DIR = ""
-  HOME_DIR = ""
-  IMAGES_DIR = ""
-  STATIC_DIR = ""
-  HOME_URL = ""
+  NAME = "domain.org"
+  DOMAIN = ".domain.org"
+  ROOT_DIR = "../"
+  HOME_DIR = "../"
+  IMAGES_DIR = "../"
+  STATIC_DIR = "static/"
+  HOME_URL = "/"
   BOARDS_URL = "/"
-  CGI_URL = "/cgi/"	# Path to folder containing the script
+  CGI_URL = "/weabot/weabot.py/"	# Path to folder containing the script
   IMAGES_URL = "/"
-  STATIC_URL = "/static/"
+  STATIC_URL = "/weabot/static/"
   USE_MULTITHREADING = False
   MAX_PROGRAM_THREADS = 8 # Maximum threads this Python application can start (must be 2 or greater)
                           # Setting this too high can cause the program to terminate before finishing
@@ -33,13 +33,13 @@ class Settings(object):
   DATABASE_HOST = "localhost"
   DATABASE_USERNAME = ""
   DATABASE_PASSWORD = ""
-  DATABASE_DB = ""
+  DATABASE_DB = "weabot"
   # The following two entries apply only if USING_SQLALCHEMY is set to True
   DATABASE_POOL_SIZE = 5					# Initial number of database connections
   DATABASE_POOL_OVERFLOW = 21				# Maximum number of database connections
   
   # *************** HOME PAGE INFORMATION ***************
-  SITE_TITLE = ""
+  SITE_TITLE = "weabot"
   SITE_LOGO = STATIC_URL + "logo.png"
   SITE_SLOGAN = ""
   MAINTENANCE = False
@@ -103,7 +103,7 @@ class Settings(object):
   DEFAULT_SAGE = 'sage'
   DEFAULT_NOKO = 'noko'
   
-  SECRET = '9s48fj4sf8jsfiosdfw34opiefme49fk4fo4kfoirjxg' # Random seed for secure tripcodes, change it to something random
+  SECRET = '' # Random seed for secure tripcodes, change it to something random
   ALLOW_SECURE_TRIPCODES = False
   
   POST_LINE_WIDTH = 160                   # Maximum width of posts

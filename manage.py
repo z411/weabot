@@ -1132,8 +1132,7 @@ def manage(self, path_split):
         template_filename = "logs.html"
         template_values = {'logs': logs}
       elif path_split[2] == 'logout':
-        #message = _('Logging out...') + '<meta http-equiv="refresh" content="0;url=' + Settings.CGI_URL + 'manage" />'
-        message = _('Logging out...')
+        message = _('Logging out...') + '<meta http-equiv="refresh" content="0;url=' + Settings.CGI_URL + 'manage" />'
         setCookie(self, 'weabot_manage', '', domain='THIS')
         setCookie(self, 'weabot_staff', '')
         template_filename = "message.html"

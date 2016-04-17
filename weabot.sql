@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `boards` (
   `disable_subject` tinyint(1) NOT NULL,
   `allow_images` tinyint(1) NOT NULL DEFAULT '1',
   `allow_image_replies` tinyint(1) NOT NULL DEFAULT '1',
-  `allow_noimage` tinyint(1) NOT NULL,
-  `allow_spoilers` tinyint(1) NOT NULL DEFAULT '1',
+  `allow_noimage` tinyint(1) NOT NULL DEFAULT '1',
+  `allow_spoilers` tinyint(1) NOT NULL,
   `allow_oekaki` tinyint(1) NOT NULL,
   `secret` tinyint(1) NOT NULL,
   `lockable` tinyint(1) NOT NULL DEFAULT '1',
@@ -85,14 +85,9 @@ INSERT INTO `filetypes` (`id`, `ext`, `mime`, `image`, `preserve_name`, `ffmpeg_
 (6, 'ogg', 'audio/ogg', '', 0, 1),
 (7, 'opus', 'audio/opus', '', 0, 1);
 
-CREATE TABLE IF NOT EXISTS `filetypes` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `ext` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
-  `mime` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `image` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `preserve_name` tinyint(1) NOT NULL,
-  `ffmpeg_thumb` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS `boards_filetypes` (
+  `boardid` smallint(5) unsigned NOT NULL,
+  `filetypeid` smallint(5) unsigned NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `filters` (
