@@ -367,12 +367,9 @@ def api_process(self, path_split):
     mobile = ("mobile" in formdata.keys())
     
     # call post function
-    (postid, parentid, post, noko, mobile, ttaken) = self.make_post(ip, boarddir, parent, trap1, trap2, name, email, subject, message, file, file_original, spoil, oek_file, password, noimage, mobile)
+    (post_url, ttaken) = self.make_post(ip, boarddir, parent, trap1, trap2, name, email, subject, message, file, file_original, spoil, oek_file, password, noimage, mobile)
     
-    values['postid'] = int(postid)
-    values['parentid'] = int(parentid)
-    values['noko'] = noko
-    values['mobile'] = mobile
+    values['post_url'] = post_url
     values['time_taken'] = ttaken
   else:
     raise APIError, "Invalid method"
