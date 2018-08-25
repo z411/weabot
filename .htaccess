@@ -1,5 +1,6 @@
-AddHandler fcgi-script .py
-#AddHandler cgi-script .py
+#AddHandler fcgi-script .py
+
+AddHandler cgi-script .py
 Options +ExecCGI
 
 #RewriteEngine On
