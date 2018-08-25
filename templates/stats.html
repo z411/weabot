@@ -1,79 +1,152 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Preguntas Frecuentes@B.a.I.</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="/subpage.css" rel="stylesheet" type="text/css" />
-<style>
-h2{text-align:center}
-</style>
-</head><body>
-<div id="k">
-<div id="top">
-<strong>Bienvenido a Internet BBS/IB</strong>
-<br />
-<small>Estadísticas</small>
-</div>
-<!-- TEXTOS -->
-<div id="text" class="api faq">
-<p style="font-size:12pt;text-align:center">No sé cómo hicimos funcionar ffmpeg, fue mágico☆</p>
+  <title>Estadísticas@Bienvenido a Internet</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  body{font-family:arial,sans-serif;background:#090909;color:#fdfdfd;margin:0;text-align:center}
+  a, a:visited {color:#fdfdfd;text-decoration:none}
+  a:hover {text-decoration:underline}
+  hr {margin:1em 0}
+  span {display:inline-block}
+  #title {margin-top:1em}
+  #title a {text-decoration:none}
+  .t1 {font-size:1.8em;display:inline-block;line-height:1em}
+  .t2 {font-size:1em;margin-top:2px}
+  h2 {font-size:1.5em;margin:0 0 0.2em 0}
+  table {font-size:1.4em;margin:0 auto 1em}
+  th,td {padding:10px;border-top:1px solid #222;border-left:1px solid #222}
+  .boards {padding:0}
+  td a {display:block;padding:10px}
+  .desc tr {text-align:right}
+  .desc td {text-align:left}
+  .r {text-align:right}
+  .l {text-align:left}
+  .pos {line-height:0em;text-align:center}
+  .uno {font-size:2em;  color:red}
+  .dos {font-size:1.6em;color:orange}
+  .tres {font-size:1.3em;color:yellow}
+  .etc {color:grey}
+  #foot {margin:1em;font-size:0.9em}
+  #foot a {color:#999}
+  @media screen and (max-width:600px) {
+   .t1 {font-size:1.6em} .t2 {font-size:0.9em}
+   h2 {font-size:1.2em;margin:0 0 0.2em 0}
+   table {font-size:1.1em}
+   table.desc {font-size:0.9em}
+   th,td {padding:5px}
+   td a {display:block;padding:5px}
+   .uno {font-size:1.6em}
+   .dos {font-size:1.4em}
+   .tres {font-size:1.2em}
+   .long {word-break:break-all}
+   #foot {font-size:12px}
+  }
+  </style>
+</head>
+<body>
+  <div id="title">
+    <div class="t1"><a href="/" style="font-weight:900">Bienvenido a Internet</a> Estadísticas</div>
+    <div class="t2">
+      <span>Última actualización:</span> <span>${timestamp} GMT${tz}</span>
+      <?py if not regenerated: ?>
+        <span>(en caché)</span>
+      <?py #endif ?>
+    </div>
+  </div>
 
-<div style="width: 50%; float:left">
-<h2>Mensajes por día<br /><small>(última semana)</small></h2>
-<table style="margin:0 auto"><tr><th>Día</th><th>Posts</th></tr>
-<?py for day, posts in days: ?>
-<tr><td>${day}</td><td style="text-align:right">${posts}</td></tr>
-<?py #endfor ?>
-</table>
-<br />
-<center><small><em>Para que vean que estamos muertos, pero no tan muertos.</em></small></center>
-</div>
+  <hr />
 
-<div style="width: 50%; float:right">
-<h2>Volumen de mensajes por sección<br /><small>(últimos 3 meses)</small></h2>
-<table style="margin:0 auto"><tr><th>Sección</th><th>Porcentaje</th></tr>
-<?py for board, percent in boards_percent: ?>
-<tr><td>${board}</td><td style="text-align:right">${percent}%</td></tr>
-<?py #endfor ?>
-</table>
-</div>
+  <h2 class="rot">Mensajes totales <span>(última semana)</span></h2>
+    <table>
+      <tr>
+        <th>D&iacute;a</th>
+        <th class="r">Hilos</th>
+        <th class="r">Resp.</th>
+        <th class="r">Total</th>
+      </tr>
+      <?py for day, posts, threads in reversed(days): ?>
+      <tr>
+        <td>${day}</td>
+        <td class="r">${threads}</td>
+        <td class="r">${int(posts)-int(threads)}</td>
+        <td class="r">${posts}</td>
+      </tr>
+      <?py #endfor ?>
+    </table>
 
-<br clear="both" />
+  <hr />
 
-<h2>Sistema</h2>
-<table style="margin:0 auto">
-<tr><th>Motor BBS/IB</th><td>weabot ${weabot_ver}</td></tr>
-<tr><th>Templating</th><td>tenjin ${tenjin_ver}</td></tr>
-<tr><th>Versión de Python</th><td>${python_ver}</td></tr>
-<tr><th>Implementación</th><td>${python_impl}</td></tr>
-<tr><th>Build</th><td>${python_build} compilado en ${python_compiler}</td></tr>
-<tr><th>OS</th><td>${uname[0]} ${uname[2]}</td></tr>
-<tr><th>Release/Arq.</th><td>${uname[3]} ${uname[4]}</td></tr>
-</table>
+  <h2 class="rot">Volumen de mensajes por sección <span>(últimos 30 días)</span></h2>
+    <table>
+    <tr>
+      <th class="pos">#</th>
+      <th class="l">Sección</th>
+      <th>Porcentaje</th>
+    </tr>
+    <?py iter = 1 ?>
+    <?py for dir, board, percent, num in boards_percent: ?>
+    <tr>
+      <td class="pos">
+        <?py if iter == 1: ?><span class="uno">${iter}</span>
+        <?py elif iter == 2: ?><span class="dos">${iter}</span>
+        <?py elif iter == 3: ?><span class="tres">${iter}</span>
+        <?py else: ?>${iter}<?py #endif ?>
+      </td>
+      <td class="l boards"><a href="/${dir}/" target="_blank">${board}</a></td>
+      <td class="r">${percent}%</td>
+    </tr>
+    <?py iter += 1 ?>
+    <?py #endfor ?>
+    </table>
 
-<h2>Base de datos</h2>
-<table style="margin:0 auto">
-<tr><th>Base de Datos</th><td>MySQL Community Server (GPL)</td></tr>
-<tr><th>Versión</th><td>${mysql_ver} Linux x86_64</td></tr>
-<tr><th>Mensajes totales activos</th><td>${total}</td></tr>
-<tr><th>Archivos totales activos</th><td>${total_files}</td></tr>
-<tr><th>Mensajes totales archivados (BBS)</th><td>${total_archived}</td></tr>
-<tr><th>Mensajes totales archivados (IB)</th><td>0 (RIP)</td></tr>
-</table>
+  <hr />
 
-<br />
-<center>
-Última actualización: ${timestamp}
-<?py if not regenerated: ?>
-(en caché)
-<?py #endif ?>
-</center>
-</div>
-<!-- TEXT END -->
-</div>
-<br />
-<div id="foot">
-B.a.I. - 2010-2016 · Contacto: <a href="mailto:burocracia@bienvenidoainternet.org">burocracia@bienvenidoainternet.org</a>
-</div>
+  <h2>Sistema</h2>
+    <table class="desc">
+      <tr><th>Máquina</th>
+        <td>single (CentOS Linux)</td></tr>
+      <tr><th>OS</th>
+        <td class="long">${uname[0]} ${uname[2]}</td></tr>
+      <tr><th>Release/Arq.</th>
+        <td>${uname[3]} ${uname[4]}</td></tr>
+      <tr><th>Motor BBS/IB</th>
+        <td>weabot ${weabot_ver}</td></tr>
+      <tr><th>Templating</th>
+        <td>tenjin ${tenjin_ver}</td></tr>
+      <tr><th>Versión de Python</th>
+        <td>${python_ver}</td></tr>
+      <tr><th>Implementación</th>
+        <td>${python_impl}</td></tr>
+      <tr><th>Build</th>
+        <td>${python_build}</td></tr>
+      <tr><th>Compilado en</th>
+        <td>${python_compiler}</td></tr>
+    </table>
+
+  <hr />
+
+  <h2>Base de datos</h2>
+    <table class="desc">
+      <tr><th>Base de Datos</th>
+        <td>MySQL Community Server (GPL)</td></tr>
+      <tr><th>Versión</th>
+        <td>${mysql_ver} Linux x86_64</td></tr>
+      <tr><th>Mensajes totales activos</th>
+        <td>${total}</td></tr>
+      <tr><th>Archivos totales activos</th>
+        <td>${total_files}</td></tr>
+      <tr><th>Mensajes totales archivados (BBS)</th>
+        <td>${total_archived}</td></tr>
+      <tr><th>Mensajes totales archivados (IB)</th>
+        <td>0 (QEPD)</td></tr>
+    </table>
+
+  <hr />
+
+  <div id="foot">
+    B.a.I. - 2010-2018 · Contacto: <a href="mailto:burocracia@bienvenidoainternet.org">burocracia@bienvenidoainternet.org</a>
+  </div>
 </body>
 </html>

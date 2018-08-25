@@ -1,0 +1,21 @@
+html,body{background:#171e24;color:#979ea3;font-family:Arial,Helvetica,"Nimbus Sans L",sans-serif}
+a,a .name,.nav label{color:#c0c4c8}
+a.rep{color:#979ea3;text-decoration:underline}
+a:hover,a:hover .name,.nav label:hover{color:#c6c9cd}
+.replymode,.extramode{color:#DDD}
+.replymode{background:#B40D00}
+.extramode{background:#001f6e}
+.postblock{background:#2b3843;font-weight:bold}
+.q{color:#789922}
+.subj{background:inherit;color:#962e5f;font-weight:bold}
+.name{color:#5f962e}
+.name a{color:#2e5f96}
+.name a:hover{color:#426fa0}
+.reply{background:#2F3D48;border:1px solid #1c242b}
+.abbrev{color:#707070}
+.highlight{background:#1D1D21;border:1px solid #111}
+hr{border:none;border-top:1px solid #979ea3;height:0}
+#catalog .thread:hover{background:#2F3D48;box-shadow:0 0 5px 5px #2F3D48}
+#catalog .replies{color:#909090;font-weight:bold}
+.yt{background:#52626D;border:1px solid #131D25}
+#q-p{background:#2F3D48}

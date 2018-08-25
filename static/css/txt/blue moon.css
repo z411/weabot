@@ -1,0 +1,55 @@
+body.threadpage{margin-top:0}
+body{background:#6B7B8D;color:#FFF}
+a,#n2:active{color:#AFB9C5}
+a:active,form a:active,#n2:active{color:#EEE}
+#main_nav a,.reply a,form a,#q-p a{color:#49525D}
+#main_nav a:active,.reply a:active,#q-p a:active,a:active .name{color:#8C9FB4}
+h2{color:#EEE;line-height:1;margin:0;padding-bottom:10px}
+h2 a{color:#EEE}
+h3{color:#EEE;margin:0.7em 0}
+h4{background:#DDD;padding-bottom:5px;}
+input[type=submit],input[type=button]{background:#000;color:#FFF;border:1px outset #49525D}
+input[type=submit]:active,input[type=button]:active{border-style:inset}
+input[type=text],input[type=password],textarea{background:#EEE;border-top:1px solid #49525D;border-bottom:1px solid #B6C2CF;border-left:1px solid #49525D;border-right:1px solid #B6C2CF}
+#main_nav{background:#FFF;color:#6B7B8D}
+#titlebox .innerbox:first-child{margin-bottom:5px}
+.outerbox{background:#49525D;padding:5px}
+.innerbox{margin:0;padding:10px}
+.links{padding-top:5px}
+#threadbox{margin-bottom:19px;margin-top:19px}
+#threadlist{background:#3e4247;border:1px inset #B6C2CF}
+.mainpage .thread{background:#49525D}
+.threadpage .thread{background:#49525D;padding:1px 10px}
+#thread_nav{background:#49525D;margin-bottom:2px;padding:7px 10px}
+.thread form,.threadpage form,#createbox form{background:#8C9FB4;color:#49525D;padding:10px}
+.thread form{margin-top:10px}
+.reply{background:#FFF;border-top:3px solid #DDD;border-right:10px solid #DDD;border-bottom:3px solid #DDD;border-left:10px solid #DDD;color:#000}
+.first{border-top:6px solid #DDD}
+.name,a .name{color:#2B3037}
+.name em{color:#009}
+.del a{color:#000}
+.msg,.thumb{background:#FFF;color:#000080;margin:10px}
+.msg hr{display:block}
+.abbrev a{color:#000080}
+.abbrev,.q{color:#697685}
+.omit{margin-bottom:10px}
+.threadpage form{margin-top:2px;border:10px solid #49525D}
+.yt{background:#EEE;border:1px solid gray}
+.deleted{background:#DDD;color:#AFAFAF;margin-bottom:0;padding:3px 10px}
+#q-p{background:#FFF;color:#000;border:1px solid #49525D;margin-right:15px;position:absolute}
+#q-p .q-p-op{border-left:3px solid #DDD;border-right:3px solid #DDD;padding:0}
+#q-p h4{padding:3px 1px}
+#q-p .del,#q-p .quoted,hr{display:none}
+#q-p .msg{color:#000080;margin:5px}
+#q-p .thumb{margin-right:5px}
+#createbox input,#createbox textarea{width:100%}
+form .msg{border:1px inset #DDD;margin:0;padding:0.5em 0.15em}
+.size{color:#8C9FB4;margin:5px 0}
+.lastposts{background:#49525D;color:#AFB9C5;margin-top:2px;padding:0.5em}
+.threadpage .threadlinks{margin:0}
+.warn,.stop{padding-left:10px;margin:2px 0}
+.footer{margin:1em}
+.footer a{color:#FFF}
+.threads{background:#49525D}
+.threads th{background:#2c2c32}
+.threads tr:nth-child(odd){background:#3e4247}

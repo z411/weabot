@@ -8,41 +8,49 @@ ${message}
 <?py #endif ?>
 <form name="boardForm" method="get" action="#{cgi_url}manage/reports/0">
 <table>
- <tr><td class="postblock">Board</td><td>
+ <tr>
+ <td class="postblock">Board</td>
+ <td>
   <select name="board">
-   <option value="all">Todos los Boards</option>
+   <option value="all">Todos los boards</option>
 <?py for board in boards: ?>
-   <option value="#{board['dir']}"#{selected(board['checked'])}></option>
+   <option value="#{board['dir']}"#{selected(board['checked'])}>#{board['dir']} - #{board['name']}</option>
 <?py #endfor ?>
   </select>
-  <input type="submit" value="Mostrar" />
+ <td><input type="submit" value="Mostrar" /></td>
  </td></tr>
 </table>
 </form>
- 
+
 <form name="ignoreForm" method="post" action="#{cgi_url}manage/reports/#{currentpage}">
 <?py if curboard: ?>
 <input type="hidden" name="board" value="#{board}" />
 <?py #endif ?>
-<br />
+<hr />
 <table class="managertable">
-<tr><th> </th><th> </th><th>Date</th><th>Board</th><th>ID Post</th><th>IP Poster</th><th>Razon</th><th>IP Reporter</th></tr>
+<tr>
+  <th></th>
+  <th></th>
+  <th>Fecha</th>
+  <th>Post</th>
+  <th>IP Post</th>
+  <th>Raz&oacute;n</th>
+  <th>IP Denuncia</th>
+</tr>
 <?py for report in reports: ?>
- <tr>
+<tr>
   <td> <a href="#{cgi_url}manage/reports/#{currentpage}/ignore/#{report['id']}">X</a> </td>
-  <td><input type="checkbox" name="i#{report['id']}" value="1" /></td>
-  <td>${report['timestamp_formatted']}</td>
-  <td>/${report['board']}/</td>
-  <td><a href="#{report['link']}">&gt;&gt;#{report['postid']}</a></td>
-  <td>${report['ip']}</td>
+  <td><input type="checkbox" name="i#{report['id']}" id="i#{report['id']}" value="1" /><label for="i#{report['id']}"></label></td>
+  <td class="date" data-unix="${report['timestamp']}">${report['timestamp_formatted']}</td>
+  <td><a href="#{report['link']}">${report['link']}</a></td>
+  <td><a href="#{cgi_url}manage/ipshow?ip=${report['ip']}">${report['ip']}</a></td>
   <td>${report['reason']}</td>
-  <td>${report['reporterip']}</td>
- </tr>
+  <td><a href="#{cgi_url}manage/ipshow?ip=${report['reporterip']}">${report['reporterip']}</a></td>
+</tr>
 <?py #endfor ?>
- <tr><td colspan="8" align="center">
-  <input name="ignore" type="submit" value="Ignorar seleccionados" />
- </td>
- </tr>
+<tr>
+  <td colspan="8" style="text-align:center;"><input name="ignore" type="submit" value="Ignorar seleccionados" /></td>
+</tr>
 </table>
 </form> 
 </center>

@@ -1,0 +1,30 @@
+body,textarea{color:#000}
+body.mainpage{background:#c5ad99 url(../img/muro.jpg)}
+body.threadpage{background:#efefef}
+a,a .name,#n2{color:#00F}
+a:active,a:active .name,#n2:active{color:#f00}
+input[type="text"],textarea{background:#fff;border:1px inset gray}
+h2 small{color:#000}
+h2 a{color:#f00}
+h3{color:#F00}
+h3 span{color:#000}
+.mainpage h4:hover{background:#ffefef}
+#main_nav{background:#fff}
+.outerbox{background:#cfc;border:1px outset grey}
+.innerbox{border:1px inset grey}
+#threadlist{background:#BEB;border:1px inset grey}
+.mainpage .thread{background:#efefef;border:1px outset grey}
+.name,.abbrev{color:green}
+.name em{color:#009}
+.del a{color:#000}
+.q{color:#666}
+.yt{background:#ddd;border:1px solid #aaa}
+.deleted{color:#afafaf}
+#q-p{background:#ddd;border:1px solid #999}
+#createbox{display:flex}
+#createbox .extrabox{border:1px inset grey;margin:7px 0 7px 7px;float:left;width:40px;height:auto;flex:0 1 40px;-webkit-flex:0 1 40px}
+#createbox .innerbox{flex:0 1 100%;-webkit-flex:0 1 100%}
+form .msg{border:1px dotted #000;background:#efefef}
+.footer{color:#333}
+#content.list #header div{background:#ccc}
+#content.list .row:nth-child(odd){background:#eee}

@@ -1,0 +1,44 @@
+body.mainpage{background:#191919 url('../img/cyba.png')}
+body.threadpage{text-shadow:1px 1px #000}
+body,.del a{color:#AAA}
+a,#n2{color:#ccc}
+a:active,#n2:active{color:#be132d}
+h4 a,.name,.name a,.abbrev{color:#465}
+h4 a:active,a:active .name{color:#34473d}
+h1{text-shadow:1px 1px #000,0 0 10px}
+h1:after,h2 a:after,h3:after{content:"_";animation:blink 1s infinite}
+@keyframes blink{from,to{opacity:0}50%{opacity:1}}
+h2 a{color:#be132d}
+h3{color:#be132d}
+h2 a,h3{text-shadow:1px 1px #000,0 0 10px}
+hr{border:1px inset #666;box-shadow:0 0 10px #888}
+.outerbox input,.outerbox textarea,.threads input{background:#002f00;color:#68F855;border:1px solid #68F855}
+.outerbox input[type=submit],.outerbox input[type=button]{background:#000}
+.threadpage input,.threadpage textarea,.thread input,.thread textarea{background:#333;border:1px solid #666;color:#AAA;text-shadow:1px 1px #000}
+.threadpage input[type=submit],.threadpage input[type=button],.thread input[type=submit],.thread input[type=button],body.threadpage{background:#191919}
+#main_nav{background:#070707}
+.outerbox,.mainpage .thread{text-shadow:1px 1px #000}
+.outerbox{background:#111;color:#5FE44E;border:1px outset #ff0}
+.outerbox a,#main_nav a,.footer a,.threads a{color:#68F855}
+.outerbox a:active,#main_nav a:active,.footer a:active,.threads a:active{color:#ef6177}
+#threadlist{background:#1A1A1A;border:1px inset #ff0}
+.innerbox{border:1px inset #ff0}
+.thread .innerbox{border-color:#555}
+.mainpage .thread{background:#191919;border:1px outset #555}
+.msg hr{box-shadow:none}
+.name em{color:#04f}
+.q{color:#666}
+.deleted{color:#333}
+.yt{background:#151515;border:1px solid #0a0a0a}
+.size{color:#c00}
+#createbox{display:flex}
+#createbox .extrabox{border:1px inset #ff0;margin:7px 0 7px 7px;float:left;width:40px;height:auto;flex:0 1 40px;-webkit-flex:0 1 40px}
+#createbox .innerbox{flex:0 1 100%;-webkit-flex:0 1 100%}
+#createbox input,#createbox textarea{box-shadow:1px 1px}
+form .msg{border:1px dotted #555;background:#191919;color:#AAA}
+#q-p{background:#111;border:1px solid #0a0a0a}
+.footer{color:#989898;text-shadow:0 0 5px #f0d}
+.footer a{color:#989898}
+.threads{background:#111;color:#5FE44E;text-shadow:1px 1px #000}
+.threads th{background:#000;box-shadow:0 0 2px;color:#00ff9f;text-shadow:1px 1px #bd00ff}
+.threads tr:nth-child(odd){background:#0b0b0b}

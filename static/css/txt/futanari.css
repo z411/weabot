@@ -1,0 +1,41 @@
+body{background:#1B3345;color:#FFF}
+body.threadpage{margin-top:0}
+a,a .name,#n2{color:#EFD279}
+a:active,a:active .name,#n2:active{color:#D00}
+h1{background:#5B8BB4;margin:-10px -10px 10px;padding:10px}
+h2{font-size:24px;font-weight:bold;margin:0 0 0.3em;padding-right:2px}
+h2 small{color:#AAA;font-size:initial;margin-right:2px}
+h2 a,h2 a:active{color:#DE9D7F;text-decoration:none}
+h3{color:#DE9D7F;font-size:18px;font-weight:normal;margin:0.7em 0}
+h4{clear:both;font-size:inherit;font-weight:normal;margin:0}
+hr{display:none}
+input,textarea{color:#000;background:#FFF;border:1px solid #3B6B94}
+input[type=submit],input[type=button]{color:#2C5700;background:#AAF}
+#main_nav{background:#1D7548}
+#titlebox{margin-bottom:0}
+.outerbox{background:#3B6B94}
+.innerbox{margin:0;padding:10px}
+.links{background:#5B8BB4}
+#threadlist{background:#154A72;border:1px inset #1B3345}
+.mainpage .thread{padding:5px}
+#thread_nav{background:#1D7548;padding:6px}
+.msg,.thumb{margin:2px 0 1em 40px}
+.name{color:#AFD775}
+.name em{color:#009}
+.del a{color:#FFF}
+.q{color:#AAC}
+.yt{background:#2F587A;border:1px solid #1B2933}
+.msg hr{display:block}
+.deleted{color:#AFAFAF}
+.omit{border-bottom:2px solid #5B8BB4;margin-bottom:1em}
+.abbrev{color:#BBB}
+.size{color:#DE9D7F}
+.thread form,#createbox,.threadpage form{border-right:2px solid #5B8BB4;border-bottom:2px solid #5B8BB4;background:#3B6B94}
+.thread form,.threadpage form{padding:10px}
+.threadpage .threadlinks{margin:0 0 3px}
+form .msg{border:1px dashed #000;background:#1B3345}
+#q-p{background:#255075;border:1px solid #1B2933;margin-right:15px;position:absolute}
+.lastposts{background:#5B8BB4;padding:8px}
+.footer{margin:15px 2.5%}
+.threads th{background:#154A72}
+.threads tr:nth-child(odd){background:#3B6B94}

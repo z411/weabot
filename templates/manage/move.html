@@ -1,0 +1,60 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Mover hilo</div>
+<?py if oldboardid and oldthread: ?>
+<form action="#{cgi_url}manage/move/#{oldboardid}/#{oldthread}" method="post">
+<?py else: ?>
+<form action="#{cgi_url}manage/move" method="post">
+<?py #endif ?>
+<table>
+  <tr>
+    <td class="postblock">Board actual</td>
+    <td>
+      <?py if oldboardid and oldthread: ?>
+        <select name="oldboardid" style="width:100%;">
+        <?py for board in boards: ?>
+          <option value="#{board['dir']}"#{' selected="selected"' if oldboardid == board['dir'] else ''}>#{board['dir']} - #{board['name']}</option>
+        <?py #endfor ?>
+        </select>
+      <?py else: ?>
+        <select name="oldboardid" style="width:100%;">
+        <?py for board in boards: ?>
+          <option value="#{board['dir']}">#{board['dir']} - #{board['name']}</option>
+        <?py #endfor ?>
+        </select>
+      <?py #endif ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="postblock">ID de hilo</td>
+    <td>
+      <?py if oldboardid and oldthread: ?>
+        <input type="text" name="oldthread" style="width:100%;" value="#{oldthread}" />
+      <?py else: ?>
+        <input type="text" name="oldthread" style="width:100%;" />
+      <?py #endif ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="postblock">Mover a</td>
+    <td>
+      <select name="newboardid" style="width:100%;">
+      <?py for board in boards: ?>
+        <option value="#{board['dir']}">#{board['dir']} - #{board['name']}</option>
+      <?py #endfor ?>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td class="postblock">Insertar mensaje</td>
+    <td>
+      <input type="checkbox" name="msg" value="1" />
+    </td>
+  </tr>
+  <tr><td colspan="2"><input type="submit" name="submit" style="width:100%;" value="Mover" /></td></tr>
+</table>
+</form>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

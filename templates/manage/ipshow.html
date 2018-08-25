@@ -1,12 +1,69 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Mostrar por IP</div>
-<form action="#{cgi_url}manage/ipshow" method="post">
-<table>
- <tr><td class="postblock">Dirección IP</td><td><input type="text" name="ip" /><input type="submit" value="Mostrar posts" /></td></tr>
-</table>
-</form>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+  <div class="replymode">Mostrar por IP</div>
+  <?py if mode == 0: ?>
+  <form action="#{cgi_url}manage/ipshow" method="post">
+    <table>
+      <tr><td class="postblock">Dirección IP</td><td><input type="text" name="ip" /></td></tr>
+      <tr><td colspan="2"><input type="submit" style="width:100%;" value="Mostrar posts" /></td></tr>
+    </table>
+  </form>
+  <?py else: ?>
+  <style>td img{max-width:150px;height:auto;}td.z{padding:0}</style>
+  <div class="logo" style="margin:0;">Actividad IP #{ip} (#{len(posts)})</div>
+  <center>
+  Hostname: #{host if host else "Desconocido"} [#{country if country else "??"}]#{" (Nodo Tor)" if tor else ""}<br />
+  <br />
+  <form action="#{cgi_url}manage/ban/" name="banform" method="post"><input type="hidden" name="ip" value="${ip}" /><input type="submit" value="Ir a formulario de ban" /></form>
+  <hr />
+  <table class="managertable">
+  <tr>
+    <th>Sección</th>
+    <th>Padre</th>
+    <th>ID</th>
+    <th>Fecha</th>
+    <th>Nombre</th>
+    <th>Asunto</th>
+    <th>Mensaje</th>
+    <th>Archivo</th>
+    <th>Acción</th>
+  </tr>
+  <?py for post in posts: ?>
+  <tr>
+    <td>#{post['dir']}</td>
+    <td>#{post['parentid']}</td>
+    <td>#{post['id']}</td>
+    <td class="date" data-unix="${post['timestamp']}">#{post['timestamp_formatted']}</td>
+    <?py if post['tripcode']: ?>
+      <td class="name"><b>#{post['name']}</b> #{post['tripcode']}</td>
+    <?py else: ?>
+      <td class="name"><b>#{post['name']}</b></td>
+    <?py #endif ?>
+    <td>#{post['subject']}</td>
+    <td>#{post['message']}</td>
+    <?py if post['file']: ?>
+      <td class="z"><img src="#{images_url}#{post['dir']}/thumb/#{post['thumb']}" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /></td>
+    <?py else: ?>
+      <td></td>
+    <?py #endif ?>
+    <td>
+      <?py if post['IS_DELETED'] == '0': ?>
+      <a href="#{cgi_url}manage/delete/#{post['dir']}/#{post['id']}">Eliminar</a>
+      <?py elif post['IS_DELETED'] == '1': ?>
+      <a href="#{cgi_url}manage/recyclebin/0/restore/#{post['dir']}/#{post['id']}">Rec</a>
+      <abbr title="Eliminado por usuario">[1]</abbr>
+      <?py else: ?>
+      <a href="#{cgi_url}manage/recyclebin/0/restore/#{post['dir']}/#{post['id']}">Rec</a>
+      <abbr title="Eliminado por staff">[2]</abbr>
+      <?py #endif ?>
+    </td>
+  </tr>
+  <?py #endfor ?>
+  </table>
+  <hr />
+  [<a href="#{cgi_url}manage/ipshow">Volver al panel</a>]
+  <?py #endif ?>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

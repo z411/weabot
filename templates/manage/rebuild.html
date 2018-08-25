@@ -3,18 +3,18 @@
 <center>
 <div class="replymode">Reconstruir board</div>
 <table class="managertable">
-<tr><th>Sección</th><th>Acción</th></tr>
-<tr><td><b>Home</b></td><td>[<a href="#{cgi_url}manage/rebuild/!HOME">Reconstruir</a>]</td></tr>
-<tr><td><b>Noticias</b></td><td>[<a href="#{cgi_url}manage/rebuild/!NEWS">Reconstruir</a>]</td></tr><tr><td><b>Archivos (índices)</b></td><td>[<a href="#{cgi_url}manage/rebuild/!KAKO">Reconstruir</a>]</td></tr>
-<tr><td><b>.htaccess</b></td><td>[<a href="#{cgi_url}manage/rebuild/!HTACCESS">Reconstruir</a>]</td></tr>
-<?py for board in boards: ?>
-<tr><td>/#{board['dir']}/ (#{board['name']})</td><td>[<a href="#{cgi_url}manage/rebuild/#{board['dir']}">Reconstruir</a>]</td></tr>
-<?py #endfor ?>
-<tr><td colspan="2" align="center">
- <form action="#{cgi_url}manage/rebuild/!ALL" method="get"><input type="submit" value="Reconstruir todos" /></form>
-</td></tr>
+  <tr><th colspan="2">Sección</th><th colspan="2">Acción</th></tr>
+  <tr><td colspan="2"><b>Home</b></td><td colspan="2" style="text-align:center;">[<a href="#{cgi_url}manage/rebuild/!HOME">Reconstruir</a>]</td></tr>
+  <tr><td colspan="2"><b>Noticias</b></td><td colspan="2" style="text-align:center;">[<a href="#{cgi_url}manage/rebuild/!NEWS">Reconstruir</a>]</td></tr>
+  <tr><td colspan="2"><b>Índices de archivos</b></td><td colspan="2" style="text-align:center;">[<a href="#{cgi_url}manage/rebuild/!KAKO">Reconstruir</a>]</td></tr>
+  <tr><td colspan="2"><b>.htaccess</b></td><td colspan="2" style="text-align:center;">[<a href="#{cgi_url}manage/rebuild/!HTACCESS">Reconstruir</a>]</td></tr>
+  <?py for board in boards: ?>
+  <tr><td>/#{board['dir']}/</td><td>#{board['name']}</td><td>[<a href="#{cgi_url}manage/rebuild/#{board['dir']}">Reconstruir frontales</a>]</td><td>[<a href="#{cgi_url}manage/rebuild/#{board['dir']}?everything=1">Reconstruir todo</a>]</td></tr>
+  <?py #endfor ?>
+  <tr><td colspan="4" align="center"><form action="#{cgi_url}manage/rebuild/!ALL" method="get"><input type="submit" style="width:100%" value="Reconstruir todos (frontales)" /></form></td></tr>
+  <tr><td colspan="4" align="center"><form action="#{cgi_url}manage/rebuild/!BBS" method="get"><input type="submit" style="width:100%" value="Reconstruir todos (BBS)" /></form></td></tr>
+  <tr><td colspan="4" align="center"><form action="#{cgi_url}manage/rebuild/!IB" method="get"><input type="submit" style="width:100%" value="Reconstruir todos (IB)" /></form></td></tr>
 </table>
-
 </center>
 <hr />
 <?py include('templates/base_bottom.html') ?>

@@ -5,6 +5,7 @@ import datetime
 import time
 import hashlib
 import pickle
+import socket
 import _mysql
 import urllib
 import re
@@ -24,7 +25,7 @@ class CLT(datetime.tzinfo):
     
   def utcoffset(self, dt):
     #return datetime.timedelta(hours=-3) + self.dst(dt)
-    return datetime.timedelta(hours=-3)
+    return datetime.timedelta(hours=Settings.TIME_ZONE)
     
   def dst(self, dt):
     if self.isdst:
@@ -63,8 +64,65 @@ def addressIsBanned(ip, board):
     if ban["boards"] != "":
       boards = pickle.loads(ban["boards"])
     if ban["boards"] == "" or board in boards: 
-      return True
+      if board not in Settings.EXCLUDE_GLOBAL_BANS:
+        return True
   return False
+
+def addressIsTor(ip):
+  if Settings._.IS_TOR is None:
+    res = False
+    nodes = []
+    with open('tor.txt') as f:
+      nodes = [line.rstrip() for line in f]
+    if ip in nodes:
+      res = True
+    Settings._.IS_TOR = res
+    return res
+  else:
+    return Settings._.IS_TOR
+
+def addressIsProxy(ip):
+  if Settings._.IS_PROXY is None:
+    res = False
+    proxies = []
+    with open('proxy.txt') as f:
+      proxies = [line.rstrip() for line in f]
+    if ip in proxies:
+      res = True
+    Settings._.IS_PROXY = res
+    return res
+  else:
+    return Settings._.IS_PROXY
+    
+def addressIsES(ip):
+  ES = ['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'EC', 'ES', 'GF',
+        'GY', 'GT', 'HN', 'MX', 'NI', 'PA', 'PE', 'PY', 'PR', 'SR', 'UY', 'VE'] # 'BR', 
+  return getCountry(ip) in ES
+
+def getCountry(ip):
+  import geoip
+  return geoip.country(ip)
+  
+def getHost(ip):
+  if Settings._.HOST is None:
+    try:
+      Settings._.HOST = socket.gethostbyaddr(ip)[0]
+      return Settings._.HOST
+    except socket.herror:
+      return None
+  else:
+    return Settings._.HOST
+    
+def hostIsBanned(ip):
+  host = getHost(ip)
+  if host:
+    banned_hosts = []
+    for banned_host in banned_hosts:
+      if host.endswith(banned_host):
+        return True
+    return False
+  else:
+    return False
   
 def updateBoardSettings():
   """
@@ -88,7 +146,7 @@ def timestamp(t=None):
     t = datetime.datetime.now()
   return int(time.mktime(t.timetuple()))
 
-def formatDate(t=None):
+def formatDate(t=None, home=False):
   """
   Format a datetime to a readable date
   """
@@ -103,30 +161,18 @@ def formatDate(t=None):
           
   daylist = days[Settings.LANG]
   format = "%d/%m/%y(%a)%H:%M:%S"
-  
-  # TODO nijigen hack
-  try:
-    board = Settings._.BOARD
-    if board["dir"] == 'jp':
-      daylist = days['jp']
-      format = "%y/%m/%d(%a)%H:%M:%S"
-      t -= datetime.timedelta(hours=6)
-      hours = str(t.time().hour+6).zfill(2)
-    elif board["dir"] == 'world':
-      daylist = days['en']
-    elif board["dir"] == 'zonavip' or board["dir"] == 'jp':
-      t -= datetime.timedelta(hours=6)
-      hours = str(t.time().hour+6).zfill(2)
-  except:
-    pass
+
+  if not home:
+    try:
+      board = Settings._.BOARD
+      if board["dir"] == 'world':
+        daylist = days['en']
+      elif board["dir"] == '2d':
+        daylist = days['jp']
+    except:
+      pass
   
   t = t.strftime(format)
-  
-  try:
-    if board["dir"] == 'jp' or board["dir"] == 'zonavip':
-      t = re.compile(r"\)\d\d:").sub(")"+hours+":", t)
-  except:
-    pass
   
   t = re.compile(r"mon", re.DOTALL | re.IGNORECASE).sub(daylist[0], t)
   t = re.compile(r"tue", re.DOTALL | re.IGNORECASE).sub(daylist[1], t)
@@ -137,15 +183,26 @@ def formatDate(t=None):
   t = re.compile(r"sun", re.DOTALL | re.IGNORECASE).sub(daylist[6], t)
   return t
 
-def formatTimestamp(t):
+def formatTimestamp(t, home=False):
   """
   Format a timestamp to a readable date
   """
-  return formatDate(datetime.datetime.fromtimestamp(int(t), CLT()))
+  return formatDate(datetime.datetime.fromtimestamp(int(t), CLT()), home)
 
 def timeTaken(time_start, time_finish):
-  return str(round(time_finish - time_start, 2))
+  return str(round(time_finish - time_start, 3))
 
+def parseIsoPeriod(t_str):
+  m = re.match('P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(\d+)S', t_str)
+  if m:
+    grps = [x for x in m.groups() if x]
+    if len(grps) == 1:
+      grps.insert(0, '0')
+    grps[-1] = grps[-1].zfill(2)
+    return ':'.join(grps)
+  else:
+    return '???'
+  
 def getFormData(self):
   """
   Process input sent to WSGI through a POST method and output it in an easy to
@@ -159,8 +216,8 @@ def getFormData(self):
   # This must be done to avoid a bug in cgi.FieldStorage
   self.environ.setdefault("QUERY_STRING", "")
   fs = cgi.FieldStorage(fp=wsgi_input,
-                        environ=self.environ,
-                        keep_blank_values=1)
+              environ=self.environ,
+              keep_blank_values=1)
   new_input = InputProcessed()
   post_form = (new_input, wsgi_input, fs)
   self.environ["wsgi.post_form"] = post_form
@@ -170,16 +227,16 @@ def getFormData(self):
   for key in dict(fs):
     try:
       formdata.update({key: fs[key].value})
-      if key == "file":
-        formdata.update({"file_original": secure_filename(fs[key].filename)})
-    except:
-      pass
+      #if key == "file":
+      #  formdata.update({"file_original": secure_filename(fs[key].filename)})
+    except AttributeError:
+      formdata.update({key: fs[key]})
   
   return formdata
 
 class InputProcessed(object):
   def read(self):
-    raise EOFError("E stream de wsgi.input ya se ha consumido.")
+    raise EOFError("El stream de wsgi.input ya se ha consumido.")
   readline = readlines = __iter__ = read
 
 class UserError(Exception):
@@ -230,6 +287,15 @@ def getRandomLine(filename):
   lines = f.readlines()
   num = random.randint(0, len(lines) - 1)
   return lines[num]
+  
+def getRandomIco():
+  from glob import glob
+  from random import choice
+  icons = glob("../static/ico/*")
+  if icons:
+    return choice(icons).lstrip('..')
+  else:
+    return ''
 
 def N_(message): return message
 

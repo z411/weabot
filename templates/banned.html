@@ -5,23 +5,30 @@
 <title>Acceso prohibido@B.a.I.</title>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <style type="text/css">
-.error { color: red; font-weight: bold; font-size: 16pt; }
-.sub { font-weight: bold; }
+html { text-align:center; }
+body { background:#fe7777;color:#6a0000;display:inline-block;font-size:13pt;max-width:1000px;text-align:left; }
+h1 { color:red;margin:0; }
+h2 { margin:0.5em 0; }
 </style>
 </head>
 <body>
-<p class="error">ERROR : Se te ha prohibido el acceso</p>
-<p class="sub">Lo sentimos, tu IP (#{ip}) o red están en lista negra.</p>
-<ul>
+<h1>Mensaje de Bienvenido a Internet BBS/IB</h1>
+<h2>Se te ha prohibido el acceso :-(</h2>
+<p>¡Tu IP (o rango) ha sido bloqueado!</p>
 <?py if reason != "": ?>
-  <li>La razón fue: <b>#{reason}</b></li> 
+  <p>La razón dejada fue: <b>#{reason}</b> y tu ban fue puesto el <b>#{added}</b> para las siguientes secciones: <b>#{boards_str}</b></p>
+<?py else: ?>
+  <p>No sabemos qué es lo que pudo causar tu ban, ¿qué hiciste?</p>
+  <p>Tu ban fue puesto el <b>#{added}</b> para las siguientes secciones: <b>#{boards_str}</b></p>
 <?py #endif ?>
- <li>Tu ban fue puesto el <b>#{added}</b>.</li>
 <?py if expire != "": ?>
-  <li>Se te concederá nuevamente el acceso en la siguiente fecha y hora: <b>#{expire}</b>.</li>
+  <p>Pero no te preocupes, se te concederá nuevamente el acceso en la siguiente fecha y hora: <b>#{expire}</b>.</p>
 <?py #endif ?>
-</ul>
+<p>Si tu expulsión fue puesta incorrectamente no dudes en <a href="mailto:burocracia@bienvenidoainternet.org">contactarnos</a> dando tu IP, razón y explicación de los hechos.</p>
+<p>¡Gracias por usar Bienvenido a Internet BBS/IB!</p>
 <hr />
-<p>Bajo cualquier consulta o reclamo <a href="mailto:burocracia@bienvenidoainternet.org">contáctanos</a>.</p>
+<p><small><i>En muchos casos a pesar de que hayas sido expulsado del sitio se concede el acceso a las secciones <a href="/bai/">Meta</a>, Anarkía y VIP. Bajo cualquier consulta o reclamo <a href="mailto:burocracia@bienvenidoainternet.org">contáctanos</a>.</i></small></p>
+<hr />
+<div style="text-align:right;">Bienvenido a Internet 2010-2018</div>
 </body>
 </html>

@@ -1,0 +1,20 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Cerrar o abrir board</div>
+<table class="managertable">
+  <tr><th colspan="2">Sección</th><th>Acción</th></tr>
+  <?py for board in boards: ?>
+  <tr>
+    <td>/#{board['dir']}/</td><td>#{board['name']}</td>
+  <?py if board['locked'] == '0': ?>
+    <td style="text-align:center;">[<a href="#{cgi_url}manage/boardlock/#{board['dir']}">Cerrar</a>]</td>
+  <?py elif board['locked'] == '1': ?>
+    <td style="text-align:center;">[<a href="#{cgi_url}manage/boardlock/#{board['dir']}">Abrir</a>]</td>
+  <?py #endif ?>
+  </tr>
+  <?py #endfor ?>
+</table>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

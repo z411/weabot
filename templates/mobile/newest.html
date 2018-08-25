@@ -1,0 +1,14 @@
+<?py include('templates/mobile/base_top.html') ?>
+<body class="txt">
+<div class="top">
+  <a href="/movil.html"><img src="#{static_url}css/img/0info.png" /><br />Info</a>
+  Bienvenido a Internet Móvil
+</div>
+<div class="bar"><a href="//m.bienvenidoainternet.org">Secciones</a><a href="/cgi/mobilehome">Hilos activos</a><a href="/cgi/mobilenewest" class="sel">Nuevos hilos</a></div>
+<div class="list">
+  <?py for thread in newthreads: ?>
+  <a href="/cgi/mobileread${thread['url']}">#{thread['content']}<div>${thread['board_fulln']}</div></a>
+  <?py #endfor ?>
+</div>
+</body>
+</html>

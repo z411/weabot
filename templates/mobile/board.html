@@ -1,111 +1,55 @@
 <?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>#{board_name}@B.a.I. Móvil</h2>
-<div class="nav">
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}">■ Volver al IB ■</a> ·
-<a href="#{cgi_url}mobilelist/#{board}">Lista de hilos</a> ·
-<?py if not replythread: ?>
-<a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a> ·
-<?py #endif ?>
-<a name="top" href="#bottom">Ir al final</a>
-</div>
+<body class="img"><a name="top"></a>
+<div class="nav"><div><a href="//m.bienvenidoainternet.org">Home</a><a href="#{cgi_url}mobile/#{board}/">Volver</a><a href="#form">&#9660;</a></div></div>
 <?py for thread in threads: ?>
-  <div class="thread">
-    <?py for post in thread['posts']: ?>
-      <?py if int(post['parentid']) == 0: ?>
-        <?py if post['subject'] != '': ?>
-          <span class="subject">#{post["subject"]}</span> <small>(#{int(thread["length"])-1})</small>
-        <?py else: ?>
-          <span class="subject">Sin asunto</span> <small>(#{int(thread["length"])-1})</small>
-        <?py #endif ?>
-        <?py if post['locked'] == '1': ?>
-      <small>(cerrado)</small>
-        <?py elif post['locked'] == '2': ?>
-      <small>(permasage)</small>
-        <?py #endif ?>
-		<br />
-        <?py if post['email']: ?>
-      <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
-          <?py if post['tripcode']: ?>
-      <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
-          <?py #endif ?>
-        <?py else: ?>
-      <span class="postername">#{post['name']}</span>
-          <?py if post['tripcode']: ?>
-      <span class="postertrip">#{post['tripcode']}</span>
-          <?py #endif ?>
-        <?py #endif ?>
-        #{post['timestamp_formatted']}
-        <a href="javascript:insert('>>#{post['id']}\r\n');">No.#{post['id']}</a>
-      <?py else: ?>
-    <div class="reply">
-      <?py #endif ?>
-    <a name="#{post['id']}"></a>
-      <?py if post['IS_DELETED'] == '0': ?>
-          <?py if int(post['parentid']) != 0: ?>
-          <span class="subject">#{post['subject']}</span>
-            <?py if post['email']: ?>
-          <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
-              <?py if post['tripcode']: ?>
-          <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
-              <?py #endif ?>
-            <?py else: ?>
-          <span class="postername">#{post['name']}</span>
-              <?py if post['tripcode']: ?>
-          <span class="postertrip">#{post['tripcode']}</span>
-              <?py #endif ?>
-            <?py #endif ?>
-            #{post['timestamp_formatted']}
-          <a href="javascript:insert('>>#{post['id']}\r\n');">No.#{post['id']}</a>
-          <?py #endif ?>
-      <br />
-          <?py if post['file'] != '': ?>
-	Archivo: <a href="http://bienvenidoainternet.org/#{board}/src/#{post['file']}">#{post['file']}</a> (#{post['file_size']} B)<br />
-    <a href="http://bienvenidoainternet.org/#{board}/src/#{post['file']}"><img src="http://bienvenidoainternet.org/#{board}/mobile/#{post['thumb']}" align="left" /></a>
-          <?py #endif ?>
-    <blockquote>#{post['message']}</blockquote>
-          <?py if post['file'] != '': ?>
-    <br clear="left" />
-          <?py #endif ?>
-      <?py elif post['IS_DELETED'] == '1': ?>
-    <span class="deleted">No.#{post['id']} eliminado por el usuario.</span>
-      <?py elif post['IS_DELETED'] == '2': ?>
-    <span class="deleted">No.#{post['id']} eliminado por staff.</span>
-      <?py #endif ?>
-      <?py if int(post['parentid']) != 0: ?>
-    </div>
-      <?py #endif ?>
-    <?py #endfor ?>
+<div id="thread">
+<?py for post in thread['posts']: ?>
+  <?py if post['IS_DELETED'] == "1": ?>
+  <div class="pst"><h3 class="del"><a name="#{post['id']}"></a>No.#{post['id']} eliminado por el usuario.</h3></div>
+  <?py elif post['IS_DELETED'] == "2": ?>
+  <div class="pst"><h3 class="del"><a name="#{post['id']}"></a>No.#{post['id']} eliminado por miembro del staff.</h3></div>
+  <?py else: ?>
+  <?py if post['parentid'] == "0": ?>
+    <div class="first"><h1>#{post["subject"]} <span>(#{thread['length']})</span></h1>
+  <?py else: ?>
+    <div class="pst">
+    <?py if post['subject']: ?>
+      <h2>#{post["subject"]}</h2>
+    <?py #endif ?>
+  <?py #endif ?><h3><a href="#" class="num" name="#{post['id']}">#{post['id']}</a>#{post['name']} #{post['tripcode']} #{post['timestamp_formatted']}</h3>
+  <?py if post['file']: ?><a href="/#{board}/src/#{post['file']}" target="_blank" class="thm"><img src="/#{board}/mobile/#{post['thumb']}" /><br />#{int(post['file_size'])//1024}KB #{post['file'].split(".")[1].upper()}</a><?py #endif ?> 
+  <div class="msg">#{post['message']}</div></div>
+  <?py #endif ?>
+<?py #endfor ?>
+<?py if threads[0]['posts'][0]['locked'] != "1": ?>
+<a href="./#{thread['id']}" id="n">Recargar</a><span id="n2"></span>
+<?py #endif ?>
+<div class="nav"><div><a href="//m.bienvenidoainternet.org">Home</a><a href="#{cgi_url}mobile/#{board}/">Volver</a><a href="#top">&#9650;</a></div></div>
+<?py if threads[0]['posts'][0]['locked'] == "1": ?>
+  <div class="warn red" style="text-align:center;">El hilo ha sido cerrado. Ya no se puede postear en &eacute;l.</div>
+<?py else: ?>
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" /><input type="hidden" name="parent" value="#{replythread}" /><input type="hidden" name="mobile" value="true" /><input type="hidden" name="password" value="" />
+  <div style="display:none;"><input type="text" name="name" /><input type="text" name="email" /></div>
+  <?py if not disable_subject: ?>
+  <input class="fld" type="text" name="subject" placeholder="Asunto (opcional)" />
+  <?py #endif ?>
+  <?py if not disable_name: ?>
+  <input class="fld" type="text" name="fielda" placeholder="Nombre (opcional)" />
+  <?py #endif ?>
+  <input class="fld" type="text" name="fieldb" placeholder="E-mail (opcional)" />
+  <textarea name="message" rows="6"></textarea>
+<?py if allow_image_replies: ?>
+  <div class="file"><input type="file" name="file" class="fld" />
+  <?py if allow_spoilers: ?>
+    <label class="fld"><input type="checkbox" name="spoil" /> Spoiler</label>
+  <?py #endif ?></div>
+<?py #endif ?>
+  <input id="post" type="submit" value="Responder" />
+</form>
+<?py #endif ?>
 </div>
 <?py #endfor ?>
-<div class="nav">
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}">■ Volver al IB ■</a> ·
-<a href="#{cgi_url}mobilelist/#{board}">Lista de hilos</a> ·
-<?py if not replythread: ?>
-<a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a> ·
-<?py #endif ?>
-<a name="bottom" href="#top">Ir al principio</a>
-</div>
-<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="board" value="#{board}" />
-  <input type="hidden" name="parent" value="#{replythread}" />
-  <input type="hidden" name="mobile" value="true" />
-  <div style="display:none;">Trampa (deja estos campos en blanco):
-   <input type="text" name="name" size="19" maxlength="75" />
-   <input type="text" name="email" size="19" maxlength="75" />
-  </div>
-  <table>
-   <tr><td>Nombre</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
-   <tr><td>E-mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
-   <tr><td>Asunto</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
-   <tr><td>Mensaje</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
-   <tr><td>Archivo</td><td><input type="file" name="file" size="25" /></td></tr>
-   <tr><td>Clave</td><td><input type="password" name="password" size="8" maxlength="8" /></td></tr>
-   <tr><td> </td><td><input type="submit" value="Responder" /></td></tr>
-  </table>
-</form>
-<script type="text/javascript">set_inputs("postform");</script>
-
-<?py include('templates/mobile/base_bottom.html') ?>
+<a name="form"></a>
+</body>
+</html>

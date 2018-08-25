@@ -2,18 +2,22 @@
 <rss version="2.0">
  <channel>
   <title>Bienvenido a Internet BBS/IB</title>
-  <link>http://bienvenidoainternet.org/</link>
-  <description>El sitio con más actividad de la web chilena.</description>
-  <language>es-cl</language>
-<?py for post in latest_posts: ?>
+  <link>https://bienvenidoainternet.org/</link>
+  <description>El foro anónimo con más actividad de habla hispana.</description>
+  <language>es</language>
+  <webMaster>burocracia@bienvenidoainternet.org</webMaster>
+  <image>
+    <url>https://bienvenidoainternet.org/rss_logo.png</url>
+    <title>Bienvenido a Internet BBS/IB</title>
+    <link>https://bienvenidoainternet.org/</link>
+    <width>144</width>
+    <height>144</height>
+  </image>
+<?py for thread in latest_age: ?>
   <item>
-    <?py if len(post['subject']) > 0: ?>
-   <title>#{post['name']}: #{post['subject']}</title>
-    <?py else: ?>
-   <title>#{post['name']}: #{post['short_message']}</title>
-    <?py #endif ?>
-   <link>http://bienvenidoainternet.org#{boards_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}</link>
-   <description>#{post['message']}</description>
+   <title>(${thread['length']}) #{thread['board_name']}: #{thread['content']} </title>
+   <link>https://bienvenidoainternet.org#{thread['url']}</link>
+   <category domain="https://bienvenidoainternet.org/#{thread['dir']}/">#{thread['board_fulln']}</category>
   </item>
 <?py #endfor ?>
  </channel>

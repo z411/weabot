@@ -1,12 +1,24 @@
 DirectoryIndex index.html
-ErrorDocument 403 #{cgi_url}banned/#{dir}
+<?py if dir == 'clusterfuck': ?>
+
+AuthName "BAI"
+AuthType Basic
+AuthUserFile "/home/z411/.htpasswds/public_html/wiki/passwd"
+<Limit GET>
+require valid-user
+</Limit>
+
+<?py #endif ?>
+<?py if dir == 'anarkia': ?>
+ExpiresByType text/css "access plus 0 seconds"
+<?py #endif ?>
+
+ErrorDocument 403 https://bienvenidoainternet.org/cgi/banned/#{dir}
 <?py if ips: ?>
 
-<Files *>
 order allow,deny
     <?py for ip in ips: ?>
 deny from #{ip}
     <?py #endfor ?>
 allow from all
-</Files>
 <?py #endif ?>

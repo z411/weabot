@@ -1,90 +1,64 @@
 <?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>#{board_name}@B.a.I. Móvil</h2>
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<?py if mode == 1: ?>
-Página Frontal ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
-<?py else: ?>
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Página Frontal</a> ·
-Lista de Hilos ·
-<?py #endif ?>
-<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Nuevo Hilo</a>
-<hr />
-<?py for thread in more_threads: ?>
-<div class="thread">
-  <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}" rel="nofollow"><strong>
-    <?py if thread['subject'] != '': ?>
-  #{thread["subject"]}
-    <?py else: ?>
-  Sin asunto
-    <?py #endif ?>
-  </strong>
-    <?py if thread['locked'] == '1': ?>
-  <small>(cerrado)</small>
-    <?py elif thread['locked'] == '2': ?>
-  <small>(permasage)</small>
-    <?py #endif ?>
-  &#91;#{int(thread["length"])-1} resp.&#93;</a><br />
-    <?py if mode == 1: ?>
-      <a href="http://bienvenidoainternet.org/#{board}/src/#{thread['file']}">
-       <img src="http://bienvenidoainternet.org/#{board}/mobile/#{thread['thumb']}" align="left" />
-      </a>
-      <strong>
-      <?py if thread['email']: ?>
-      <span class="postername"><a href="mailto:#{thread['email']}">#{thread['name']}</a></span>
-        <?py if thread['tripcode']: ?>
-      <span class="postertrip"><a href="mailto:#{thread['email']}">#{thread['tripcode']}</a></span>
-        <?py #endif ?>
-      <?py else: ?>
-      <span class="postername">#{thread['name']}</span>
-        <?py if thread['tripcode']: ?>
-      <span class="postertrip">#{thread['tripcode']}</span>
-        <?py #endif ?>
-      <?py #endif ?>
-      #{thread['timestamp_formatted']}
-      </strong> No.#{thread['id']}<br />
-      #{thread['message']}
-        <?py if thread['shortened']: ?>
-        <small>[...] (clic en Leer)</small>
-        <?py #endif ?>
-      <br />
-        <?py if thread['lastreply']: ?>
-       <span class="small_reply">
-        <strong>
-          <?py if thread['lastreply']['email']: ?>
-        <span class="postername"><a href="mailto:#{thread['lastreply']['email']}">#{thread['lastreply']['name']}</a></span>
-            <?py if thread['lastreply']['tripcode']: ?>
-        <span class="postertrip"><a href="mailto:#{thread['lastreply']['email']}">#{thread['lastreply']['tripcode']}</a></span>
-            <?py #endif ?>
-          <?py else: ?>
-        <span class="postername">#{thread['lastreply']['name']}</span>
-            <?py if thread['lastreply']['tripcode']: ?>
-        <span class="postertrip">#{thread['lastreply']['tripcode']}</span>
-            <?py #endif ?>
-          <?py #endif ?>
-        #{thread['lastreply']['timestamp_formatted']}
-        </strong> No.#{thread['lastreply']['id']}<br />
-        #{thread['lastreply']['message']}
-          <?py if thread['lastreply']['shortened']: ?>
-        [...]
-          <?py #endif ?>
-       </span>
-        <?py #endif ?>
-       <br clear="all" />
-      <hr />
-    <?py #endif ?>
+<body class="img">
+<div class="top">
+  <a href="//m.bienvenidoainternet.org"><img src="#{static_url}css/img/0back.png" /><br />Home</a>
+  #{board_name}
 </div>
-<?py #endfor ?>
-<hr />
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
 <?py if mode == 1: ?>
-Página Frontal ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
+  <div class="bar"><a href="#{cgi_url}mobile/#{board}" class="sel">Portada</a><a href="#{cgi_url}mobilelist/#{board}">Lista</a><a href="#{cgi_url}mobilecat/#{board}">Cat&aacute;logo</a><a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a></div>
+  <?py for thread in more_threads: ?>
+  <div class="prev">
+  <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}"><img class="thm" src="/#{board}/mobile/#{thread['thumb']}" />
+  <b>#{thread["subject"]}</b> (R:#{int(thread["length"])-1})</a>
+  <h3>#{thread['name']} #{thread['tripcode']} #{thread['timestamp_formatted']}</h3>
+  #{thread['message']}#{" [...]" if thread['shortened'] else ""}
+  <?py if thread['lastreply']: ?>
+  <div class="pst"><h3>#{thread['lastreply']['name']} #{thread['lastreply']['tripcode']} #{thread['lastreply']['timestamp_formatted']}</h3>
+  #{thread['lastreply']['message']}#{" [...]" if thread['lastreply']['shortened'] else ""}</div>
+  <?py #endif ?>
+  </div>
+  <?py #endfor ?>
+<?py elif mode == 2: ?>
+  <div class="bar"><a href="#{cgi_url}mobile/#{board}">Portada</a><a href="#{cgi_url}mobilelist/#{board}" class="sel">Lista</a><a href="#{cgi_url}mobilecat/#{board}">Cat&aacute;logo</a><a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a></div>
+  <div class="search"><input id="search" placeholder="Buscar en asuntos" style="padding:7px;" type="text"></div>
+  <div class="ord">
+  <?py if i_sort == '': ?>
+    <span>Orden:</span><a href="?">&#10003; Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '3': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">&#10003; Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '4': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">&#10003; Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '1': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">&#10003; Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '2': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">&#10003; Viejo</a>
+  <?py #endif ?>
+  </div>
+  <div class="list">
+    <?py for thread in more_threads: ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['id']}"><strong>#{thread["subject"]}</strong>: #{thread['message']}#{" [...]" if thread['shortened'] else ""}<br />
+    <span class="info"><span>&Uacute;ltima: #{thread['lastreply']['timestamp_formatted'] if thread['lastreply'] else thread['timestamp_formatted']}</span> Respuestas: <b>#{int(thread["length"])-1}</b></span></a>
+    <?py #endfor ?>
+  </div>
 <?py else: ?>
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Página Frontal</a> ·
-Lista de Hilos ·
+  <div class="bar"><a href="#{cgi_url}mobile/#{board}">Portada</a><a href="#{cgi_url}mobilelist/#{board}">Lista</a><a href="#{cgi_url}mobilecat/#{board}" class="sel">Cat&aacute;logo</a><a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a></div>
+  <div class="search"><input id="catsearch" placeholder="Buscar en catálogo" style="padding:7px;" type="text"></div>
+  <div class="ord">
+  <?py if i_sort == '': ?>
+    <span>Orden:</span><a href="?">&#10003; Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '3': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">&#10003; Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '4': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">&#10003; Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '1': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">&#10003; Nuevo</a><a href="?sort=2">Viejo</a>
+  <?py elif i_sort == '2': ?>
+    <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">&#10003; Viejo</a>
+  <?py #endif ?>
+  </div>
+  <div style="text-align:center;margin-top:0.5em;">
+  <?py for thread in more_threads: ?><a class="cat" href="#{cgi_url}mobileread/#{board}/#{thread['id']}"><img src="/#{board}/mobile/#{thread['thumb']}" /><br />(#{int(thread["length"])-1}R) <strong>#{thread["subject"]}</strong>: #{thread['message']}#{" [...]" if thread['shortened'] else ""}</a><?py #endfor ?>
+  </div>
 <?py #endif ?>
-<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Nuevo Hilo</a>
-<hr />
-<?py include('templates/mobile/base_bottom.html') ?>
+</body>
+</html>

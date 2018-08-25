@@ -5,35 +5,36 @@
 <title>#{header}</title>
 <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 <link rel="shortcut icon" href="logo/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="/static/css/mainpage.css" />
+<link rel="stylesheet" type="text/css" href="/home.css" />
 <style type="text/css">
-h2{margin:0;padding:0;font-size:20px;}
-h3{margin:0 0 0.5em 0;padding:0;font-style:italic;font-weight:normal;font-size:14px;}
+.main{display:inline-block;margin:5px;width:90%;}
+h1{font-size:} h2{margin:0;padding:0;font-size:20px;} h3{margin:0;margin-bottom:0.5em;padding:0;font-weight:normal;font-size:14px;}
 #newsarea{text-align:left;padding:0 5em 0 5em;}
 .message{margin-bottom:2em;}
 </style>
 </head>
 <body>
-<center>
-<img src="#{logo}" alt="#{header}" />
-<div class="header">#{header}</div>
-<div class="slogan">#{slogan}</div>
+<center class="main">
+<div class="main">
+  <div class="logo" style="margin:0 auto;"></div>
+  <strong>#{header}</strong><br>
+  <em>#{slogan}</em>
+</div>
 <hr />
-Noticias
-<hr />
-<a href="#{home_url}home.html">Volver</a><br />
-<br />
+<h2>Noticias</h2>
+<a href="#{home_url}bai.html" target="_top">Volver</a>
+<hr style="margin-bottom:2em;"/>
 <?py if posts: ?>
 <div id="newsarea">
-    <?py for post in posts: ?>
-  <h2><a href="##{post['id']}" name="#{post['id']}">#</a> ${post['title']}</h2>
-  <h3><span class="postername">${post['name']}</span> : ${post['timestamp_formatted']}</h3>
-  <p class="message">#{post['message']}</p>
-    <?py #endfor ?>
+<?py for post in posts: ?>
+	<h2><a href="##{post['id']}" name="#{post['id']}">#</a> ${post['title']}</h2>
+	<h3><span class="postername">${post['name']}</span> : ${post['timestamp_formatted']}</h3>
+	<p class="message">#{post['message']}</p>
+<?py #endfor ?>
 <?py #endif ?>
 </div>
-<br />
-<a href="#{home_url}home.html">Volver</a>
-</center>
 <hr />
-<?py include('templates/base_bottom.html') ?>
+<a href="#{home_url}bai.html" target="_top">Volver</a>
+<hr />
+<div class="footer">B.a.I. - 2010-2016 · Contacto: <a href="mailto:burocracia@bienvenidoainternet.org">burocracia@bienvenidoainternet.org</a></div>
+</center>

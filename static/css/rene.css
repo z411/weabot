@@ -1,0 +1,21 @@
+html,body{background:#1A1D22;color:#E0E0E0;font-family:Arial,Helvetica,"Nimbus Sans L",sans-serif}
+.rep{color:#E0E0E0}
+a,a .name,.nav label{color:#b0ccde}
+a:hover,a:hover .name,.nav label:hover{color:#5c6a74}
+.replymode,.extramode{color:#FFF}
+.replymode{background:#2B2B2B}
+.extramode{background:#333}
+.postblock{background:#28282D;font-weight:bold}
+.q{color:#789922}
+.fs{text-decoration:none}
+.subj{color:#a6b8d8;font-weight:bold}
+.name,.omitted{color:#A3A3A3}
+.reply,#q-p{background:#373a44}
+.abbrev{color:#707070}
+.highlight{background:#5B5F69}
+.managertable td{background:#64697b}
+.managertable th{background:#252830;color:#F8F8F8}
+hr{border:none;border-top:1px solid #333;height:0}
+#catalog .thread:hover{background:#373a44;box-shadow:0 0 5px 5px #373a44}
+#catalog .replies{color:#909090;font-weight:bold}
+.yt{background:#292C33;border:1px solid #5e6b7d;color:#E0E0E0}

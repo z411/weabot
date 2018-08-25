@@ -1,0 +1,136 @@
+<?py include('templates/txt_base_top.html') ?>
+<body class="mainpage">
+<div id="main_nav"><a href="/" target="_top">Bienvenido a Internet</a> | <?py include('templates/navbar.html') ?></div>
+<?py if banner_url: ?>
+  <center class="banner"><img src="#{banner_url}" style="width:#{banner_width}px;height:#{banner_height}px" /></center>
+<?py #endif ?>
+<div id="titlebox" class="outerbox">
+  <div class="innerbox">
+    <div class="threadnav"><a href="#menu" title="Thread list">&#9632;</a><a href="#1" title="Next thread">&#9660;</a></div>
+    <h1>#{board_long}</h1>
+    <div id="rules">#{postarea_desc}</div>
+    <form method="get" action="/tools/search.py" class="search"><input type="text" name="q" value="" /><input type="hidden" name="board" value="#{board}" /><input type="submit" value="Search active posts" /><input type="submit" value="Search archives" formaction="/tools/search_kako.py" /></form>
+  </div>
+  <div class="innerbox links"><a href="/guia.html"><b>Leer antes de postear</b></a> | <a href="/faq.html"><b>Preguntas frecuentes</b></a> | <a href="/bai/"><b>Contacto</b></a>
+  <?py if not force_css: ?>| <b>Styles:</b>
+    <?py for title in txt_styles: ?><a href="#" class="ss">#{title}</a> <?py #endfor ?>
+  <?py #endif ?></div>
+</div>
+<?py if postarea_extra: ?>
+<div class="outerbox"><div class="innerbox">#{postarea_extra}</div></div>
+<?py #endif ?>
+<a name="menu"></a>
+<?py if threads: ?>
+<div id="threadbox" class="outerbox"><div class="innerbox">
+  <div id="threadlinks"><a href="#{cgi_url}threadlist/#{board}"><b>View all threads</b></a> &nbsp; <a href="kako/"><b>View archive</b></a> &nbsp; <a href="#newthread"><b>Create new thread</b></a></div>
+  <div id="threadlist">
+  <?py iter = 1 ?>
+  <?py for thread in threads: ?>
+    <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{'l50' if thread['length'] > 50 else ''}" rel="nofollow">#{iter}: </a><a href="##{iter}"> <b>#{thread['posts'][0]['subject']}</b> (#{thread['length']})</a><br />
+    <?py iter += 1 ?>
+  <?py #endfor ?>
+  <?py for thread in more_threads: ?>
+    <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{'l50' if thread['length'] > 50 else ''}" rel="nofollow">#{iter}: <b>#{thread["subject"]}</b> (#{thread["length"]})</a><br />
+    <?py iter += 1 ?>
+  <?py #endfor ?>
+  </div>
+</div></div>
+<?py titer = 1 ?>
+<?py for thread in threads: ?>
+<a name="#{titer}"></a>
+<div class="thread"><div class="innerbox">
+<div class="threadnav"><a href="#menu" title="Thread list">&#9632;</a><a href="##{(titer-1) if titer>1 else len(threads)}" title="Previous thread">&#9650;</a><a href="##{(titer+1) if titer<len(threads) else '1'}" title="Next thread">&#9660;</a></div>
+<h2><small>[#{titer}:#{thread['length']}]</small><a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{'l50' if thread['length'] > 50 else ''}" rel="nofollow">#{thread['posts'][0]['subject']}</a></h2>
+<?py for post in thread['posts']: ?>
+<?py if post['IS_DELETED'] == '1': ?>
+  <h4 class="deleted">#{post['num']} : Post deleted by user.</h4>
+<?py elif post['IS_DELETED'] == '2': ?>
+  <h4 class="deleted">#{post['num']} : Post deleted by staff.</h4>
+<?py else: ?>
+  <div class="reply#{' first' if post['num'] == 1 else ''}" data-n="#{post['num']}">
+  <h4>#{post['num']} Nombre:
+    <?py if post['email']: ?>
+      <?py if post['tripcode']: ?>
+        <a href="mailto:#{post['email']}"><span class="name"><b>#{post['name']}</b> #{post['tripcode']}</span></a>
+      <?py else: ?>
+        <a href="mailto:#{post['email']}"><span class="name"><b>#{post['name']}</b></span></a>
+      <?py #endif ?>
+    <?py else: ?>
+      <?py if post['tripcode']: ?>
+        <span class="name"><b>#{post['name']}</b> #{post['tripcode']}</span>
+      <?py else: ?>
+        <span class="name"><b>#{post['name']}</b></span>
+      <?py #endif ?>
+    <?py #endif ?> : <span class="date" data-unix="#{post['timestamp']}">#{post['timestamp_formatted']}</span></h4>
+  <?py if post['file']: ?>
+    <a href="#{images_url}#{board}/src/#{post['file']}" target="_blank" class="thumb"><img src="#{images_url}#{board}/thumb/#{post['thumb']}" width="#{post['thumb_width']}" height="#{post['thumb_height']}" /><div>${int(post['file_size'])//1024}KB ${post['file'].split(".")[1].upper()}</div></a>
+  <?py #endif ?>
+  <div class="msg">
+    #{post['message']}
+    <?py if post['shortened']: ?>
+      <div class="abbrev">(Post is too long... Click <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/#{post['num']}" rel="nofollow">here</a> to view the whole post.)</div>
+    <?py #endif ?>
+  </div>
+</div>
+<?py if thread['omitted'] and post['num'] == 1: ?>
+<div class="omit"></div>
+<?py #endif ?>
+<?py #endif ?>
+<?py #endfor ?>
+<?py if thread['locked'] != '1': ?>
+<form id="postform#{thread['id']}" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" /><input type="hidden" name="parent" value="#{thread['id']}" /><input type="hidden" name="password" value="" />
+  <div style="display:none;">Trampa: <input type="text" name="name" size="15" /> <input type="text" name="email" size="15" /></div>
+  <input type="submit" value="Reply" /> Name: <input type="text" name="fielda" size="15" /> E-mail: <input type="text" name="fieldb" size="15" /><br />
+  <div class="formpad">
+    <textarea name="message" cols="70" rows="5"></textarea>
+    <?py if allow_image_replies: ?><br /><input type="file" name="file" /><?py #endif ?>
+<?py else: ?>
+<form><div class="formpad">
+<?py #endif ?>
+  <div class="threadlinks">
+    <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/"><b>Entire thread</b></a>
+    <?py if thread['length'] > 51: ?>
+      <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/l50" rel="nofollow"><b>Last 50</b></a>
+    <?py #endif ?>
+    <?py if thread['length'] > 101: ?>
+      <a href="#{boards_url}#{board}/read/#{thread['timestamp']}/-100" rel="nofollow"><b>First 100</b></a>
+    <?py #endif ?>
+    <a href="#menu" rel="nofollow"><b>Thread list</b></a>
+    <a href="#newthread" rel="nofollow"><b>New thread</b></a>
+  </div>
+</div></form>
+</div></div>
+<?py titer += 1 ?>
+<?py #endfor ?>
+<?py #endif ?>
+<a name="newthread"></a>
+<div id="createbox" class="outerbox">
+  <div class="extrabox"></div>
+  <div class="innerbox">
+    <form id="threadform" action="#{cgi_url}post" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="board" value="#{board}" /><input type="hidden" name="password" value="" />
+      <table style="max-width:600px;">
+        <tr>
+          <td style="text-align:right;">Subject:</td>
+          <td colspan="3" style="width:100%;"><input type="text" name="subject" size="50" maxlength="100" /></td>
+          <td><input type="submit" value="Create new thread" /></td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">Name:</td><td><input type="text" name="fielda" /></td>
+          <td style="text-align:right;">E-mail:</td><td><input type="text" name="fieldb" /></td>
+          <td><input type="button" name="preview" value="Preview" /></td>
+        </tr>
+        <tr id="options" style="display:none;"><td></td><td colspan="4"><div id="preview0" class="msg"></div></td></tr>
+        <tr><td style="text-align:right;">Body:</td><td colspan="4"><textarea name="message" cols="70" rows="10"></textarea></td></tr>
+        <?py if allow_images: ?>
+        <tr><td style="text-align:right;">File:</td><td colspan="4"><input type="file" name="file" /></td></tr>
+        <?py #endif ?>
+      </table>
+      <div style="display:none;">Trampa: <input type="text" name="name" maxlength="50" /> <input type="text" name="email" maxlength="50" /></div>
+    </form>
+  </div>
+</div>
+<center class="footer"><a href="/" target="_top">Bienvenido a Internet BBS/IB</a> weabot.py <?py include('templates/revision.html') ?> + FastCGI + tenjin<br />それがBaIクオリティー！</center>
+</body>
+</html>

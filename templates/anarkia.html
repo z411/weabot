@@ -1,0 +1,349 @@
+<?py include('templates/base_top.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<style>.anarkiahead {width:1000px; text-align:left}
+.anarkiahead h2 {margin-top: 0}
+.anarkiamenu a {font-size:20pt;display:inline-block;width:300px;padding:10px 0}
+.logs {font-size:small;max-height:300px;overflow-y:auto;width:600px}
+.long {white-space:nowrap}
+.full {width:100%}
+.return {font-size:24pt}</style>
+<center>
+<div class="replymode" style="font-size:26pt;color:red;font-weight:bold">ⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶ</div>
+<br />
+<?py if mode == 0: ?>
+  <div class="anarkiahead">
+  <h2 style="border-bottom:1px solid;width:100%;">Anarkía @ B.a.I.</h2>
+  <p>Anarkía es una sección especial sin moderación y con acceso libre a su panel de administración.</p>
+  <ul>
+    <li>El staff de B.a.I. no interferirá de ninguna manera en esta sección y cualquiera es libre de modificar
+    sus parámetros, de eliminar mensajes o banear usuarios dentro de ella.</li>
+    <li>Los hilos de otras secciones que sean eliminados por su baja calidad, denuncias u otra razón, caerán por defecto a esta sección.</li>
+    <li>Los bans en esta sección son independientes del resto del sitio. Es decir, usuarios baneados en BaI son libres de usar esta sección.</li>
+    <li>Cualquier problema en su funcionamiento por favor reportar en la sección <a href="/bai/">Meta</a>.</li>
+  </div>
+  <div class="anarkiamenu">
+    <a href="#{cgi_url}anarkia/opt"><img src="#{boards_url}anarkia/opt.jpg" width="250" height="175"><br />Opciones generales</a>
+    <a href="#{cgi_url}anarkia/mod"><img src="#{boards_url}anarkia/mod.jpg" width="250" height="175"><br />Panel de moderación</a>
+    <a href="#{cgi_url}anarkia/css"><img src="#{boards_url}anarkia/css.jpg" width="250" height="175"><br />Editar CSS</a>
+    <br />
+    <a href="#{cgi_url}anarkia/emojis"><img src="#{boards_url}anarkia/emojis.jpg" width="250" height="175"><br />Emojis</a>
+    <a href="#{cgi_url}anarkia/bans"><img src="#{boards_url}anarkia/bans.jpg" width="250" height="175"><br />Bans</a>
+    <a href="#{cgi_url}anarkia/type"><img src="#{boards_url}anarkia/type.jpg" width="250" height="175"><br />Cambiar tipo de board</a>
+  </div>
+  <hr />
+  <input type="hidden" name="board" value="anarkia" />
+  <div class="logs">
+  <table class="managertable full">
+    <tr><th colspan="2">Logs</th></tr>
+    <tr><th>Fecha</th><th class="full">Acción</th></tr>
+    <?py for log in logs: ?>
+    <tr><td class="date" data-unix="${log['timestamp']}">${log['timestamp_formatted']}</td><td>${log['action']}</td></tr>
+    <?py #endfor ?>
+  </table>
+  </div>
+  <hr /><a href="#{boards_url}anarkia" class="return">Volver a la sección</a>
+<?py elif mode == 1: ?>
+<div class="replymode">Opciones de Board</div>
+<form action="#{cgi_url}anarkia/opt" method="post">
+<table>
+  <tr>
+  <td class="postblock">Nombre de sección</td>
+  <td><input type="text" name="longname" size="50" value="${boardopts['longname']}" maxlength="128" class="full" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Descripción</td>
+  <td>
+  <textarea id="patop" name="postarea_desc" rows="10" cols="50" class="full" oninput="pvw('patop')">${boardopts['postarea_desc']}</textarea>
+  <div id="p_patop" style="border:1px dotted gray;width:100%;"></div>
+  </td>
+  </tr>
+  <tr>
+  <td class="postblock">Caja extra</td>
+  <td><textarea name="postarea_extra" rows="5" cols="50" class="full">${boardopts['postarea_extra']}</textarea></td>
+  </tr>
+  <tr>
+  <td class="postblock">Nombre por defecto</td>
+  <td><input type="text" name="anonymous" size="50" maxlength="128" value="${boardopts['anonymous']}" class="full" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Título por defecto</td>
+  <td><input type="text" name="subject" size="50" maxlength="64" value="${boardopts['subject']}" class="full" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Mensaje por defecto</td>
+  <td><input type="text" name="message" size="50" maxlength="128" value="${boardopts['message']}" class="full" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">ID</td>
+  <td>
+    <select name="useid" class="full">
+      <option value="0">Desactivado</option>
+      <option value="1"#{selected(boardopts['useid'] == '1')}>Activado</option>
+      <option value="2"#{selected(boardopts['useid'] == '2')}>Activado siempre</option>
+      <option value="3"#{selected(boardopts['useid'] == '3')}>Activado siempre, detallado</option>
+    </select>
+  </td>
+  </tr>
+  <tr>
+  <td class="postblock">Slip</td>
+  <td>
+    <select name="slip" class="full">
+      <option value="0">Desactivado</option>
+      <option value="1"#{selected(boardopts['slip'] == '1')}>Activado</option>
+      <option value="2"#{selected(boardopts['slip'] == '2')}>Sólo dominio</option>
+      <option value="3"#{selected(boardopts['slip'] == '3')}>Todo</option>
+    </select>
+  </td>
+  </tr>
+  <tr>
+  <td class="postblock">Código de país</td>
+  <td>
+    <select name="countrycode" class="full">
+      <option value="0">Desactivado</option>
+      <option value="1"#{selected(boardopts['countrycode'] == '1')}>Activado</option>
+    </select>
+  </td>
+  </tr>
+  <tr>
+  <td class="postblock">Desactivar nombre</td>
+  <td><input type="checkbox" name="disable_name" id="noname" value="1"#{checked(boardopts['disable_name'] == '1')} /><label for="noname"></label></td>
+  </tr>
+  <tr>
+  <td class="postblock">Desactivar asunto</td>
+  <td><input type="checkbox" name="disable_subject" id="nosub" value="1"#{checked(boardopts['disable_subject'] == '1')} /><label for="nosub"></label></td>
+  </tr>
+  <tr>
+  <td class="postblock">Permitir crear hilos sin imagen</td>
+  <td><input type="checkbox" name="allow_noimage" id="noimgallow" value="1"#{checked(boardopts['allow_noimage'] == '1')} /><label for="noimgallow"></label></td>
+  </tr>
+  <tr>
+  <td class="postblock">Permitir subida</td>
+  <td><input type="checkbox" name="allow_images" id="img" value="1"#{checked(boardopts['allow_images'] == '1')} /><label for="img">Al crear un hilo</label><br /><input type="checkbox" name="allow_image_replies" id="imgres" value="1"#{checked(boardopts['allow_image_replies'] == '1')} /><label for="imgres">Al responder</label></td>
+  </tr>
+  <tr>
+  <td class="postblock">Tipos de archivo</td>
+  <td>
+    <?py for filetype in filetypes: ?>
+      <input type="checkbox" name="filetype#{filetype['ext']}" id="#{filetype['ext']}" value="1"#{checked(filetype['ext'] in supported_filetypes)} /><label for="#{filetype['ext']}">${filetype['ext'].upper()}</label><br />
+    <?py #endfor ?>
+  </td>
+  </tr>
+  <tr>
+  <td class="postblock">Tamaño máximo <span style="font-weight:normal;">(KB)</span></td>
+  <td><input type="text" name="maxsize" value="#{boardopts['maxsize']}" maxlength="5" size="11" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Dimensión de miniatura <span style="font-weight:normal;">(px)</span></td>
+  <td><input type="text" name="thumb_px" value="#{boardopts['thumb_px']}" maxlength="3" size="11" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Hilos en página frontal</td>
+  <td><input type="text" name="numthreads" value="#{boardopts['numthreads']}" maxlength="2" size="11" /></td>
+  </tr>
+  <tr>
+  <td class="postblock">Respuestas a mostrar</td>
+  <td><input type="text" name="numcont" value="#{boardopts['numcont']}" maxlength="2" size="11" /></td>
+  </tr>
+</table>
+<hr />
+<input type="submit" value="Guardar cambios" />
+</form>
+<hr />
+<a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 2: ?>
+<div class="replymode">Denuncias</div>
+<?py if reports: ?>
+  <table class="managertable" style="max-width:1000px">
+  <tr>
+    <th>Post</th>
+    <th>Fecha</th>
+    <th style="min-width:200px;">Razón</th>
+  </tr>
+  <?py for r in reports: ?>
+  <tr>
+    <td><a href="?thread=#{r['parentid'] if r['parentid'] != "0" else r['postid']}##{r['postid']}" style="font-weight:bold">#{r['postid']}</td>
+    <td>${r['timestamp_formatted']}</td>
+    <td>#{r['reason']}</a></td>
+  </tr>
+  <?py #endfor ?>
+  </table>
+<?py else: ?>
+  No hay denuncias.<br />
+<?py #endif ?>
+<br />
+<div class="replymode">Lista de hilos</div>
+<table class="managertable" style="max-width:1000px;">
+<tr>
+  <th>#</th>
+  <th>ID</th>
+  <th style="width:50%;">Asunto</th>
+  <th>Fecha</th>
+  <th style="width:50%;">Mensaje</th>
+  <th>Posts</th>
+  <th>Acción</th>
+</tr>
+<?py i = 1 ?>
+<?py for thread in threads: ?>
+<tr>
+  <td>#{i}</td>
+  <td>#{thread['id']}</td>
+  <td><a href="?thread=#{thread['id']}" style="font-size:16pt;"><b>#{thread['subject'][:30]}</b></a></td>
+  <td>#{thread['timestamp_formatted'][:21]}</td>
+  <td>${thread['message'][:250]}</td>
+  <td>#{thread['length']}</td>
+  <td>[<a href="?lock=#{thread['id']}">#{"<b>Abrir</b>" if thread['locked'] == "1" else "Cerrar"}</a>]</td>
+</tr>
+<?py i += 1 ?>
+<?py #endfor ?>
+</table>
+<hr /><a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 3: ?>
+<div class="replymode" style="font-size:16pt">Hilo: ${posts[0]['subject']} (#{posts[0]['length']})</div>
+<table class="managertable" style="width:1000px;">
+  <tr>
+    <th>#</th>
+    <th>ID</th>
+    <th>Fecha</th>
+    <th>Nombre</th>
+    <th>Mensaje</th>
+    <th>Usuario</th>
+  </tr>
+<?py i = 1 ?>
+<?py for p in posts: ?>
+<?py if p['IS_DELETED'] == '0': ?>
+  <tr>
+    <td>#{i}</td>
+    <td class="long">
+      <b>#{p['id']}</b>
+      <?py if p['parentid'] != '0': ?>
+        [<a href="?del=#{p['id']}">Eliminar</a>]
+      <?py else: ?>
+        [<a href="?lock=#{p['id']}">#{"<b>Abrir</b>" if p['locked'] == "1" else "Cerrar"}</a>]
+      <?py #endif ?>
+    </td>
+    <td>${p['timestamp_formatted']}</td>
+    <td><span class="postername">${p['name']}</span></td>
+    <td>${p['message']}</td>
+    <td class="long">#{p['ip'][:4]} [<a href="?ban=#{p['id']}">Ban</a>]</td>
+  </tr>
+<?py else: ?>
+  <tr>
+    <td>#{i}</td>
+    <td class="long"><b>#{p['id']}</b> [<a href="?restore=#{p['id']}">Recuperar</a>]</td>
+    <td colspan="4">Eliminado.</td>
+  </tr>
+<?py #endif ?>
+<?py i += 1 ?>
+<?py #endfor ?>
+</table>
+<hr /><a href="#{cgi_url}anarkia/mod" class="return">Volver al panel de moderación</a>
+<?py elif mode == 4: ?>
+<div class="replymode">Colocar ban</div>
+<form action="#{cgi_url}anarkia/mod" name="banform" method="post">
+<input type="hidden" name="banto" value="#{post['id']}" />
+<table>
+  <tr><td class="postblock">Ban para usuario</td><td><b>#{post['ip'][-4:]}</b></td></tr>
+  <tr><td class="postblock">Mensaje</td><td><textarea name="reason" class="full"></textarea></td></tr>
+  <tr><td class="postblock">Ciego</td><td><input type="checkbox" name="blind" value="1" checked="checked" /></td></tr>
+  <tr><td class="postblock">Expira en <span style="font-weight:normal;">(segundos)</span></td>
+    <td><input type="text" name="seconds" class="full" value="3600" /><br />
+    <a href="#" onclick="document.banform.seconds.value='0';return false;">Nunca</a>
+    <a href="#" onclick="document.banform.seconds.value='3600';return false;">1hr</a>
+    <a href="#" onclick="document.banform.seconds.value='43200';return false;">12hr</a>
+    <a href="#" onclick="document.banform.seconds.value='86400';return false;">1d</a>
+    <a href="#" onclick="document.banform.seconds.value='259200';return false;">3d</a>
+    <a href="#" onclick="document.banform.seconds.value='604800';return false;">1w</a>
+    <a href="#" onclick="document.banform.seconds.value='2592000';return false;">1m</a>
+    <a href="#" onclick="document.banform.seconds.value='31536000';return false;">1yr</a>
+    </td>
+  </tr>
+  <tr><td colspan="2"><input type="submit" value="Banear" class="full" /></td></tr>
+</table>
+</form>
+<hr />
+<a href="#{cgi_url}anarkia/mod" class="return">Volver al panel de moderación</a>
+<?py elif mode == 5: ?>
+<div class="replymode">Lista de bans</div>
+<table class="managertable" style="max-width:1000px;">
+<tr>
+  <th>ID</th>
+  <th>Usuario</th>
+  <th>Puesto</th>
+  <th>Expira</th>
+  <th>Ciego</th>
+  <th style="min-width:200px;">Razón</th>
+  <th>Acción</th>
+</tr>
+<?py if bans: ?>
+  <?py for ban in bans: ?>
+  <tr>
+    <td class="long">#{ban['id']}</td>
+    <td>#{ban['ip'][-4:]}</td>
+    <td>${ban['added']}</td>
+    <td>${ban['until']}</td>
+    <td>${"Sí" if ban['blind'] == "1" else "No"}</td>
+    <td>${ban['reason']}</td>
+    <td>[<a href="?unban=#{ban['id']}">Eliminar ban</a>]</td>
+  </tr>
+  <?py #endfor ?>
+<?py else: ?>
+  <tr><td colspan="7" style="text-align:center;">No hay bans.</td></tr>
+<?py #endif ?>
+</table>
+<hr />
+<a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 6: ?>
+<div class="replymode">Editar CSS</div>
+<p><b>Editando:</b> <code>${basename}</code></p>
+<p style="font-size:small">Dominios permitidos: https://bienvenidoainternet.org https://i.imgur.com</p>
+<form action="#{cgi_url}anarkia/css" name="cssform" method="post" style="display:inline-block;">
+<textarea name="cssfile" cols="100" rows="30">${cssfile}</textarea><br />
+<input type="submit" value="Guardar cambios" class="full" />
+</form>
+<hr />
+<a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 7: ?>
+<div class="replymode">Cambiar tipo de sección</div>
+<h1 style="color:red;font-size:26pt;text-decoration:underline;">ATENCIÓN</h1>
+<p style="font-size:19pt">Estás a punto de cambiar la estructura de esta sección a #{type_do}.</p>
+<p style="font-size:15pt">Esta sección es actualmente un #{type_now} y si prosigues transformarás su estructura a un #{type_do}.</p>
+<p style="color:red;font-size:15pt;">Nótese que este cambio se puede hacer sólo una vez cada 10 minutos.</p>
+<div style="display:inline-block;">
+  <p style="margin-top:0;">¿Seguro que deseas convertir esta sección a #{type_do}?
+  <form method="get">
+    <input type="hidden" name="transform" value="do">
+    <input type="submit" value="Transformar a #{type_do}" class="full" />
+  </form>
+  </p>
+</div>
+<hr />
+<a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 8: ?>
+<div class="replymode">Emojis</div>
+<table class="managertable">
+  <tr><th>Nombre</th><th>Img</th></tr>
+  <?py for emoji in emojis: ?>
+  <tr><td>${emoji['from']}</td><td>#{emoji['to']}</td></tr>
+  <?py #endfor ?>
+</table>
+<hr />
+<form method="post" action="" enctype="multipart/form-data">
+<table>
+<tr>
+  <td class="postblock">Nombre</td>
+  <td><input type="text" name="name" size="15" maxlength="15" class="full" /></td>
+  <td><input type="submit" name="new" value="Agregar emoji" class="full" /></td>
+</tr>
+<tr><td class="postblock">Archivo</td><td colspan="2"><input type="file" name="file" size="15" class="full" /></td></tr>
+</table>
+<small>(Sólo letras y/o números. Máximo: 500x500px, 500 KB.)</small>
+</form>
+<hr />
+<a href="#{cgi_url}anarkia" class="return">Volver al menú</a>
+<?py elif mode == 99: ?>
+<div>${msg}<br /><br /><a href="#{cgi_url}anarkia" class="return">Volver al menú</a></div>
+<?py #endif ?>
+</center>
+<hr />
+<div class="replymode" style="font-size:26pt;color:red;font-weight:bold">ⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶⒶ</div>
+<?py include('templates/base_bottom.html') ?>

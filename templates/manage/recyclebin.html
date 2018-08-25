@@ -3,53 +3,69 @@
 <?py from tenjin.helpers.html import * ?>
 <center>
 <div class="replymode">Papelera de Reciclaje</div>
-<?py if message: ?>
-${message}
-<?py #endif ?>
 <form name="boardForm" method="get" action="#{cgi_url}manage/recyclebin/0">
 <table>
- <tr><td class="postblock">Eliminados por</td><td>
-  <input type="radio" id="type1" name="type" value="1"#{checked(type == 1)} /><label for="type1">usuario</label>
-  <input type="radio" id="type2" name="type" value="2"#{checked(type == 2)} /><label for="type2">staff</label>
-  <input type="radio" id="type0" name="type" value="0"#{checked(type == 0)} /><label for="type0">ambos</label>
- </td></tr>
- <tr><td class="postblock">Board</td><td>
-  <select name="board">
-   <option value="all">Todos los Boards</option>
+<tr>
+  <td class="postblock">Eliminado por</td>
+  <td>
+  <input type="radio" id="type1" name="type" value="1"#{checked(type == 1)} /><label for="type1">Usuario</label>
+  <input type="radio" id="type2" name="type" value="2"#{checked(type == 2)} /><label for="type2">Staff</label>
+  <input type="radio" id="type0" name="type" value="0"#{checked(type == 0)} /><label for="type0">Ambos</label>
+  </td>
+</tr>
+<tr>
+  <td class="postblock">Board</td><td>
+  <select name="board" style="width:100%;">
+  <option value="all">Todos los boards</option>
 <?py for board in boards: ?>
-   <option value="#{board['dir']}"#{selected(board['checked'])}>${board['name']}</option>
+  <option value="#{board['dir']}"#{selected(board['checked'])}>#{board['dir']} - ${board['name']}</option>
 <?py #endfor ?>
   </select>
-  <input type="submit" value="Mostrar" />
- </td></tr>
- </table>
- </form>
+ </td>
+</tr>
+<tr><td colspan="2"><input type="submit" style="width:100%;" value="Mostrar" /></td></tr>
+</table>
+</form>
+<hr />
+<?py if message: ?>
+${message}
+<hr />
+<?py #endif ?>
 <?py if not skip: ?>
- <form name="deleteForm" method="post" action="#{cgi_url}manage/recyclebin/#{currentpage}">
-    <?py if curboard: ?>
- <input type="hidden" name="board" value="#{curboard}" />
-    <?py #endif ?>
- <table class="managertable">
-  <tr><th> </th><th> </th><th>ID</th><th>Timestamp</th><th>Board</th><th>Tipo</th><th>IP</th><th>Mensaje</th></tr>
-    <?py for post in posts: ?>
+<form name="deleteForm" method="post" action="#{cgi_url}manage/recyclebin/#{currentpage}">
+  <?py if curboard: ?>
+  <input type="hidden" name="board" value="#{curboard}" />
+  <?py #endif ?>
+  <table class="managertable">
   <tr>
-   <td>     <a href="#{cgi_url}manage/recyclebin/#{currentpage}/delete/#{post['dir']}/#{post['id']}">X</a>     <a href="#{cgi_url}manage/recyclebin/#{currentpage}/restore/#{post['dir']}/#{post['id']}">R</a>   </td>
-   <td><input type="checkbox" name="!i#{post['dir']}/#{post['id']}" value="1" /></td>
-   <td>#{post['id']}</td>
-   <td>/#{post['timestamp_formatted']}/</td>
-   <td>/${post['dir']}/</td>
-   <td>${post['IS_DELETED']}</td>
-   <td>${post['ip']}</td>
-   <td>#{post['message']}</td>
+    <th></th>
+    <th></th>
+    <th>ID</th>
+    <th>Timestamp</th>
+    <th>Board</th>
+    <th>Tipo</th>
+    <th>IP</th>
+    <th>Mensaje</th>
   </tr>
-    <?py #endfor ?>
-  <tr><td colspan="8" align="center"><input name="deleteall" type="submit" value="Eliminar Seleccionados" /></td></tr>
- </table>
- </form>
- <br />
- #{navigator}
+  <?py for post in posts: ?>
+  <tr>
+    <td><a href="#{cgi_url}manage/recyclebin/#{currentpage}/delete/#{post['dir']}/#{post['id']}">X</a><br /><a href="#{cgi_url}manage/recyclebin/#{currentpage}/restore/#{post['dir']}/#{post['id']}">R</a></td>
+    <td><input type="checkbox" name="!i#{post['dir']}/#{post['id']}" id="#{post['dir']}#{post['id']}" value="1" /><label for="#{post['dir']}#{post['id']}"></label></td>
+    <td>#{post['id']}</td>
+    <td class="date" data-unix="${post['timestamp']}">${post['timestamp_formatted']}</td>
+    <td>${post['dir']}</td>
+    <td>${post['IS_DELETED']}</td>
+    <td>${post['ip']}</td>
+    <td>#{post['message']}</td>
+  </tr>
+  <?py #endfor ?>
+  <tr><td colspan="8" align="center"><input name="deleteall" type="submit" value="Eliminar seleccionados" /></td></tr>
+  </table>
+</form>
+<hr />
+<div style="font-size:larger">#{navigator}</div>
 <?py else: ?>
- <p>No hay posts.</p>
+  No hay posts.
 <?py #endif ?>
 </center>
 <hr />

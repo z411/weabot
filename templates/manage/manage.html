@@ -1,20 +1,22 @@
 <?py include('templates/base_top.html') ?>
 <?py include('templates/manage/menu.html') ?>
 <center>
- <b>BANDEJA DE ENTRADA</b><br />
- Reportes:
-<?py if int(reports) > 0: ?>
- <a href="#{cgi_url}manage/reports"><span class="banned"><b>#{reports}</b></span></a>
-<?py else: ?>
- 0
-<?py #endif ?>
-<br />
-<b>NOTICIAS DEL STAFF</b>
+  <strong>BANDEJA DE ENTRADA</strong>
+  <br />
+  Denuncias:
+  <?py if int(reports) > 0: ?>
+    <a href="#{cgi_url}manage/reports" style="color:red;font-weight:bold;">#{reports}</a>
+  <?py else: ?>
+    0
+  <?py #endif ?>
+  <hr />
+  <strong>NOTICIAS DEL STAFF</strong>
 </center>
+<dl style="margin:0 2.5%">
 <?py for post in posts: ?>
- #{post['id']}: <span class="postername">${post['name']}</span> : ${post['timestamp_formatted']}<br />
- <div class="modnewstitle">#{post['title']}</div>
- <div class="modnewsmessage">#{post['message']}</div><br />
+  <dt><strong>#{post['title'] if post['title'] else "Sin asunto"}</strong><br />#{post['id']} : <b class="name">${post['name']}</b> : <span class="date" data-unix="${post['timestamp']}"}>${post['timestamp_formatted']}</span></dt>
+  <dd style="margin-bottom:1em;">#{post['message']}</dd>
 <?py #endfor ?>
+</dl>
 <hr />
 <?py include('templates/base_bottom.html') ?>

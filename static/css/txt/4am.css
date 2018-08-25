@@ -1,0 +1,33 @@
+body.mainpage{background:url(/bg2.gif) #222}
+body{background:#222;color:#CED1CF}
+a,a .name,#n2{color:#81A2BE;text-decoration:none}
+a:hover,a:focus,#n2:active{text-decoration:underline}
+hr{border:1px inset #111}
+input,select,textarea{background:#383838!important;border:1px solid #4B4E55;color:#e8e8e8!important}
+h1{color:#dc9656;font-size:26px;margin:-5px 0 5px;text-align:center}
+h2 a{color:#C66}
+h2 small{color:#999;font-size:inherit;font-weight:normal}
+h3{color:#ab4642}
+h4{color:#c1c5c2}
+#main_nav{background:#000;color:#7cafc2}
+.banner{-webkit-filter:grayscale(60%);filter:grayscale(60%)}
+.outerbox{background:#111213;border:1px solid #4B4E55;color:#777879}
+#titlebox .threadnav{margin:-6px}
+#threadlist{background:#0e0e0e;border:1px solid #4B4E55}
+.mainpage .thread{background:#1D1F21;border:3px double #4B4E55;color:#CED1CF;opacity:.9}
+.threadpage .thread{color:#CED1CF}
+.name,.abbrev{color:#B5BD68}
+.name em{color:#88f}
+.del a{color:#ab4642}
+h4 .date,.quoted{color:#4e4e4e}
+.q{color:#666}
+.yt{background:#383838;border:1px solid gray;color:#e8e8e8}
+.yt:hover{text-decoration:none}
+.deleted{color:#999}
+#q-p{background:#383838;border:1px solid #999}
+.lastposts #n2{text-decoration:none}
+.size{color:#ab4642}
+form .msg{background:#383838;border:1px dotted #000}
+.footer{color:#f7ca88}
+.threads th{background:#0e0e0e}
+.threads tr:nth-child(odd){background:#191B1D}

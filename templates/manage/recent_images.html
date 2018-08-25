@@ -1,20 +1,24 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Imágenes Recientes</div>
-Imágenes a mostrar:
-<a href="images=5">5</a>
-<a href="?images=10">10</a>
-<a href="?images=15">15</a>
-<a href="?images=20">20</a>
-<br />
-<?py for post in posts: ?>
-  <?py if post['parentid'] != '0': ?>
-    <a href="#{cgi_url}#{post['dir']}/res/#{post['parentid']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
-  <?py else: ?>
-    <a href="#{cgi_url}#{post['dir']}/res/#{post['id']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" style="border: 1px solid #000;" alt="" /></a>
-  <?py #endif ?>
-<?py #endif ?>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<style>.imgs{font-size:0;}.imgs img{vertical-align:top;margin:2px;height:150px;width:auto;}</style>
+<center>
+<div class="replymode">Imágenes recientes</div>
+<form action="#{cgi_url}manage/recent_images" name="recent_images" method="post">
+  <table>
+    <tr><td class="postblock">Número a mostrar</td><td><input type="text" name="images" size="4" /></td></tr>
+    <tr><td colspan="2"><input type="submit" style="width:100%;" value="Enviar" /></td></tr>
+  </table>
+</form>
+<hr />
+<div class="imgs">
+<?py for post in posts: ?>
+  <?py if post['parentid'] != '0': ?>
+    <a href="/#{post['dir']}/res/#{post['parentid']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" /></a>
+  <?py else: ?>
+    <a href="/#{post['dir']}/res/#{post['id']}.html##{post['id']}"><img src="#{boards_url}#{post['dir']}/thumb/#{post['thumb']}" /></a>
+  <?py #endif ?>
+<?py #endfor ?>
+</div>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

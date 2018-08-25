@@ -1,0 +1,20 @@
+html,body{font-family:Georgia,"URW Bookman L",serif;background:#FFF2F2;color:#800000}
+a,a .name,.nav label{color:#00E}
+a:hover,a:hover .name,.nav label:hover{color:#D00}
+.rep{color:#800000}
+.replymode,.extramode{color:#FFF}
+.replymode{background:#E04000}
+.extramode{background:#0040E0}
+.postblock{background:#F99;font-weight:bold}
+.q{color:#789922}
+.name{color:#036}
+.omitted,.abbrev{color:#707070}
+.reply,#q-p{background:#FBB}
+.subj{color:#CC1105;font-weight:bold}
+.highlight{background:#F0E0D6}
+.managertable td{background:#FED0D0}
+.managertable th{background:#FA4A4A;color:#400000}
+#catalog .thread:hover{background:#FBB}
+#catalog .thread:hover{background:#FBB;box-shadow:0 0 5px 5px #FBB}
+#catalog .replies{color:#909090;font-weight:bold}
+.yt{background:#FED8D8;border:1px solid #FE9B9B;color:#500000}

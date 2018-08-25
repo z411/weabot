@@ -1,0 +1,38 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Opciones de home</div>
+<form action="#{cgi_url}manage/home" method="post">
+<table>
+<tr>
+  <td class="postblock">Título del sitio</td>
+  <td><input type="text" name="title" value="#{home['title']}" maxlength="50" /></td>
+</tr>
+<tr>
+  <td class="postblock">Eslogan</td>
+  <td><input type="text" name="slogan" value="#{home['slogan']}" maxlength="100" /></td>
+</tr>
+<tr>
+  <td class="postblock">Noticias a mostrar</td>
+  <td><input type="text" name="news" value="#{home['news']}" maxlength="2"/></td>
+</tr>
+<tr>
+  <td class="postblock">Hilos a mostrar</td>
+  <td><input type="text" name="threads" value="#{home['threads']}" maxlength="2"/></td>
+</tr>
+<tr>
+  <td class="postblock">Largo de hilos</td>
+  <td><input type="text" name="length" value="#{home['length']}" maxlength="3"/></td>
+</tr>
+<tr>
+  <td class="postblock">Modo mantención</td>
+  <td><input type="checkbox" name="maintenance" id="maint" value="1"#{checked(home['maintenance'] == '1')} /><label for="maint"></label></td>
+</tr>
+</table>
+<br />
+<hr />
+<input type="submit" value="Guardar cambios" />
+</form>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

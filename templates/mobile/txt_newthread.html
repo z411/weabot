@@ -1,39 +1,35 @@
-<?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>#{board_name}@B.a.I. Móvil</h2>
-<p>
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Pagina Frontal</a> ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
-Nuevo Hilo
-<hr />
-<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="board" value="#{board}" />
-  <input type="hidden" name="mobile" value="true" />
-  <div style="display:none;">Trampa (deja estos campos en blanco):
-   <input type="text" name="name" size="19" maxlength="75" />
-   <input type="text" name="email" size="19" maxlength="75" />
-  </div>
-  <table>
-   <tr><td>Nombre</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
-   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
-   <tr><td>Asunto</td><td><input type="text" name="subject" size="25" maxlength="75" /></td></tr>
-   <tr><td>Mensaje</td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
-<?py if board_type == '1': ?>
-   <input type="hidden" name="password" maxlength="8" />
-<?py else: ?>
-   <tr><td>Archivo</td><td><input type="file" name="file" size="25" /></td></tr>
-   <tr><td>Clave</td><td><input type="password" name="password" size="8" maxlength="8" /></td></tr>
-<?py #endif ?>
-   <tr><td> </td><td><input type="submit" value="Crear Nuevo Hilo" /></td></tr>
-  </table>
-</form>
-<script type="text/javascript">set_inputs("postform");</script>
-<hr />
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Pagina Frontal</a> ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
-Nuevo Hilo
-</p>
-<hr />
-<?py include('templates/mobile/base_bottom.html') ?>
+<?py include('templates/mobile/base_top.html') ?>
+<body class="#{"txt" if board_type == '1' else "img"}">
+<div class="top">
+  <a href="//m.bienvenidoainternet.org"><img src="#{static_url}css/img/0back.png" /><br />Home</a>
+  #{board_name}
+</div>
+<?py if board_type == '1': ?>
+<div class="bar"><a href="#{cgi_url}mobile/#{board}">Portada</a><a href="#{cgi_url}mobilelist/#{board}">Todos los hilos</a><a href="#{cgi_url}mobilenew/#{board}" class="sel">Nuevo hilo</a></div>
+<?py else: ?>
+<div class="bar"><a href="#{cgi_url}mobile/#{board}">Portada</a><a href="#{cgi_url}mobilelist/#{board}">Lista</a><a href="#{cgi_url}mobilecat/#{board}">Cat&aacute;logo</a><a href="#{cgi_url}mobilenew/#{board}" class="sel">Nuevo hilo</a></div>
+<?py #endif ?>
+<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" /> <input type="hidden" name="mobile" value="true" /><input type="hidden" name="password" value="" />
+  <div style="display:none;"><input type="text" name="name" maxlength="50" /><input type="text" name="email" maxlength="50" /></div>
+  <?py if not disable_subject: ?>
+  <input class="fld imp" type="text" name="subject" placeholder="Asunto#{" (opcional)" if board_type == '0' else ""}" maxlength="100" />
+  <?py #endif ?>
+  <?py if not disable_name: ?>
+  <input class="fld" type="text" name="fielda" placeholder="Nombre (opcional)" maxlength="50" />
+  <?py #endif ?>
+  <input class="fld" type="text" name="fieldb" placeholder="E-mail (opcional)" maxlength="50" />
+  <textarea name="message" rows="#{"8" if board_type == '1' else "6"}"></textarea>
+<?py if allow_images: ?>
+  <div class="file"><input type="file" name="file" class="fld" />
+  <?py if allow_spoilers: ?>
+    <label class="fld"><input type="checkbox" name="spoil" /> Spoiler</label>
+  <?py #endif ?></div>
+<?py #endif ?>
+  <input id="post" type="submit" value="Crear nuevo hilo" />
+</form>
+<?py if allow_images: ?>
+  <div class="rules">Formatos permitidos: #{', '.join(supported_filetypes).upper()}<br />Tamaño máximo: #{maxsize} KB</div>
+<?py #endif ?>
+</body>
+</html>

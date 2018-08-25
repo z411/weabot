@@ -2,48 +2,28 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Denunciar post</title>
+<?py if finished: ?><title>Post denunciado</title>
+<?py else: ?><title>Denunciar post ${postshow}</title>
+<?py #endif ?>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>*{box-sizing:border-box} body{max-width:350px;margin:0 auto;text-align:justify} h1{text-align:left} a{color:#06C} a:active{color:#F30} 
+input{border:1px solid #BBB;width:100%} .long{display:block}</style>
 </head>
 <body>
 <?py if finished: ?>
-<center>
-<br /><br /><hr />
-<h1>Post denunciado.</h1>
-<hr />
-</center>
-<p><a href="javascript:void(0)" onclick="history.go(-2);return(false);">Volver</a></p>
+<hr /><h1>Post denunciado.</h1>
+<hr /><a href="javascript:void(0)" onclick="history.go(-2);return(false);" class="long">Volver</a><hr />
 <?py else: ?>
-<h1>Formulario de denuncia</h1>
-<hr />
-<p>Para pedir que el post <i>${postshow}</i> se elimine,<br />
-indique la razón de por qué cree que debería ser eliminado<br />
-y presione el botón [Pedir la eliminación del post].<br />
-<a href="javascript:void(0)" onclick="history.go(-1);return(false);">Volver</a></p>
-<hr />
-<form method="post" action="">
-<p>Razón: <input type="text" name="reason" maxlength="100" size="50" /><br />
-<input type="submit" value="Pedir la eliminación del post" /></p>
-</form>
-<p>Este formulario no es para eliminar tu propio post.<br />
-    <?py if txt: ?>
-Para eliminar tu propio post debes presionar [Del]<br />
-que se encuentra a la derecha de tu post. [<a href="/ayuda_bbs.html">Más info.</a>]
-    <?py else: ?>
-Para eliminar tu propio post debes chequear la caja que<br />
-se encuentra en la parte superior izquierda de tu post<br />
-y luego presionar el botón "Eliminar" que se encuentra<br />
-al fondo de la página. [<a href="/ayuda.html">Más info.</a>]
-    <?py #endif ?>
-</p>
-<p>
-Normalmente eliminamos los mensajes que son considerados<br />
-spam o flood. Si deseas pedir la prohibición de acceso<br />
-a algún usuario persistente, te recomendamos pedirlo<br />
-en <a href="/bai/">/bai/</a>.
-</p>
-<hr />
-<p><a href="mailto:burocracia@bienvenidoainternet.org">Contacto</a></p>
+<hr /><h1>Formulario de denuncia</h1>
+<hr />Para pedir que el post <b>${postshow}</b> sea eliminado, indica una razón y presiona el botón [Enviar denuncia].
+<hr /><a href="javascript:void(0)" onclick="history.go(-1);return(false);" class="long">Volver</a>
+<hr /><form method="post" action=""><input type="text" name="reason" placeholder="Razón" maxlength="100" style="margin-bottom:0.5em;" /><input type="submit" value="Enviar denuncia" /></form>
+<hr />Este formulario no es para eliminar tu propio post.
+<?py if txt: ?>Para eliminar tu propio post debes presionar el botón <u>del</u> que aparece a la derecha de tu post cuando le pones el cursor encima. [<a href="/faq.html#del">info</a>]
+<?py else: ?>Para eliminar tu propio post debes chequear la caja que se encuentra en la parte superior izquierda de tu post y luego presionar el botón "Eliminar" que se encuentra al final de la página. [<a href="/faq.html#del">info</a>]<?py #endif ?>
+<hr />Normalmente eliminamos los mensajes que son considerados spam o flood. Si deseas pedir la prohibición de acceso a algún usuario persistente, te recomendamos hacerlo en la sección <a href="/bai/">meta</a>.
+<hr /><a href="mailto:burocracia@bienvenidoainternet.org" class="long">Contacto</a><hr />
 <?py #endif ?>
 </body>
 </html>

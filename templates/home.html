@@ -2,68 +2,64 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="KEYWORDS" content="bienvenido, a, internet, bbs, textboard, imageboard, vip, calidad, anime, videojuegos, ciencia" />
-<meta name="DESCRIPTION" content="Bienvenido a Internet es un sitio para la discusión de distintos temas, sin necesidad de registrarse." />
-<meta http-equiv="content-language" content="ES" />
-<meta name="revisit-after" content="14 days" />
-<meta name="robots" content="noarchive" />
-<title>#{header}</title>
-<link rel="shortcut icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="#{static_url}css/mainpage.css" title="Dickgirl" />
-<script type="text/javascript" src="/static/js/autorefresh.js"></script>
+  <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta name="description" content="Bienvenido a Internet es un sitio para la discusión de distintos temas, sin necesidad de registrarse." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienvenido a Internet BBS/IB</title>
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/home.css?v=9" title="Home" />
+  <link rel="alternate stylesheet" type="text/css" href="/home_old.css?v=9" title="Nostalgia" />
+  <script type="text/javascript" src="#{static_url}js/home.js"></script>
+  <script type="text/javascript" src="#{static_url}js/autorefresh.js?v=1"></script>
 </head>
 <body class="home">
-<center>
-<div id="logodiv">
-	<a href="/" target="_top"><img src="#{logo}" /></a>
-	<div class="header">#{header}</div>
-	<div class="slogan">#{slogan}</div>
-</div>
-<table width="100%">
+<table id="all">
   <tr>
-    <td class="tab" width="50%" rowspan="2">
-		<div class="tabtitle" >Age recientes</div>
-		<div id="postlist" class="recent">
-		<?py iter = 1 ?>
-		<?py for thread in latest_age: ?>
-		<div class="line#{(iter % 2)}">
-		<small>${thread['board_name']}: </small><a href="${thread['url']}" class="boardlink">${thread['content']}</a> (${thread['length']})<br />
-		</div>
-		<?py iter += 1 ?>
-		<?py #endfor ?>
-		</div>
-		<audio id="machina">
-			<source src="quack.ogg" type="audio/ogg" />
-		</audio>
-		<div style="text-align:center">
-		<span id="counter"></span>
-		<label><input id="autosound" type="checkbox" checked="checked" disabled="disabled" /> Sonido</label>
-		<label><input id="autorefresh" type="checkbox" onclick="autoRefresh()" /> Auto refresh</label>
-		</div>
-	</td>
-    <td class="tab" width="50%" id="news">
-		<div class="tabtitle">Noticias</div>
-		<?py if latest_news: ?>
-		<?py for article in latest_news: ?>
-		<div class="newstitle">#{article['title']}</div>
-		<div class="new">#{article['message']}</div>
-		<div class="author">&mdash; <span class="postername">${article['name']}</span> : ${article['timestamp_formatted']}</div>
-		<?py #endfor ?>
-		<div class="more">[ <a href="noticias.html">Ver m&aacute;s noticias</a> ]</div>
-		<?py #endif ?>
-	</td>
+    <td class="main">
+      <div class="logo" style="margin:0 auto;"></div>
+      <strong>#{header}</strong><br /><em>#{slogan}</em>
+      <!--<a href="" class="scroller"><marquee scrolldelay="0" truespeed="truespeed">&#9733;&#9733;&#9733; <b>BaI TV</b></marquee></a>-->
+    </td>
+    <td class="tab">
+      <div class="tabt">Blotter</div>
+      <div class="news">
+      <?py for article in latest_news: ?>
+      <div class="ni" data-t="#{article['timestamp']}"><div class="ni-d">${article['timestamp_formatted']}</div><div class="ni-m">#{article['message']}</div></div>
+      <?py #endfor ?>
+      </div>
+      <div class="links"><a href="/" target="_top"><b>Portada</b></a> · <a href="/guia.html"><b>¿Eres nuevo?</b></a> · <a href="/faq.html"><b>Preguntas Frecuentes</b></a></div>
+    </td>
   </tr>
   <tr>
     <td class="tab">
-		<div class="tabtitle">Nuevos hilos</div>
-		<div class="threads"><?py include('templates/home_threads.html') ?></div>
-	</td>
+      <div id="newposts" class="tabt">Mensajes recientes <div id="counter"></div></div>
+      <div id="postlist">
+        <?py for thread in latest_age: ?>
+        <a href="${thread['url']}" class="thread"><span class="brd">[${thread['board_name']}]</span> <span class="cont">#{thread['content']}</span> <span class="rep">(${thread['length']})</span></a>
+        <?py #endfor ?>
+      </div>
+    </td>
+    <td class="tab">
+      <div class="tabt">Hilos nuevos</div>
+      <div id="threadlist">
+        <?py for thread in new_threads: ?>
+        <a href="${thread['url']}" class="thread"><span class="brd">[${thread['board_name']}]</span> <span class="cont">#{thread['content']}</span></a>
+        <?py #endfor ?>
+      </div>
+    </td>
   </tr>
   <tr>
-    <td class="tab" colspan="2" style="text-align:center;">■ Bienvenido a Internet - 2010-2016 ■</td>
+    <td colspan="2" class="tab extra">
+      <input id="autorefresh" type="checkbox" /><label for="autorefresh">Auto refresh</label><audio id="machina"><source src="msn.ogg" type="audio/ogg" /></audio> ·
+      <input id="autosound" type="checkbox" checked="checked" disabled="disabled" /><label for="autosound">Sonido</label><input type="hidden" name="limit" id="limit" value="#{latest_age_num}" /> ·
+      <a href="#" id="change_style">Cambiar estilo</a> ·
+      <a href="/home.html">Actualizar</a> ·
+      <a href="bai.rss"><img src="rss.png" width="12" height="12" style="margin-right:4px;">Feed RSS</a> ·
+      <a href="/cgi/stats">Estad&iacute;sticas</a> ·
+      <a href="/bai.html" target="_top">Frames</a>
+    </td>
   </tr>
 </table>
-</center>
+<div class="footer">★ Bienvenido a Internet 2010-2018 ★</div>
 </body>
 </html>

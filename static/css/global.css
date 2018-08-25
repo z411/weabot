@@ -1,157 +1,50 @@
-body {
-	margin: 0;
-	padding: 8px;
-	margin-bottom: auto;
-}
-
-blockquote blockquote {
-	margin-left: 0em;
-}
-
-form {
-	margin-bottom: 0px;
-}
-
-.postarea {
-	text-align: center;
-}
-
-.postarea table {
-	margin: 0px auto;
-	text-align: left;
-}
-
-del, .spoiler {
-	background-color: #000; color: #000; text-decoration:none;
-}
-del a, .spoiler a {
-	color: #000;
-}
-del:hover, .spoiler:hover {
-	color: #FFF;
-}
-
-.aa {
-  white-space: pre;
-  text-align: left;
-  font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
-}
-.sjis {
-  text-align: left;
-  font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
-}
-
-.thumb {
-	border: none;
-	float: left;
-	margin: 2px 20px;
-}
-
-.nothumb {
-	float: left;
-	background: #eee;
-	border: 2px dashed #aaa;
-	text-align: center;
-	margin: 2px 20px;
-	padding: 1em 0.5em 1em 0.5em;
-}
-
-/* blockquote:last-child
-.reply blockquote {
-	margin-bottom: 0em;
-} */
-.reply {
-	padding-right: 4pt;
-}
-
-.reflink a {
-	color: inherit;
-	text-decoration: none;
-}
-
-.reflink a:hover{
-	color: #800000;
-}
-.reply .filesize, .reply .thumbnailmsg {
-	margin-left: 20px;
-}
-
-.userdelete {
-	float: right;
-	text-align: center;
-	white-space: nowrap;
-}
-
-.doubledash {
- 	vertical-align: top;
-	clear: both;
-	float: left;
-}
-
-.superadministrator {
-	color: #800080 !important;
-	font-weight: bold;
-}
-
-.administrator {
-	color: #800080 !important;
-	font-weight: bold;
-}
-
-.moderator {
-	color: #FF0000 !important;
-	font-weight: bold;
-}
-
-.vip {
-	color: #336600 !important;
-	font-weight: bold;
-}
-
-.developer {
-  color: #FF9900 !important;
-  font-weight: bold;
-}
-.deletedreply {
-  color: #999;
-}
-
-.modnewstitle {
-  padding-left: 35pt;
-  padding-right: 35pt;
-  font-weight: bold;
-  font-style: italic;
-}
-
-.modnewsmessage {
-  padding-left: 50pt;
-  padding-right: 50pt;
-}
-
-.banned {
-  font-weight: bold;
-  color: #FF0000;
-}
-.noanimation {
-  color: #FF9999;
-}
-.noborder {
-  border-style: none;
-}
-#anuncio {
-  background-color: #000;
-  width: 100%;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  font-weight: bold;
-  font-size: 24pt; 
-  color: #FFF;
-  display: none;
-  padding: 3pt 0;
-  overflow: hidden;
-  border-bottom: 1px solid #FFF;
-  white-space: nowrap;
-}
-#anuncio .title { text-align:center; color: red; text-decoration: blink; margin: 0;}
-#anunciosmall { width: 400px; height: 24px; background: url('img/scroller1.gif'); color: #F33; margin: 0 auto; border: solid 1px #000; font-weight:bold; font-size: 14pt; }
+*{box-sizing:border-box;word-wrap:break-word}
+body{margin:10px;font-size:16px}
+br{line-height:0.5em}
+blockquote{display:block;line-height:20px}
+.postarea table{margin:0 auto;text-align:left}
+#main_nav{font-size:14px;line-height:1.3em;margin-bottom:0.5em;text-align:center}
+#main_nav span{display:inline-block}
+#main_nav a,#main_nav span span{margin:0 2px}
+#main_nav #sel{font-weight:bold}
+#main_nav .cur_brd,#main_nav #cur_stl{font-weight:bold}
+.logo{font-size:160%;font-weight:bold;margin:0.5em 0;text-align:center}
+.postform input[name="subject"]{max-width:280px}
+.postform textarea{width:390px;height:130px}
+.rules{width:468px;font-size:13px}
+.rules ul{margin:4px 0 0;padding-left:4px}
+.rules li{margin-left:1em}
+.thread{margin-right:130px}
+.info{margin-right:40px}
+.hsbn{font-size:120%}
+.expimg{cursor:zoom-in}
+.thumb{border:none;cursor:zoom-in;float:left;margin:0 20px}
+.thumbmsg,small{font-size:12px}
+.ell{font-family:Mona,IPAMonaPGothic,Monapo,'MS PGothic',YOzFontAA97;vertical-align:top;width:18px;}
+.reply{padding-right:8px}
+.deleted{color:#777}
+.reflink a{color:inherit;text-decoration:none}
+.reply .fs,#q-p .fs{margin-left:20px}
+.psei{padding:0.4em 1em}
+.replymode,.extramode{font-weight:bold;text-align:center;padding:2px;margin:3px 0}
+.name em{color:#009;font-style:normal}
+.postblock,.managertable th,.managertable td{padding:3px}
+#catalog{text-align:center}
+#cat_search{border:1px inset gray;padding:0;width:125px}
+#catalog .thread{border-radius:4px;display:inline-block;font-size:14px;margin:5px;overflow:hidden;padding:2px;position:relative;vertical-align:top;max-height:275px;width:175px}
+#catalog .thread.enlarged{margin:10px 5px;max-height:375px;width:275px}
+#catalog .thread a img{border-radius:3px;margin-bottom:2px}
+#catalog .thread.enlarged a img{min-width:150px;min-height:150px;max-width:250px;max-height:250px}
+#catalog .subj{font-size:16px}
+#catalog p{margin:0}
+.yt{text-decoration:none;margin:2px 0;display:inline-block;font-size:12px;line-height:1.2em;padding:5px}
+.yt b{font-size:14px}
+.yt .pvw{width:100px;height:60px;overflow:hidden;float:left;margin-right:5px}
+.yt .pvw img{margin-top:-15px;margin-left:-10px}
+.cut{clear:both}
+.nav label{text-decoration:underline}
+.userdelete{float:right;text-align:center;white-space:nowrap}
+.footer{clear:both;margin-top:0.5em;text-align:center}
+#q-p{position:absolute;border:1px dotted gray}
+.quoted{font-size:14px;margin-left:20px}
+@media(max-width:800px){.thread{margin-right:0}}

@@ -1,12 +1,14 @@
 <?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>Ultimos Posts@B.a.I. Móvil</h2>
-<p>
-<a href="http://m.bienvenidoainternet.org">Home</a>
-<hr />
-#{content}
-<hr />
-<a href="http://m.bienvenidoainternet.org">Home</a>
-</p>
-<hr />
-<?py include('templates/mobile/base_bottom.html') ?>
+<body class="txt">
+<div class="top">
+  <a href="/movil.html"><img src="#{static_url}css/img/0info.png" /><br />Info</a>
+  Bienvenido a Internet Móvil
+</div>
+<div class="bar"><a href="//m.bienvenidoainternet.org">Secciones</a><a href="/cgi/mobilehome" class="sel">Hilos activos</a><a href="/cgi/mobilenewest">Nuevos hilos</a></div>
+<div class="list">
+  <?py for thread in latest_age: ?>
+	<a href="/cgi/mobileread${thread['url']}">#{thread['content']}<div>${thread['board_fulln']} <span>R:<span>#{int(thread['length'])-1}</span></span></div></a>
+  <?py #endfor ?>
+</div>
+</body>
+</html>

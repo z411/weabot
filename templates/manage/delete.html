@@ -7,14 +7,14 @@
  <input type="hidden" name="ban" value="true" />
 <?py #endif ?>
 <p>
- <b>Post /${curboard}/${postid}</b><br />
- [<input id="a" type="checkbox" name="imageonly" value="true" /><label for="a">Sólo Imagen</label>]
- [<input id="b" type="checkbox" name="perma" value="true" /><label for="b"><b>Permanentemente</b></label>]
+ <b>Post #${postid} de /${curboard}/</b><br />
+ <input id="a" type="checkbox" name="imageonly" value="true" /><label for="a">Eliminar sólo archivo</label><br />
+ <input id="b" type="checkbox" name="perma" value="true" /><label for="b" style="font-weight:bold">Eliminar permanentemente</label><br />
  <br />
- <i>NOTA: Por favor evitar eliminar <b>permanentemente</b> el post al menos que sea estrictamente necesario.
+ <i>Nota: Por favor evitar eliminar <b>permanentemente</b> el post al menos que sea estrictamente necesario.
  <br />Al eliminar permanentemente un post no queda en papelera y se rompen
  las referencias que se pueden haber hecho hacia él, especialmente en los BBS.</i>
- <br />
+ <br /><br />
  <input type="submit" value="Eliminar" />
 </p>
 </form>

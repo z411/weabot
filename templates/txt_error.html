@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>Error</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style type="text/css">
+* { word-wrap: break-word; }
+body { margin: 8px; }
+.h { font-weight:bold; font-size: large; }
+.err { color: red; }
+.sub1 { color: #00AA00; } .sub2 { color: #DD00DD; }
+blockquote { margin-left: 20px; margin-right: 20px; }
+ul { padding-left: 20px; }
+@media(min-width:650px){ blockquote { margin-left: 40px; margin-right: 40px; }
+  ul { padding-left: 40px; } }
+</style>
+</head>
+<body>
+<div class="h err">ERROR: #{error}</div>
+<blockquote>
+  Host <b>${info['host']}</b><br>
+  <blockquote>
+    Nombre: <b>${info['name']}</b><br>
+    E-mail: ${info['email']}<br>
+    Mensaje: <br>
+    ${info['message']}
+  </blockquote>
+</blockquote>
+<hr>
+<ul>
+  <div class="h sub1">¿No sabes qué sucede?</div>
+  <ul style="line-height:1.5;">
+    ¡Revisemos!<br>
+    <b>
+    [<a href="/guia.html">¿Eres nuevo?</a>]<br />
+    [<a href="/faq.html">Preguntas frecuentes</a>]<br />
+    [<a href="#{boards_url}#{board}">Ir a la sección</a>]<br />
+    [<a href="#{cgi_url}threadlist/#{board}">Ir a la lista de hilos</a>]<br />
+    </b>
+    </ul><br>
+    <div class="h sub2">Contacto</div>
+    <ul style="line-height:1.5;">
+    Cualquier problema con el sitio por favor hacerlo llegar al staff de BaI.<br />
+    Contáctanos en la <a href="/bai/">sección de discusión</a> o a <a href="mailto:burocracia@bienvenidoainternet.org">nuestro e-mail</a>.
+  </ul>
+</ul>
+</body>
+</html>

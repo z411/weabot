@@ -2,49 +2,59 @@
 	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>${board_name}@B.a.I. Archivo</title>
-	<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
-	<meta name="keywords" content="bienvenido, a, internet, bbs, imageboard, español, spanish, 2d, anime, ciencia, videojuegos, vip, calidad" />
-	<meta name="description" content="Bienvenido a Internet es un sitio para la discusion de distintos temas, sin necesidad de registrarse." />
-	<meta http-equiv="content-language" content="ES" />
-	<meta name="robots" content="noarchive" />
+	<title>Archivo de #{board_name}@Bienvenido a Internet BBS</title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+	<meta name="robots" content="index, follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="shortcut icon" href="#{static_url}img/favicon.ico" />
 	<style type="text/css">
-	<?py if board == 'zonavip': ?>
-	body,textarea {font-family:IPAMonaPGothic, Mona, Monapo, 'MS PGothic', YOzFontAA97; font-size:16px;} small {font-size:12px;}
-	<?py else: ?>
-	body,textarea {font-family:Arial, Helvetica, "Nimbus Sans L", "Liberation Sans", FreeSans, sans-serif; font-size:10pt;}
-	<?py #endif ?>
-	#navigation {font-weight:bold; margin-top:1.5em;}
-	.line0, .line1 {border-bottom:solid 1px #CCC; padding:0.5em 0.25em; display:block; text-decoration:none;}
-	.line0:hover, .line1:hover {background:#FEE;}
-	.line0 {background:#EEF;} .line1 {background:#EFE;}
-	.title {font-size:30px; font-weight:bold; margin:15px 0;}
-	.cont1 {display:inline-block;}
-	.cont2 {border:solid 1px #CCC; border-bottom:none;}
-	.posts {color:#F33;}
-	.last {width:250px; float:right; text-align:right; color:#000;}
-	</style>
+    body {margin:8px}
+    h1 {margin:0 0 20px}
+    pre {margin:0}
+    .fake {color:#0000EE;text-decoration:underline;cursor:pointer}
+    .fake:active {color:#FF0000}
+    img {width:20px;height:22px;margin-right:4px}
+    td {text-align:left;vertical-align:bottom;padding-right:14px}
+    .r {text-align:right}
+    a:link, a:hover {color:#0000EE}
+    a:active {color:#FF0000}
+    a:visited {color:#551A8B}
+  </style>
 </head>
-<body class="backlogpage">
-	<div id="navigation">
-	<a href="/bai.html" rel="nofollow">Bienvenido a Internet BBS/IB</a>
-	<a href="#{boards_url}#{board}" rel="nofollow">■ Volver al BBS ■</a>
-	<a href="#{home_url}archivo.html" rel="nofollow">■ Volver al archivo ■</a>
-	</div>
-	<div class="title">Archivo de ${board_name}</div>
-	<div class="cont1"><div class="cont2">
-	<?py iter = 1 ?>
-	<?py for thread in threads: ?>
-	<a href="#{boards_url}#{board}/read/#{thread['timestamp']}/" class="line#{(iter % 2)}">${thread['timestamp']} : ${thread['subject']} <span class="posts">(${thread['length']})</span></a>
-	<?py iter += 1 ?>
-	<?py #endfor ?>
-	</div>
-	<hr />
-	Número de hilos archivados: ${len(threads)}
-	<hr />
-	Cualquier problema al <a href="mailto:burocracia@bienvenidoainternet.org">e-mail</a> o a <a href="/bai/" rel="nofollow">la sección de discusión</a><br />
-	Bienvenido a Internet &amp; weabot - 2010-2016
-	</div>
+<body>
+<h1>Índice de /#{board}/kako/</h1>
+<pre>
+  <table style="border-collapse:collapse;">
+    <tr>
+      <th><img src="/blank.png" /></th>
+      <td><span class="fake">Nombre</span></td>
+      <td><span class="fake">Tamaño</span></td>
+      <td><span class="fake">Descripción</span></td>
+    </tr>
+    <tr>
+      <td colspan="4" style="padding:0"><hr /></td>
+    </tr>
+    <tr>
+      <th><img src="/back.png" /></th>
+      <td><a href="/#{board}/">..</a></td>
+      <td class="r">-</td>
+      <td></td>
+    </tr>
+    <?py for thread in threads: ?>
+    <tr>
+      <th><img src="/text.png" /></th>
+      <td><a href="#{boards_url}#{board}/read/#{thread['timestamp']}/">${thread['timestamp']}.json</a></td>
+      <?py if int(thread['length']) > 1000: ?>
+      <td class="r">1KR</td>
+      <?py else: ?>
+      <td class="r">${thread['length']}R</td>
+      <?py #endif ?>
+      <td>${thread['subject']}</td>
+    </tr>
+    <?py #endfor ?>
+  </table>
+  <hr />
+</pre>
+<address>weabot/0.8.4 (CentOS) Servidor ubicado en bienvenidoainternet.org Puerto 80</address>
 </body>
 </html>

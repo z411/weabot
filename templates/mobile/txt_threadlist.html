@@ -1,44 +1,38 @@
 <?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>#{board_name}@B.a.I. Móvil</h2>
-<p>
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
+<body class="txt">
+<div class="top">
+  <a href="//m.bienvenidoainternet.org"><img src="#{static_url}css/img/0back.png" /><br />Home</a>
+  #{board_name}
+</div>
 <?py if mode == 1: ?>
-Página Frontal ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
+<div class="bar"><a href="#{cgi_url}mobile/#{board}" class="sel">Portada</a><a href="#{cgi_url}mobilelist/#{board}">Todos los hilos</a><a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a></div>
 <?py else: ?>
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Pagina Frontal</a> ·
-Lista de Hilos ·
+<div class="bar"><a href="#{cgi_url}mobile/#{board}">Portada</a><a href="#{cgi_url}mobilelist/#{board}" class="sel">Todos los hilos</a><a href="#{cgi_url}mobilenew/#{board}">Nuevo hilo</a></div>
+<div class="search"><input id="search" placeholder="Buscar en asuntos" type="text"></div>
+<div class="ord">
+<?py if i_sort == '': ?>
+  <span>Orden:</span><a href="?">&#10003; Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+<?py elif i_sort == '3': ?>
+  <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">&#10003; Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+<?py elif i_sort == '4': ?>
+  <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">&#10003; Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">Viejo</a>
+<?py elif i_sort == '1': ?>
+  <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">&#10003; Nuevo</a><a href="?sort=2">Viejo</a>
+<?py elif i_sort == '2': ?>
+  <span>Orden:</span><a href="?">Normal</a><a href="?sort=3">Más</a><a href="?sort=4">Menos</a><a href="?sort=1">Nuevo</a><a href="?sort=2">&#10003; Viejo</a>
 <?py #endif ?>
-<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Hilo Nuevo</a>
-<hr />
-<?py iter = 1 ?>
-<?py for thread in more_threads: ?>
-#{iter}:
-    <?py if int(thread["length"]) > 10: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10" rel="nofollow">
-    <?py else: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}" rel="nofollow">
-    <?py #endif ?>
-#{thread["subject"]}
-    <?py if thread['locked'] == '1': ?>
-<small>(cerrado)</small>
-    <?py elif thread['locked'] == '2': ?>
-<small>(permasage)</small>
-    <?py #endif ?>
-(#{int(thread["length"])-1})</a><br />
-    <?py iter += 1 ?>
-<?py #endfor ?>
-<hr />
-<a href="http://m.bienvenidoainternet.org">Home</a> ·
-<?py if mode == 1: ?>
-Página Frontal ·
-<a href="#{cgi_url}mobilelist/#{board}" rel="nofollow">Lista de Hilos</a> ·
-<?py else: ?>
-<a href="#{cgi_url}mobile/#{board}" rel="nofollow">Pagina Frontal</a> ·
-Lista de Hilos ·
+</div>
 <?py #endif ?>
-<a href="#{cgi_url}mobilenew/#{board}" rel="nofollow">Hilo Nuevo</a>
-</p>
-<hr />
-<?py include('templates/mobile/base_bottom.html') ?>
+<div class="list">
+  <?py iter = 1 ?>
+  <?py for thread in more_threads: ?>
+  <?py if int(thread["length"]) > 10: ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">#{thread['subject']}<br /><span class="info"><span>Última: #{timestamps[iter-1][1]}</span> Respuestas: <b>#{int(thread['length'])-1}</b></span></a>
+  <?py else: ?>
+    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">#{thread['subject']}<br /><span class="info"><span>Última: #{timestamps[iter-1][1]}</span> Respuestas: <b>#{int(thread['length'])-1}</b></span></a>
+  <?py #endif ?>
+  <?py iter += 1 ?>
+  <?py #endfor ?>
+</div>
+</body>
+</html>

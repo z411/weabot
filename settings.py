@@ -2,132 +2,132 @@
 import threading
 
 class SettingsLocal(threading.local):
-  USING_SQLALCHEMY = False	# If SQLAlchemy is installed, set to True to use it
+  USING_SQLALCHEMY = False # If SQLAlchemy is installed, set to True to use it
   
   # Ignore these
   BOARD = None
   CONN = None
   MODBROWSE = False
+  
+  IS_TOR = None
+  IS_PROXY = None
+  HOST = None
 
 class Settings(object):
   LANG = "es"
   
   # *************** PATH INFORMATION ***************
-  NAME = "domain.org"
-  DOMAIN = ".domain.org"
-  ROOT_DIR = "../"
-  HOME_DIR = "../"
-  IMAGES_DIR = "../"
-  STATIC_DIR = "static/"
+  NAME = "weabot"
+  DOMAIN = ".weabot.org"
+  ROOT_DIR = "/weabot/"
+  HOME_DIR = "/weabot/"
+  IMAGES_DIR = "/weabot/"
+  STATIC_DIR = "/weabot/static/"
   HOME_URL = "/"
   BOARDS_URL = "/"
-  CGI_URL = "/weabot/weabot.py/"	# Path to folder containing the script
+  CGI_URL = "/cgi/"       # URL to folder containing the script
   IMAGES_URL = "/"
-  STATIC_URL = "/weabot/static/"
+  STATIC_URL = "/static/"
   USE_MULTITHREADING = False
   MAX_PROGRAM_THREADS = 8 # Maximum threads this Python application can start (must be 2 or greater)
-                          # Setting this too high can cause the program to terminate before finishing
-                          # (Only needed if multithreading is on)
+    # Setting this too high can cause the program to terminate before finishing
+    # (Only needed if multithreading is on)
   
   # *************** DATABASE INFORMATION ***************
   DATABASE_HOST = "localhost"
-  DATABASE_USERNAME = ""
-  DATABASE_PASSWORD = ""
+  DATABASE_USERNAME = "weabot"
+  DATABASE_PASSWORD = "CHANGEME"
   DATABASE_DB = "weabot"
   # The following two entries apply only if USING_SQLALCHEMY is set to True
-  DATABASE_POOL_SIZE = 5					# Initial number of database connections
-  DATABASE_POOL_OVERFLOW = 21				# Maximum number of database connections
+  DATABASE_POOL_SIZE = 5        # Initial number of database connections
+  DATABASE_POOL_OVERFLOW = 21   # Maximum number of database connections
   
   # *************** HOME PAGE INFORMATION ***************
   SITE_TITLE = "weabot"
-  SITE_LOGO = STATIC_URL + "logo.png"
+  SITE_LOGO = STATIC_URL + "img/logo.png"
   SITE_SLOGAN = ""
-  MAINTENANCE = False
-  # Set this to True if you are making changes to the server so the users can't post
-  ENABLE_RSS = False
+  MAINTENANCE = False # Set to True if you are making changes to the server so users can't post
+  FULL_MAINTENANCE = False
+  ENABLE_RSS = True
   
   # *************** BANNER INFORMATION ***************
-  ENABLE_BANNERS = False
-  banners_folder = STATIC_URL + "img/"		# Folder containing banners
-  banners = {'default': [],}
-  BANNER_WIDTH = 300
-  BANNER_HEIGHT = 100
+  ENABLE_BANNERS = True
+  banners_folder = STATIC_URL + "img/"    # Folder containing banners
+  banners = {        # filename, width, height
+        'default':   [("default.png", "500", "81")],
+        '0':         [("cero.gif", "350", "120")],
+        'anarkia':   [("anarkia.jpg", "380", "250")],
+        'bai':       [("bai.jpg", "600", "110")],
+        'juegos':    [("juegos1.jpg", "584", "120"), ("juegos2.jpg", "536", "120")],
+        'letras':    [("letras1.png", "565", "130"), ("letras2.png", "479", "130"), ("letras3.png", "512", "130"),
+                      ("letras4.jpg", "511", "150")],
+        'musica':    [("musica1.jpg", "480", "150")],
+        'noticias':  [("noticias.png", "442", "83")],
+        'tech':      [("tech1.png", "560", "120"), ("tech2.jpg", "506", "120"), ("tech3.png", "500", "120"),
+                      ("tech4.jpg", "500", "120"), ("tech5.jpg", "643", "120"), ("tech6.png", "432", "120")],
+        'polka':     [("weird-al.jpg", "960", "150")],
+        'salon2d':   [("salon2d_1.png", "400", "140")],
+        'tv':        [("tv1.png", "490", "135")],
+        'world':     [("world.gif", "600", "240")],
+        'zonavip':   [("zonavip1.jpg", "500", "120"), ("zonavip2.gif", "500", "120"), ("zonavip3.png", "500", "120"),
+                      ("zonavip4.jpg", "500", "120"), ("zonavip5.gif", "500", "120"), ("zonavip6.png", "500", "120"),
+                      ("zonavip7.gif", "500", "120"), ("zonavip8.png", "500", "120"), ("zonavip9.jpg", "500", "120")],
+  }
   
   # *************** IMAGES ***************
-  IMAGE_SIZE_UNIT = "KB"	# B or KB
-
-  CONVERT_PATH = "convert" # Location to ImageMagick's convert tool
+  CONVERT_PATH = "convert"                    # Location to ImageMagick's convert tool
   # CONVERT_PATH = "C:\\Utils\\ImageMagick-6.7.0-Q16\\convert"
-  MAX_DIMENSION_FOR_OP_IMAGE = 250
-  MAX_DIMENSION_FOR_REPLY_IMAGE = 250
-  MAX_DIMENSION_FOR_IMAGE_CATALOG = 50
-  THUMB_QUALITY = 75							# Image quality for thumbnails (0-100)
-  spoilop_filename = HOME_URL + "spoiler.gif"	# OP Spoiler image path, should be a square image of the dimensions MAX_DIMENSION_FOR_OP_IMAGE above
-  spoil_filename = HOME_URL + "spoiler.gif"		# Reply Spoiler image path, should be a square image of the dimensions MAX_DIMENSION_FOR_REPLY_IMAGE above
-  flash_filename = HOME_URL + "flash.png"
-  
-  # *************** IDs ***************
-  IPHASH_LENGTH = 8 # Unused
-  IPHASH_SAGEWORD = '???'
-  
+  THUMB_QUALITY = 85                          # Image quality for thumbnails (0-100)
+
   # *************** Bans ***************
-  HTACCESS_GEN = False # Set to True to use .htaccess for bans (needed for blind bans!)
+  HTACCESS_GEN = True                         # Set to True to use .htaccess for bans (needed for blind bans!)
+  EXCLUDE_GLOBAL_BANS = ['anarkia', 'bai']    # Excludes the following boards from global bans (not board specific bans)
   
-  # *************** April Fool's ***************
-  ATTACKHEAL_ENABLE = False
-  ATTACK_RANGE = (10, 200) # Rango probable de los puntos que se hace daño/cura (min/max)
-  HEAL_RANGE = (100, 200)
-  MP_REGEN_RANGE = (10, 100) # Rango probable en que el MP se regenera por cada post que se hace (min/max)
-  
+  # 'Name': ('Tripcode', 'New name', 'New tripcode', 'New ID', Hide Slip[bool])
+  CAPCODES = {
+  'Ejemplo': ('xxxxxxxxxx', 'Ejemplo ★', '', 'CAP_USER', True),
+  }
+
   # *************** BOARDS ***************
-  MAX_THREADS = 500
-  THREADS_SHOWN_ON_FRONT_PAGE = 10
-  REPLIES_SHOWN_ON_FRONT_PAGE = 10
-  REPLIES_SHOWN_ON_FRONT_PAGE_STICKY = 3
+  MAX_THREADS = 500            # IB
+  THREADS_SHOWN_ON_FRONT = 110
+  TXT_MAX_THREADS = 10000      # BBS
+
+  TRIM_METHOD = 0              # Which threads are trimmed first:
+  TXT_TRIM_METHOD = 1          # 0 = oldest (Futaba), 1 = inactive (2ch), 2 = least bumped (4chan)
+
   CLOSE_THREAD_ON_REPLIES = 1000
-  TRIM_METHOD = 0 # Which threads are trimmed first (0 = oldest like futaba, 1 = inactive like 2ch, 2 = least bumped like 4chan)
-  
-  MOBILE_THREADS_SHOWN_ON_FRONT_PAGE = 15
-  MAX_AGE_ALERT = 0.15 # Multiplier for thread expiration alert
-  
-  TXT_MAX_THREADS = 150
-  TXT_THREADS_SHOWN_ON_FRONT_PAGE = 15
-  TXT_THREADS_SHOWN_ON_THREAD_LIST = 50
-  TXT_REPLIES_SHOWN_ON_FRONT_PAGE = 10
-  TXT_REPLIES_SHOWN_ON_FRONT_PAGE_STICKY = 5
   TXT_CLOSE_THREAD_ON_REPLIES = 1000
-  TXT_TRIM_METHOD = 1
-  
-  SECONDS_BETWEEN_NEW_THREADS = 300       # Time to wait between a new thread
-  SECONDS_BETWEEN_REPLIES = 10            # Time to wait between a new post
-  DEFAULT_SAGE = 'sage'
-  DEFAULT_NOKO = 'noko'
-  
-  SECRET = '' # Random seed for secure tripcodes, change it to something random
+
+  MAX_AGE_ALERT = 0.1 # Multiplier for thread expiration alert
+
+  SECRET = 'CHANGEME' # Random seed for secure tripcodes, change it to something random
   ALLOW_SECURE_TRIPCODES = False
+  TRIP_CHAR = '◆'
+
+  HOME_NEWS = 10               # News posts shown on home page
+  HOME_LASTPOSTS = 20         # Last posts shown on home page
+  HOME_LASTPOSTS_LENGTH = 100
+
+  MODNEWS_MAX_POSTS = 30      # Max posts in the Manage front page
+  REPORTS_ENABLE = True       # Enable or disable report system
+  REPORTS_PER_PAGE = 100
+  RECYCLEBIN_POSTS_PER_PAGE = 25
   
-  POST_LINE_WIDTH = 160                   # Maximum width of posts
-  POST_MAX_LINES = 40                     # Maximum lines for posts (when outside a thread)
-
-  MAX_DAYS_THREADS = 1                    # Time limit for popular threads (home)
-
-  HOME_NEWS = 1                           # News posts shown on home page
-  HOME_LASTPOSTS = 10                     # Last posts shown on home page
-  HOME_LASTPOSTS_LENGTH = 85
-
-  MODNEWS_MAX_POSTS = 30                  # Maximum posts in the Manage front page
-
-  REPORTS_ENABLE = True                   # Enable or disable report system
-  REPORTS_REASON_LONG = 100
-  REPORTS_PER_PAGE = 30
-
-  RECYCLEBIN_POSTS_PER_PAGE = 30
-
-  SHOW_NAVBAR = True                      # If you set this to True, edit navbar.html
-  DEFAULT_STYLE = "Futaba"                # Futaba or Burichan
+  DELETE_FORBID_LENGTH = 5    # User can't delete own thread if replies exceed this
+  ARCHIVE_MIN_LENGTH = 5      # Minimum thread length to archive (0 = archive always)
   
+  STYLES = ('Rene', 'Dickgirl', 'Red', 'Photon', 'Night', 'Futaba', 'Burichan', 'Putaba')
+  STYLES_DEFAULT = 0
+  
+  TXT_STYLES = ('4am', 'Ayashii', 'Baisano', 'Blue Moon', 'Ciber', 'Futanari', 'Headline', 'Picnic')
+  TXT_STYLES_DEFAULT = 2
+  
+  TIME_ZONE = -3
   USE_MARKDOWN = False
-  
-  PRIVACY_LOCK = False
-  
-  _ = SettingsLocal() # Used when running multiple threads
+  USE_HTML = False
+  VIDEO_THUMBS = True
+  VIDEO_THUMBS_LIMIT = 5
+  GOOGLE_API_KEY = 'CHANGEME' # Used for Youtube thumbnails
+
+  _ = SettingsLocal()    # Used when running multiple threads

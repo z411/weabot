@@ -1,0 +1,92 @@
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Modbrowse</div>
+<?py if mode == 1: ?>
+<table class="managertable">
+  <tr><th colspan="2">Sección</th><th>Acción</th></tr>
+  <?py for board in boards: ?>
+  <tr><td>/#{board['dir']}/</td><td>#{board['name']}</td><td>[<a href="#{cgi_url}manage/mod/#{board['dir']}">Navegar</a>]</td></tr>
+  <?py #endfor ?>
+</table>
+<?py elif mode == 2: ?>
+<table class="managertable">
+<tr>
+  <th>#</th>
+  <th>ID</th>
+  <th style="width:20%;">Asunto</th>
+  <th>Fecha</th>
+  <th style="width:80%;">Mensaje</th>
+  <th>Resp.</th>
+  <th>Acciones</th>
+</tr>
+<?py i = 1 ?>
+<?py for thread in threads: ?>
+<tr>
+  <td>#{i}</td>
+  <td>#{thread['id']}</td>
+  <td><a href="?thread=#{thread['id']}"><b>#{thread['subject']}</b></a></td>
+  <td class="date" data-unix="${thread['timestamp']}">#{thread['timestamp_formatted'][:21]}</td>
+  <td>${thread['message'][:200]}</td>
+  <td>#{int(thread['length'])-1}</td>
+  <td style="white-space:nowrap;">
+    <a href="#{cgi_url}manage/lock/#{dir}/#{thread['id']}">L#{"-" if thread['locked'] == "1" else "+"}</a>
+    <a href="#{cgi_url}manage/permasage/#{dir}/#{thread['id']}">PS#{"-" if thread['locked'] == "2" else "+"}</a>
+    <a href="#{cgi_url}manage/move/#{dir}/#{thread['id']}">M</a>
+    <a href="#{cgi_url}manage/delete/#{dir}/#{thread['id']}">D</a>
+    <a href="#{cgi_url}manage/delete/#{dir}/#{thread['id']}?ban=true">&</a>
+    <a href="#{cgi_url}manage/ban/#{dir}/#{thread['id']}">B</a>
+  </td>
+</tr>
+<?py i += 1 ?>
+<?py #endfor ?>
+</table>
+<hr />
+[<a href="#{cgi_url}manage/mod" class="return">Volver</a>]
+<?py elif mode == 3: ?>
+<table class="managertable">
+<tr><th colspan="7" style="font-size:16pt;">Hilo: ${posts[0]['subject']} (#{posts[0]['length']})</th></tr>
+<tr><td colspan="7" style="font-size:14pt;text-align:center;"><a href="#{cgi_url}manage/lock/#{dir}/#{posts[0]['id']}">#{"Abrir hilo" if posts[0]['locked'] == "1" else "Cerrar hilo"}</a> /
+<a href="#{cgi_url}manage/permasage/#{dir}/#{posts[0]['id']}">#{"Quitar permasage" if posts[0]['locked'] == "2" else "Permasage"}</a> /
+<a href="#{cgi_url}manage/move/#{dir}/#{posts[0]['id']}">Mover hilo</a></td></tr>
+<tr>
+  <th>#</th>
+  <th>ID</th>
+  <th>Fecha</th>
+  <th>Nombre</th>
+  <th>Mensaje</th>
+  <th>IP</th>
+  <th>Acción</th>
+</tr>
+<?py i = 1 ?>
+<?py for p in posts: ?>
+<tr>
+  <td>#{i}</td>
+  <td>#{p['id']}</td>
+  <td class="date" data-unix="${p['timestamp']}">${p['timestamp_formatted']}</td>
+  <td><span class="postername">${p['name']}</span></td>
+  <td>${p['message']}</td>
+  <td><a href="#{cgi_url}manage/ipshow?ip=#{p['ip']}">#{p['ip']}</a></td>
+  <td style="white-space:nowrap;">
+    <?py if p['IS_DELETED'] == '0': ?>
+    <a href="#{cgi_url}manage/delete/#{dir}/#{p['id']}">Eliminar</a>
+    <a href="#{cgi_url}manage/delete/#{dir}/#{p['id']}?ban=true">&</a>
+    <a href="/cgi/manage/ban?ip=#{p['ip']}">Ban</a>
+    <?py elif p['IS_DELETED'] == '1': ?>
+    <a href="#{cgi_url}manage/recyclebin/0/restore/#{dir}/#{p['id']}">Recuperar</a>
+    <abbr title="Eliminado por usuario">[1]</abbr>
+    <?py else: ?>
+    <a href="#{cgi_url}manage/recyclebin/0/restore/#{dir}/#{p['id']}">Recuperar</a>
+    <abbr title="Eliminado por staff">[2]</abbr>
+    <?py #endif ?>
+  </td>
+</tr>
+<?py i += 1 ?>
+<?py #endfor ?>
+</table>
+<hr />
+[<a href="#{cgi_url}manage/mod/#{dir}">Volver al panel</a>]
+<?py #endif ?>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

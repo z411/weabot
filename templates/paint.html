@@ -1,0 +1,79 @@
+<?py include('templates/base_top.html') ?>
+<?py if selfy: ?>
+<script type="text/javascript" src="#{static_url}js/palette_selfy.js"></script>
+<?py #endif ?>
+<center>
+<?py if applet == 'shipainter': ?>
+<applet id="oekaki" code="c.ShiPainter.class" archive="#{boards_url}oek_temp/spainter_all.jar" width="#{width+250}" height="#{height+280}" mayscript="">
+  <?py for key, value in params.iteritems(): ?>
+  <param name="#{key}" value="#{value}" />
+  <?py #endfor ?>
+</applet>
+<?py if selfy: ?>
+<script type="text/javascript">palette_selfy();</script>
+<?py #endif ?>
+<?py elif applet == 'neo': ?>
+<link rel="stylesheet" href="#{static_url}js/paintbbs/PaintBBS-1.3.4.css" type="text/css" />
+<script src="#{static_url}js/paintbbs/PaintBBS-1.3.4.js" charset="UTF-8"></script>
+<applet-dummy id="oekaki" name="paintbbs" width="#{width+250}" height="#{height+280}">
+<param name="image_width" value="#{width}">
+<param name="image_height" value="#{height}">
+<param name="image_bkcolor" value="#FFFFFF">
+<param name="image_size" value="0">
+<param name="undo" value="90">
+<param name="undo_in_mg" value="15">
+<param name="color_text" value="#EFEFFF">
+<param name="color_bk" value="#E8EFFF">
+<param name="color_bk2" value="#D5D8EF">
+<param name="color_icon" value="#A1B8D8">
+<param name="color_iconselect" value="#000000">
+<param name="url_save" value="/oek_temp/save.php?applet=paintbbs">
+<param name="url_exit" value="#{cgi_url}oekaki/finish/#{board}/#{replythread}">
+<param name="poo" value="false">
+<param name="send_advance" value="true">
+<param name="thumbnail_width" value="100%">
+<param name="thumbnail_height" value="100%">
+<param name="tool_advance" value="true">
+<param name="tool_color_button" value="#D2D8FF">
+<param name="tool_color_button2" value="#D2D8FF">
+<param name="tool_color_text" value="#5A5781">
+<param name="tool_color_bar" value="#D2D8F0">
+<param name="tool_color_frame" value="#7474AB">
+<?py if edit: ?>
+<param name="image_canvas" value="#{edit}">
+<?py #endif ?>
+</applet-dummy>
+<?py elif applet == 'wpaint': ?>
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/jquery.1.10.2.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/jquery.ui.core.1.10.3.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/jquery.ui.widget.1.10.3.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/jquery.ui.mouse.1.10.3.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/jquery.ui.draggable.1.10.3.min.js"></script>
+<link rel="Stylesheet" type="text/css" href="#{static_url}js/wpaint/lib/wColorPicker.min.css" />
+<script type="text/javascript" src="#{static_url}js/wpaint/lib/wColorPicker.min.js"></script>
+<link rel="Stylesheet" type="text/css" href="#{static_url}js/wpaint/wPaint.min.css" />
+<script type="text/javascript" src="#{static_url}js/wpaint/wPaint.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/plugins/main/wPaint.menu.main.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/plugins/text/wPaint.menu.text.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/plugins/shapes/wPaint.menu.main.shapes.min.js"></script>
+<script type="text/javascript" src="#{static_url}js/wpaint/plugins/file/wPaint.menu.main.file.min.js"></script>
+<div id="wPaint" style="position:relative; width:#{width}px; height:#{height}px; background-color:#7a7a7a; margin:70px auto 20px auto;"></div>
+<script type="text/javascript" src="#{static_url}js/wpaint/bai.js"></script>
+<?py elif applet == 'tegaki': ?>
+<form id="imgform" data-w="#{width}" data-h="#{height}" action="#{cgi_url}oekaki/finish/#{board}/#{replythread}" method="post">
+<input type="hidden" name="filebase" id="filebase" />
+</form>
+<link rel="Stylesheet" type="text/css" href="#{static_url}js/tegaki/tegaki.css" />
+<script type="text/javascript" src="#{static_url}js/tegaki/tegaki.js"></script>
+<div id="buttons"><button id="topen">Abrir Tegaki</button></div>
+<div style="font-size:20pt" id="status"></div>
+<?py #endif ?>
+
+<br /><br /><br />
+<div id="links">
+<a href="#{boards_url}#{board}">Volver</a><br />
+<a id="finish" href="#{cgi_url}oekaki/finish/#{board}/#{replythread}">Recuperar dibujo guardado</a>
+</div>
+</center>
+<br />
+<?py include('templates/base_bottom.html') ?>

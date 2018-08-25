@@ -1,12 +1,12 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Quotes</div>
-<p>Ingresa un mensaje a mostrar por cada linea:</p>
-<form method="post" action="">
- <textarea name="data" cols="80" rows="15">${data}</textarea><br />
- <input type="submit" name="save" value="Guardar" />
-</form>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+  <div class="replymode">Quotes</div>
+  <p>Ingresa un mensaje a mostrar por cada linea:</p>
+  <form method="post" action="">
+    <textarea name="data" cols="80" rows="15" style="width:500px;height:250px;">${data}</textarea><br />
+    <input type="submit" name="save" style="width:500px;" value="Guardar" />
+  </form>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

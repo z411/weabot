@@ -1,6 +1,7 @@
 # coding=utf-8
 import tenjin
 import random
+import re
 from tenjin.helpers import * # Used when templating
 
 from settings import Settings
@@ -15,8 +16,9 @@ def renderTemplate(template, template_values={}, mobile=False, noindex=False):
     "title": Settings.NAME,
     "board": None,
     "board_name": None,
+    "board_long": None,
     "is_page": "false",
-    "noindex": noindex,
+    "noindex": None,
     "replythread": 0,
     "home_url": Settings.HOME_URL,
     "boards_url": Settings.BOARDS_URL,
@@ -24,50 +26,52 @@ def renderTemplate(template, template_values={}, mobile=False, noindex=False):
     "static_url": Settings.STATIC_URL,
     "cgi_url": Settings.CGI_URL,
     "banner_url": None,
-    "banner_width": Settings.BANNER_WIDTH,
-    "banner_height": Settings.BANNER_HEIGHT,
-    "anonymous": None,
-    "forced_anonymous": None,
+    "banner_width": None,
+    "banner_height": None,
+    "disable_name": None,
     "disable_subject": None,
-    "tripcode_character": None,
-    "default_style": Settings.DEFAULT_STYLE,
-    "maxdimensions": Settings.MAX_DIMENSION_FOR_OP_IMAGE,
-    "unique_user_posts": None,
+    "styles": Settings.STYLES,
+    "styles_default": Settings.STYLES_DEFAULT,
+    "txt_styles": Settings.TXT_STYLES,
+    "txt_styles_default": Settings.TXT_STYLES_DEFAULT,
     "page_navigator": "",
-    "navbar": Settings.SHOW_NAVBAR,
     "modbrowse": Settings._.MODBROWSE,
     "reports_enable": Settings.REPORTS_ENABLE,
     "force_css": ""
   }
   
-  engine = tenjin.Engine()
+  engine = tenjin.Engine(pp=[tenjin.TrimPreprocessor(True)])
+  board = Settings._.BOARD
   
-  if template == "board.html" or template == "threadlist.html" or template == "catalog.html" or template == "kako.html" or template[0:3] in ["txt", "swf", "url"]:
-    board = Settings._.BOARD
-    
+  #if board:
+  if template in ["board.html", "threadlist.html", "catalog.html", "kako.html", "paint.html"] or template[0:3] == "txt": 
     # TODO HACK
-    if board['dir'] == '0' and template == 'board.html':
-      template = template[:-4] + '0.html'
-    elif board['dir'] == 'jp' and (template == 'board.html' or template == 'catalog.html'):
+    if board['dir'] == 'world' and not mobile and (template == 'txt_board.html' or template == 'txt_thread.html'):
+      template = template[:-4] + 'en.html'
+    elif board['dir'] == '2d' and template == 'board.html' and not mobile:
       template = template[:-4] + 'jp.html'
-    
+
     try:
       banners = Settings.banners[board['dir']]
+      if banners:
+        banner_width = Settings.banners[board['dir']]
+        banner_height = Settings.banners[board['dir']]
     except KeyError:
       banners = Settings.banners['default']
-    
+      banner_width = Settings.banners['default']
+      banner_height = Settings.banners['default']
+
     values.update({
       "board": board["dir"],
       "board_name": board["name"],
+      "board_long": board["longname"],
       "board_type": board["board_type"],
-      "anonymous": board["anonymous"],
       "oek_finish": 0,
-      "forced_anonymous": (board["forced_anonymous"] == '1'),
+      "disable_name": (board["disable_name"] == '1'),
       "disable_subject": (board["disable_subject"] == '1'),
-      "tripcode_character": board["tripcode_character"],
-      "postarea_extra_html_top": board["postarea_extra_html_top"],
-      "postarea_extra_always": (board["postarea_extra_always"] == '1'),
-      "postarea_extra_html_bottom": board["postarea_extra_html_bottom"],
+      "default_subject": board["subject"],
+      "postarea_desc": board["postarea_desc"],
+      "postarea_extra": board["postarea_extra"],
       "allow_images": (board["allow_images"] == '1'),
       "allow_image_replies": (board["allow_image_replies"] == '1'),
       "allow_noimage": (board["allow_noimage"] == '1'),
@@ -75,36 +79,35 @@ def renderTemplate(template, template_values={}, mobile=False, noindex=False):
       "allow_oekaki": (board["allow_oekaki"] == '1'),
       "archive": (board["archive"] == '1'),
       "force_css": board["force_css"],
-      "board_locked": (board["locked"] == '1'),
+      "noindex": (board["secret"] == '1'),
       "useid": board["useid"],
       "maxsize": board["maxsize"],
+      "maxage": board["maxage"],
+      "maxdimensions": board["thumb_px"],
       "supported_filetypes": board["filetypes_ext"],
-      "spoilop_image": Settings.spoilop_filename,
-      "spoil_image": Settings.spoil_filename,
-      "flash_image": Settings.flash_filename,
       "prevrange": '',
       "nextrange": '',
     })
   else:
     banners = Settings.banners['default']
+    banner_width = Settings.banners['default']
+    banner_height = Settings.banners['default']
   
   if Settings.ENABLE_BANNERS:
-    random_number = random.randrange(0, len(banners))
-    BANNER_URL = Settings.banners_folder + banners[random_number]
-    values.update({"banner_url": BANNER_URL})
+    if len(banners) > 1:
+      random_number = random.randrange(0, len(banners))
+      BANNER_URL = Settings.banners_folder + banners[random_number][0]
+      BANNER_WIDTH = banners[random_number][1]
+      BANNER_HEIGHT = banners[random_number][2]
+    else:
+      BANNER_URL = Settings.banners_folder + banners[0][0]
+      BANNER_WIDTH = banners[0][1]
+      BANNER_HEIGHT = banners[0][2]
+    
+    values.update({"banner_url": BANNER_URL, "banner_width": BANNER_WIDTH, "banner_height": BANNER_HEIGHT})
   
   values.update(template_values)
-  
-  # We replace to select languages in necessary cases
-  #replace = {'board.html': 'board.es.html',
-  #           'manage.html': 'manage.es.html',
-  #           'txt_board.html': 'txt_board.es.html',
-  #           'txt_thread.html': 'txt_thread.es.html',
-  #           'txt_threadlist.html': 'txt_threadlist.es.html'}
-  #if template in replace:
-  #  template = replace[template]
-  
-  # Use mobile folder for mobile mode
+
   if mobile:
     template_folder = "templates/mobile/"
   else:

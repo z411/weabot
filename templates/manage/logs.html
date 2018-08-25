@@ -1,13 +1,17 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<center>
-<div class="replymode">Logs</div>
-<table class="managertable">
-<tr><th>Fecha</th><th>Staff</th><th>Acción</th></tr>
-<?py for log in logs: ?>
-  <tr><td>${log['timestamp_formatted']}</td><td>${log['staff']}</td><td>${log['action']}</td></tr>
-<?py #endfor ?>
-</table>
-</center>
-<hr />
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<center>
+<div class="replymode">Registro</div>
+<table class="managertable">
+  <tr><th>Fecha</th><th>Staff</th><th>Acción</th></tr>
+<?py for log in logs: ?>
+	<tr>
+    <td style="white-space:nowrap;">${log['timestamp_formatted']}</td>
+    <td>${log['staff']}</td>
+    <td>${log['action']}</td>
+  </tr>
+<?py #endfor ?>
+</table>
+</center>
+<hr />
 <?py include('templates/base_bottom.html') ?>

@@ -1,37 +1,43 @@
-<?py include('templates/base_top.html') ?>
-<?py include('templates/manage/menu.html') ?>
-<?py from tenjin.helpers.html import * ?>
-<center>
-<div class="replymode">
-<?py if action == 'news': ?>
-  Publicar Noticia
-<?py else: ?>
-  Publicar Mensaje como Staff
-<?py #endif ?>
-</div>
-<form action="#{cgi_url}manage/#{action}/add" method="post">
-<table>
-<tr><td class="postblock">Título</td><td><input type="text" name="title" /><input type="submit" name="submit" value="Publicar" /></td></tr>
-<tr><td class="postblock">Cuerpo</td><td><textarea cols="48" rows="4" name="message"></textarea>
-<?py if action == 'news': ?>
-<br />(HTML: Usar con cuidado)
-<?py #endif ?>
-</td></tr>
-<tr><td class="postblock">Anónimo</td><td><input type="checkbox" name="anonymous" value="1"#{checked(action == 'news')} /></td></tr>
-</table>
-</form>
-<p>Mensajes:</p>
-<table class="managertable">
- <tr><th>ID</th><th>Fecha</th><th>Tíulo</th><th>Cuerpo</th></tr>
-<?py for post in posts: ?>
- <tr>
- <td>#{post['id']} [<a href="#{cgi_url}manage/#{action}/delete/#{post['id']}">Eliminar</a>]</td>
- <td>#{post['timestamp_formatted']}</td>
- <td>#{post['title']}</td>
- <td>#{post['message']}</td>
- </tr>
-<?py #endfor ?>
-</table>
-</center>
-<hr />
-<?py include('templates/base_bottom.html') ?>
+<?py include('templates/base_top.html') ?>
+<?py include('templates/manage/menu.html') ?>
+<?py from tenjin.helpers.html import * ?>
+<center>
+<?py if action == 1: ?>
+<div class="replymode">Publicar noticia</div>
+<form action="#{cgi_url}manage/news/add?type=1" method="post">
+<?py elif action == 2: ?>
+<div class="replymode">Twitter</div>
+<form action="#{cgi_url}manage/news/add?type=2" method="post">
+<?py else: ?>
+<div class="replymode">Publicar mensaje entre staff</div>
+<form action="#{cgi_url}manage/newschannel/add" method="post">
+<?py #endif ?>
+<table>
+<?py if action != 2: ?>
+<tr><td class="postblock">Anónimo</td><td><input type="checkbox" name="anonymous" id="anon" value="1"#{checked(action != 0)} /><label for="anon"></label></td></tr>
+<tr><td class="postblock">Título</td><td><input type="text" name="title" style="width:100%;" /></td></tr>
+<?py #endif ?>
+<tr><td class="postblock">Cuerpo<br /><br /><small style="font-weight:normal">HTML: Usar<br />con cuidado</small></td><td><textarea cols="48" rows="5" name="message" style="width:100%;"></textarea></td></tr>
+<tr><td colspan="2"><input type="submit" name="submit" style="width:100%;" value="Publicar" /></td></tr>
+</table>
+</form>
+<hr />
+<table class="managertable">
+<tr><th>ID</th><th>Fecha</th>
+<?py if action != 2: ?><th>Título</th><?py #endif ?>
+<?py if action != 2: ?><th>Mensaje</th>
+<?py else: ?><th>Tweet</th><?py #endif ?>
+<th></th></tr>
+<?py for post in posts: ?>
+<tr>
+<td style="text-align:center">#{post['id']}</td>
+<td>#{post['timestamp_formatted']}</td>
+<?py if action != 2: ?><td>#{post['title']}</td><?py #endif ?>
+<td>#{post['message']}</td>
+<td>[<a href="#{cgi_url}manage/news/delete/#{post['id']}?type=#{action}">Eliminar</a>]</td>
+</tr>
+<?py #endfor ?>
+</table>
+</center>
+<hr />
+<?py include('templates/base_bottom.html') ?>

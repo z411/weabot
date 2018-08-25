@@ -1,80 +1,61 @@
 <?py include('templates/mobile/base_top.html') ?>
-<body>
-<h2>#{board_name}@B.a.I. Móvil</h2>
-<p>
-<hr />
+<body class="txt">
+<a name="top"></a>
 <?py for thread in threads: ?>
-<a href="#{cgi_url}mobile/#{board}">Volver</a>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}">Hilo completo</a>
-    <?py if thread['length'] > 50: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/-50">1-</a>
-    <?py #endif ?>
-    <?py for i in range(thread['length'] / 50): ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/#{(i+1)*50+1}-#{(i+2)*50}">#{(i+1)*50+1}-</a>
-    <?py #endfor ?>
-    <?py if thread['length'] > 10: ?>
-<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">&Uacute;ltimos 10</a>
-    <?py #endif ?>
-<hr />
-<span class="subject">#{thread["subject"]} (#{int(thread["length"])-1})</span><br />
-    <?py for post in thread['posts']: ?>
-  <small>
-  #{post['num']}:
-        <?py if post['IS_DELETED'] == '1': ?>
-  <strong>Eliminado por usuario.</strong></small>
-        <?py elif post['IS_DELETED'] == '2': ?>
-  <strong>Eliminado por staff.</strong></small>
-        <?py else: ?>
-  <?py if post['email']: ?>
-  <span class="postername"><a href="mailto:#{post['email']}">#{post['name']}</a></span>
-    <?py if post['tripcode']: ?>
-  <span class="postertrip"><a href="mailto:#{post['email']}">#{post['tripcode']}</a></span>
-    <?py #endif ?>
-  <?py else: ?>
-  <span class="postername">#{post['name']}</span>
-    <?py if post['tripcode']: ?>
-  <span class="postertrip">#{post['tripcode']}</span>
-    <?py #endif ?>
-  <?py #endif ?>
-  #{post['timestamp_formatted']}
-  </small><br />
-  <?py if post['file'] != '': ?>
-    <a href="#{images_url}#{board}/src/#{post['file']}"><img src="#{images_url}#{board}/mobile/#{post['thumb']}" align="left" /></a>
-  <?py #endif ?>
-  #{post['message']}
-        <?py #endif ?>
-  <hr />
-    <?py #endfor ?>
-    <a href="#{cgi_url}mobile/#{board}">Volver</a>
-    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}">Hilo completo</a>
-    <?py if prevrange != '': ?>
-    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/#{prevrange}">Anteriores 50</a>
-    <?py #endif ?>
-    <?py if nextrange != '': ?>
-    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/#{nextrange}">Siguientes 50</a>
-    <?py #endif ?>
-    <?py if thread['length'] > 10: ?>
-    <a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">&Uacute;ltimos 10</a>
-    <?py #endif ?>
+<div class="nav">
+  <div><a href="//m.bienvenidoainternet.org">Home</a><a href="#{cgi_url}mobile/#{board}/">Volver</a><a href="#form">&#9660;</a></div>
+  <div><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}">Hilo completo</a><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/-50">Primeros 50</a><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">Últimos 10</a></div>
+</div>
+<?py if thread['length'] > 1000: ?>
+  <div class="stop red">■ El hilo superó los 1000 mensajes y ha sido cerrado.</div>
+<?py elif thread['length'] > 950: ?>
+  <div class="warn red">■ El hilo ha recibido más de 950 mensajes. Límite: 1000</div>
+<?py elif thread['length'] > 900: ?>
+  <div class="warn yellow">■ El hilo ha recibido más de 900 mensajes. Límite: 1000</div>
+<?py #endif ?>
+<div id="thread">
+<h1>#{thread['subject']} <span>(#{thread['length']})</span></h1>
+<?py for post in thread['posts']: ?>
+<?py if post['IS_DELETED'] == '1': ?>
+<div class="pst"><h3 class="del"><a href="#" class="num">#{str(post['num']).zfill(4)}</a> Eliminado por el usuario.</h3></div>
+<?py elif post['IS_DELETED'] == '2': ?>
+<div class="pst"><h3 class="del"><a href="#" class="num">#{str(post['num']).zfill(4)}</a> Eliminado por miembro del staff.</h3></div>
+<?py else: ?>
+<div id="p#{post['id']}" class="pst">
+  <h3><a href="#" class="num">#{str(post['num']).zfill(4)}</a> #{post['name']} #{post['tripcode']}</h3>
+  <?py if post['file']: ?><a href="/#{board}/src/#{post['file']}" target="_blank" class="thm"><img src="/#{board}/mobile/#{post['thumb']}" /><br />#{int(post['file_size'])//1024}KB #{post['file'].split(".")[1].upper()}</a><?py #endif ?>
+  <div class="msg">#{post['message']}</div>
+  <h4>#{post['timestamp_formatted']}</h4>
+</div>
+<?py #endif ?>
 <?py #endfor ?>
-<br />
-<form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="board" value="#{board}" />
-  <input type="hidden" name="parent" value="#{thread['id']}" />
-  <input type="hidden" name="mobile" value="true" />
-  <div style="display:none;">Trampa (deja estos campos en blanco):
-   <input type="text" name="name" size="19" maxlength="75" />
-   <input type="text" name="email" size="19" maxlength="75" />
-  </div>
-  <table>
-   <tr><td>Nombre</td><td><input type="text" name="fielda" size="20" maxlength="75" /></td></tr>
-   <tr><td>E-Mail</td><td><input type="text" name="fieldb" size="20" maxlength="75" /></td></tr>
-   <tr><td> </td><td><textarea name="message" cols="25" rows="3"></textarea></td></tr>
-   <tr><td> </td><td><input type="submit" value="Responder" /></td></tr>
-  </table>
-  <input type="hidden" name="password" />
-</form>
-<script type="text/javascript">set_inputs("postform");</script>
-</p>
-<hr />
-<?py include('templates/mobile/base_bottom.html') ?>
+<?py if thread['locked'] != '1': ?>
+<a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/#{thread['length']}-n" id="n">Ver nuevos posts</a><span id="n2"></span>
+<?py #endif ?>
+<div class="nav">
+  <div><a href="//m.bienvenidoainternet.org">Home</a><a href="#{cgi_url}mobile/#{board}/">Volver</a><a href="#top">&#9650;</a></div>
+  <?py if nextrange: ?>
+  <div><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}">Hilo completo</a><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/-50">Primeros 50</a><a href="#{cgi_url}mobileread/#{board}/#{thread['timestamp']}/l10">Últimos 10</a></div>
+  <?py #endif ?>
+</div>
+<?py if thread['locked'] != '1': ?>
+  <form name="postform" id="postform" action="/cgi/post" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="board" value="#{board}" /><input type="hidden" name="parent" value="#{thread['id']}" /><input type="hidden" name="mobile" value="true" /><input type="hidden" name="password" value="" />
+  <div style="display:none"><input type="text" name="name" /><input type="text" name="email" /></div>
+  <input class="fld" type="text" name="fielda" placeholder="Nombre (opcional)" />
+  <input class="fld" type="text" name="fieldb" placeholder="E-mail (opcional)" />
+  <textarea name="message" rows="6"></textarea>
+<?py if allow_image_replies: ?>
+  <div class="file"><input type="file" name="file" class="fld" />
+  <?py if allow_spoilers: ?>
+    <label class="fld"><input type="checkbox" name="spoil" /> Spoiler</label>
+  <?py #endif ?></div>
+<?py #endif ?>
+  <input id="post" type="submit" value="Responder" />
+  </form>
+<?py #endif ?>
+</div>
+<a name="form"></a>
+<?py #endfor ?>
+</body>
+</html>

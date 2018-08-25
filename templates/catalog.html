@@ -1,39 +1,28 @@
 <?py include('templates/base_top.html') ?>
-&#91;<a href="#{boards_url}#{board}/">Volver al IB</a>&#93;
-<?py if i_sort == '': ?>
-<b><a href="?">Catálogo</a></b>
-<?py else: ?>
-<a href="?">Catálogo</a>
-<?py #endif ?>
-<?py if i_sort == '1': ?>
-<b><a href="?sort=1">Nuevo</a></b>
-<?py else: ?>
-<a href="?sort=1">Nuevo</a>
-<?py #endif ?>
-<?py if i_sort == '2': ?>
-<b><a href="?sort=2">Viejo</a></b>
-<?py else: ?>
-<a href="?sort=2">Viejo</a>
-<?py #endif ?>
-<?py if i_sort == '3': ?>
-<b><a href="?sort=3">Más</a></b>
-<?py else: ?>
-<a href="?sort=3">Más</a>
-<?py #endif ?>
-<?py if i_sort == '4': ?>
-<b><a href="?sort=4">Menos</a></b>
-<?py else: ?>
-<a href="?sort=4">Menos</a>
-<?py #endif ?>
+<div id="ctrl">
+  &#91;<a href="#{boards_url}#{board}/">Volver al IB</a>&#93;
+  &#91;Orden:
+  <a href="?">#{"<b>Normal</b>" if i_sort == "" else "Normal"}</a>
+  <a href="?sort=1">#{"<b>Nuevo</b>" if i_sort == "1" else "Nuevo"}</a>
+  <a href="?sort=2">#{"<b>Viejo</b>" if i_sort == "2" else "Viejo"}</a>
+  <a href="?sort=3">#{"<b>Más</b>" if i_sort == "3" else "Más"}</a>
+  <a href="?sort=4">#{"<b>Menos</b>" if i_sort == "4" else "Menos"}</a>&#93;
+  &#91;Tamaño: <a href="#" id="cat_size">Aumentar</a>&#93;
+  &#91;Texto: <a href="#" id="cat_hide">Ocultar</a>&#93;
+  &#91;Buscar: <input id="cat_search" type="text"><input type="hidden" name="board" value="#{board}" />
+</div>
 <div class="extramode">Modo Catálogo</div>
-<div id="catalog" style="margin: 1em auto;">
-<?py for thread in threads: ?>
- <div class="thread">
-  <a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />
-  <div class="replies">Respuestas: ${int(thread['length'])-1} / Expira: ${thread['expires_formatted']}</div>
-  <p class="filetitle">${thread['subject']}</p>
-  <p>${thread['message']}</p>
- </div>
-<?py #endfor ?>
+<div id="catalog" style="margin:1em auto;">
+  <?py for thread in threads: ?><div id="cat#{thread['id']}#{board}" class="thread" data-id="#{thread['id']}">
+    <?py if thread['thumb'] != '': ?>
+      <a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow"><img src="#{images_url}#{board}/cat/#{thread['thumb']}" alt="#{thread['id']}" /></a><br />
+    <?py #endif ?>
+    <div class="replies">Respuestas: ${int(thread['length'])-1}</div>
+    <?py if thread['thumb'] != '': ?>
+      <p><span class="subj">${thread['subject']}</span><br />${thread['message']}</p>
+    <?py else: ?>
+      <p><a href="#{boards_url}#{board}/res/#{thread['id']}.html" rel="nofollow" class="subj">${thread['subject']}</a><br />${thread['message']}</p>
+    <?py #endif ?>
+  </div><?py #endfor ?>
 </div>
 <?py include('templates/base_bottom.html') ?>

@@ -1,0 +1,22 @@
+html,body{background:#EEE;color:#333;font-family:Arial,Helvetica,"Nimbus Sans L",sans-serif}
+.rep{color:#333}
+a,a .name,.logo,.nav label{color:#F60}
+a:hover,a:hover .name,a:hover .name b,.nav label:hover{color:#0066FF}
+.replymode,.extramode{color:#2266AA;border:solid 1px #CCC;background:#DDD}
+.postblock{background:#DDD;color:#024;font-weight:bold;border:1px solid #CCC;}
+.q{color:#789922}
+.fs,.thumbmsg,.abbrev{color:#666;text-decoration:none}
+.subj{color:#111;font-weight:bold}
+.name{color:#F30}
+.name b{color:#004A99}
+a .name b{color:#FF6600}
+.omitted{color:#707070}
+.reply{background:#DDD;border:1px solid #CCC}
+.highlight{background:#CCC}
+.managertable td{background:#DDD;color:#024}
+.managertable th{background:#CCC;color:#024}
+hr{border:none;border-top:1px solid #BBB;height:0}
+#catalog .thread:hover{background:#DDD;box-shadow:0 0 5px 5px #DDD}
+#catalog .replies{color:#888;font-weight:bold}
+.yt{background:#E9E9E9;border:1px solid #BBB;color:#333}
+#q-p{background:#DDD}

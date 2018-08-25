@@ -1,0 +1,75 @@
+*{box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;word-wrap:break-word}
+body,textarea{font-family:Arial,Helvetica,sans-serif;font-size:16px}
+body.mainpage{margin:0}
+body.threadpage,body.threads{margin:10px}
+br{line-height:0.5em}
+h1{font-size:18px;margin:0 0 5px}
+h2{font-size:24px;font-weight:bold;margin:0.3em 0 0}
+h2 small{font-size:16px;margin-right:2px}
+h2 a{text-decoration:none}
+h3{font-size:18px;font-weight:normal;margin:0 0 1em}
+h4{clear:both;font-size:16px;font-weight:normal;margin:0}
+pre{font-size:14px;line-height:125%;margin:0.5em 0;white-space:pre-wrap}
+ul,ol,p{margin:0}
+#main_nav .cur_brd,#cur_stl{font-weight:bold}
+#main_nav{font-size:14px;padding:5px 0;text-align:center;width:100%}
+#main_nav a{margin:0 2px}
+.outerbox,.mainpage .thread{margin-bottom:19px;margin-left:2.5%;margin-right:2.5%}
+.innerbox{padding:5px;margin:7px}
+.threadnav{float:right;font-family:Mona,Monapo,IPAmonapgothic,monapo,'ms pgothic',yozfontaa97}
+.search{margin:5px 0 0}
+.search input{margin-right:2px}
+.search input[type="text"]{height:26px;max-width:500px;width:100%}
+.links{font-size:14px;text-align:center}
+#threadlinks{margin-bottom:5px;text-align:center}
+#threadlist{clear:both;font-size:14px;line-height:1;max-height:15em;padding:4px;overflow-y:scroll}
+#threadlist a{text-decoration:none}
+.thread,#q-p{line-height:20px}
+#thread_nav{padding-left:6px}
+.thread form,.formpad{padding-left:40px}
+.reply{clear:both;overflow:hidden}
+.num{color:inherit!important;text-decoration:none}
+.name em{font-style:normal}
+.del{visibility:hidden}
+.reply:hover .del{visibility:visible}
+.quoted{font-size:12px;line-height:1}
+.msg,.thumb{margin:2px 0 1em 40px}
+.msg hr{margin-left:0;max-width:500px}
+.thumb{cursor:zoom-in;font-size:14px;float:left;margin-right:15px;text-align:center;text-decoration:none;color:gray!important}
+a.yt{margin:2px 0;display:inline-block;font-size:12px;line-height:1.2em;padding:5px;text-decoration:none}
+a.yt .pvw{width:100px;height:60px;overflow:hidden;float:left;margin-right:5px}
+a.yt .pvw img{margin-top:-15px;margin-left:-10px}
+a.yt b{font-size:115%}
+.deleted{margin-bottom:1em}
+#q-p{margin-right:15px;position:absolute}
+#q-p .q-p-op{clear:both;padding:8px;overflow:hidden}
+#q-p .del,#q-p .quoted,#q-p .thumb div{display:none}
+#q-p .thumb,#q-p .msg{margin:2px 0 0 20px}
+.size{color:#F00;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;margin-bottom:0.5em}
+.lastposts{text-align:center;line-height:1}
+.lastposts #n2{text-decoration:underline}
+.threadpage .threadlinks{margin:0.5em 0}
+#createbox input,#createbox textarea{width:100%}
+form .msg{margin:0;padding:0.5em 0.15em}
+.footer{margin:0 2.5% 19px}
+.end{margin-top:0.5em}
+.warn{padding:1px}
+.stop{line-height:3em;padding:1px}
+.yellow{background:#ff0;color:#000}
+.red{background:#f00;color:#fff}
+.threads .listmenu{margin-bottom:16px}
+.threads .listmenu div{margin:4px 0}
+#content.list .row{display:table-row}
+#content.list .row div{display:table-cell;padding:4px}
+#content.list .pos,#content.list .com{text-align:right}
+#content.list a{display:block;line-height:1;text-decoration:none}
+#content.list a:hover{text-decoration:underline}
+#content.list #header div{font-weight:bold;padding:2px 4px;text-align:center;white-space:nowrap}
+#content.grid{border-width:1px 1px 0 0;border-style:solid;display:flex;flex-flow:row wrap;justify-content:space-around}
+#content.grid .row{border-width:0 0 1px 1px;border-style:solid;flex:1 1 auto;padding:5px}
+#content.grid .row div{display:inline}
+#content.grid div.pos{display:none}
+#content.grid a{display:block}
+#content.grid .created:before{content:"Creado el "}
+#content.grid .com:before{content:"Respuestas: "}
+#content.grid .last:before{content:" / Última: "}

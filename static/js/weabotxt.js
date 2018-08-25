@@ -1,297 +1,84 @@
-function check_version(ver) {
-	if(ver != "1")
-    alert("El sitio ha sido actualizado, por lo que debes forzar una recarga de caché en tu navegador.\nEsto usualmente se hace dejando presionado Shift y luego presionando el botón Actualizar, o manualmente limpiando el caché.");
+var style_cookie = 'weabot_style_txt';
+var style_cookie;
+
+function set_stylesheet(styletitle) {
+  var css=document.getElementById("css");
+  css.href = "/static/css/txt/" + styletitle.toLowerCase() + ".css";
+  localStorage.setItem(style_cookie, styletitle);
 }
 
-var style_cookie;
+if(style_cookie && localStorage.hasOwnProperty(style_cookie)) {
+  set_stylesheet(localStorage.getItem(style_cookie));
+}
+
+function timeAgo(timestamp) {
+  var time = Math.round(Date.now()/1000);
+  var el = time - timestamp;
+  if (el==0) return "un instante";
+  else if (el==1) return "un segundo";
+  else if (el<60) return el + " segundos";
+  else if (el<120) return "un minuto";
+  else if (el<3600) return Math.round(el/60) + " minutos";
+  else if (el<7200) return "una hora";
+  else if (el<86400) return Math.round(el/3600) + " horas";
+  else if (el<172800) return "un día";
+  else if (el<2628000) return Math.round(el/86400) + " días";
+  else if (el<5256000) return "un mes";
+  else if (el<31536000) return Math.round(el/2628000) + " meses";
+  else if (el>31535999) return "más de un año";
+}
+
+function localTime(timestamp, id) {
+  id = id || 0;
+  var lcl = new Date(timestamp*1000);
+  lcl = ("0"+lcl.getDate()).slice(-2) + "/" + ("0" + (lcl.getMonth()+1)).slice(-2) + "/" + lcl.getFullYear().toString().slice(-2) + "(" + week[lcl.getDay()] + ")" + ("0"+lcl.getHours()).slice(-2) + ":" + ("0"+lcl.getMinutes()).slice(-2) + ":" + ("0"+lcl.getSeconds()).slice(-2)
+  if (id) lcl = lcl + " " + id;
+  return lcl;
+}
 
 /* IE/Opera fix, because they need to go learn a book on how to use indexOf with arrays */
 if (!Array.prototype.indexOf) {
   Array.prototype.indexOf = function(elt /*, from*/) {
 	var len = this.length;
-
 	var from = Number(arguments[1]) || 0;
-	from = (from < 0)
-		 ? Math.ceil(from)
-		 : Math.floor(from);
-	if (from < 0)
-	  from += len;
-
-	for (; from < len; from++) {
-	  if (from in this &&
-		  this[from] === elt)
-		return from;
-	}
+	from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+	if (from < 0) from += len;
+	for (; from < len; from++) { if (from in this && this[from] === elt) return from; }
 	return -1;
   };
 }
 
-/**
-*
-*  UTF-8 data encode / decode
-*  http://www.webtoolkit.info/
-*
-**/
-
-var Utf8 = {
-
-	// public method for url encoding
-	encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
-
-		for (var n = 0; n < string.length; n++) {
-
-			var c = string.charCodeAt(n);
-
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
-			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-
-		}
-
-		return utftext;
-	},
-
-	// public method for url decoding
-	decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c1 = c2 = 0;
-
-		while ( i < utftext.length ) {
-
-			c = utftext.charCodeAt(i);
-
-			if (c < 128) {
-				string += String.fromCharCode(c);
-				i++;
-			}
-			else if((c > 191) && (c < 224)) {
-				c2 = utftext.charCodeAt(i+1);
-				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-				i += 2;
-			}
-			else {
-				c2 = utftext.charCodeAt(i+1);
-				c3 = utftext.charCodeAt(i+2);
-				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-				i += 3;
-			}
-
-		}
-
-		return string;
-	}
-
-}
-
-function replaceAll( str, from, to ) {
-	var idx = str.indexOf( from );
-	while ( idx > -1 ) {
-		str = str.replace( from, to );
-		idx = str.indexOf( from );
-	}
-	return str;
-}
-
 function get_password(name) {
-	var pass = getCookie(name);
-	if(pass) return pass;
-
+  if(localStorage.hasOwnProperty(name))
+    return localStorage.getItem(name);
 	var chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	var pass='';
-
+	var pass= "";
 	for(var i=0;i<8;i++) {
 		var rnd = Math.floor(Math.random()*chars.length);
 		pass += chars.substring(rnd, rnd+1);
 	}
-	set_cookie(name, pass, 365);
+	localStorage.setItem(name, pass);
 	return(pass);
 }
 
-function getCookie(name) {
-	with(document.cookie) {
-		var regexp=new RegExp("(^|;\\s+)"+name+"=(.*?)(;|$)");
-		var hit=regexp.exec(document.cookie);
-		if(hit&&hit.length>2) return Utf8.decode(unescape(replaceAll(hit[2],'+','%20')));
-		else return '';
-	}
-}
-function space(string) {
-  // Reemplaza -!- por espacio
-  return string.replace("-!-"," ");
-}
-function set_cookie(name,value,days) {
-	if(days) {
-		var date=new Date();
-		date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires="; expires="+date.toGMTString();
-	} else expires="";
-	document.cookie=name+"="+value+expires+"; path=/";
+function save_inputs(e) {
+  var e = e || window.event;
+  var form = e.target || e.srcElement;
+  if(typeof(form.fielda) !== 'undefined') localStorage.setItem("weabot_name", form.fielda.value);
+  if(typeof(form.fielda) !== 'undefined') localStorage.setItem("weabot_email", form.fieldb.value);
 }
 
-function set_stylesheet(styletitle) {
-	set_cookie(style_cookie,styletitle,365);
-
-	var links=document.getElementsByTagName("link");
-	var found=false;
-	for(var i=0;i<links.length;i++) {
-		var rel=links[i].getAttribute("rel");
-		var title=links[i].getAttribute("title");
-		
-		if(rel.indexOf("style")!=-1&&title) {
-			links[i].disabled=true; // IE needs this to work. IE needs to die.
-			if(styletitle==title) { links[i].disabled=false; found=true; }
-		}
-	}
-	if(!found) set_preferred_stylesheet();
-}
-
-function set_preferred_stylesheet() {
-	var links=document.getElementsByTagName("link");
-	for(var i=0;i<links.length;i++) {
-		var rel=links[i].getAttribute("rel");
-		var title=links[i].getAttribute("title");
-		if(rel.indexOf("style")!=-1&&title) links[i].disabled=(rel.indexOf("alt")!=-1);
-	}
-}
-
-function get_active_stylesheet() {
-	var links=document.getElementsByTagName("link");
-	for(var i=0;i<links.length;i++) {
-		var rel=links[i].getAttribute("rel");
-		var title=links[i].getAttribute("title");
-		if(rel.indexOf("style")!=-1&&title&&!links[i].disabled) return title;
-	}
-	
-	return null;
-}
-
-function get_preferred_stylesheet() {
-	var links=document.getElementsByTagName("link");
-	for(var i=0;i<links.length;i++) {
-		var rel=links[i].getAttribute("rel");
-		var title=links[i].getAttribute("title");
-		if(rel.indexOf("style")!=-1&&rel.indexOf("alt")==-1&&title) return title;
-	}
-	
-	return null;
-}
-
-function delandbanlinks() {
-	if (typeof weabot_staff == "undefined") return;
-	
-	var dnbelements = document.getElementsByTagName('span');
-	var dnbelement;
-	var dnbinfo;
-	for(var i=0;i<dnbelements.length;i++){
-		dnbelement = dnbelements[i];
-		if (dnbelement.getAttribute('class')) {
-			if (dnbelement.getAttribute('class').substr(0, 3) == 'dnb') {
-				dnbinfo = dnbelement.getAttribute('class').split('|');
-				
-				// Let's create elements!
-				dnbelements[i].appendChild(document.createTextNode("["));
-				link_del = document.createElement("a");
-				link_del.setAttribute("href", cgi_url + 'manage/delete/' + dnbinfo[1] + '/' + dnbinfo[2]);
-				link_del.setAttribute("title", "Eliminar");
-				link_del.appendChild(document.createTextNode("D"));
-				dnbelements[i].appendChild(link_del);
-				
-        dnbelements[i].appendChild(document.createTextNode(" "));
-        link_amp = document.createElement("a");
-				link_amp.setAttribute("href", cgi_url + 'manage/delete/' + dnbinfo[1] + '/' + dnbinfo[2] + '?ban=true');
-				link_amp.setAttribute("title", "Eliminar & Banear");
-				link_amp.appendChild(document.createTextNode("&"));
-				dnbelements[i].appendChild(link_amp);
-				
-				dnbelements[i].appendChild(document.createTextNode(" "));
-        link_amp = document.createElement("a");
-				link_amp.setAttribute("href", cgi_url + 'manage/ban/' + dnbinfo[1] + '/' + dnbinfo[2]);
-				link_amp.setAttribute("title", "Banear");
-				link_amp.appendChild(document.createTextNode("B"));
-				dnbelements[i].appendChild(link_amp);
-
-				if (dnbinfo[3] == 'y') {
-				  // Modbrowse
-				  dnbelements[i].appendChild(document.createTextNode(" "));
-				  link_mod = document.createElement("a");
-				  link_mod.setAttribute("href", cgi_url + 'manage/modbrowse/' + dnbinfo[1] + '/' + dnbinfo[2]);
-				  link_mod.setAttribute("title", "Modbrowse");
-				  link_mod.appendChild(document.createTextNode("M"));
-				  dnbelements[i].appendChild(link_mod);
-
-          // Lock
- 				  dnbelements[i].appendChild(document.createTextNode(" "));
- 				  link_lock = document.createElement("a");
-  			  link_lock.setAttribute("href", cgi_url + 'manage/lock/' + dnbinfo[1] + '/' + dnbinfo[2]);
-				  if (dnbinfo[4] == '1') {
-				    // If it's closed...agregar L-
-				    link_lock.setAttribute("title", "Abrir");
- 	  			  link_lock.setAttribute("onclick", "return confirm('¿Abrir este hilo?');");
-	  			  link_lock.appendChild(document.createTextNode("L-"));
-				  } else {
-				    link_lock.setAttribute("title", "Cerrar");
- 	  			  link_lock.setAttribute("onclick", "return confirm('¿Cerrar este hilo?');");
-	  			  link_lock.appendChild(document.createTextNode("L+"));
-				  }
-				  dnbelements[i].appendChild(link_lock);
-				  
-				  // Permasage
-				  dnbelements[i].appendChild(document.createTextNode(" "));
- 				  link_sage = document.createElement("a");
-  			  link_sage.setAttribute("href", cgi_url + 'manage/permasage/' + dnbinfo[1] + '/' + dnbinfo[2]);
-          if (dnbinfo[4] == '2') {
-				    // Si esta con permasage...agregar PS+
-				    link_sage.setAttribute("title", "Desactivar Permasage");
- 	  			  link_sage.setAttribute("onclick", "return confirm('¿Desactivar permasage?');");
-	  			  link_sage.appendChild(document.createTextNode("PS-"));
-				  } else {
-				    link_sage.setAttribute("title", "Activar Permasage");
- 	  			  link_sage.setAttribute("onclick", "return confirm('¿Activar permasage?');");
-	  			  link_sage.appendChild(document.createTextNode("PS+"));
-				  }
-				  dnbelements[i].appendChild(link_sage);
-				}
-				dnbelements[i].appendChild(document.createTextNode("]"));
-			}
-			else if (dnbelement.getAttribute('class').substr(0, 15) == 'modboardoptions') {
-				dnbinfo = dnbelement.getAttribute('class').split('|');
-				link_close = document.createElement("a");
- 			  link_close.setAttribute("href", cgi_url + 'manage/boardlock/' + dnbinfo[1]);
-				if (dnbinfo[2] == 'True') {
-					// Locked
- 	  			link_close.setAttribute("onclick", "return confirm('¿Abrir board?');");
- 	  			link_close.appendChild(document.createTextNode("Abrir Board"));
-				} else {
-					// Open
- 	  			link_close.setAttribute("onclick", "return confirm('¿Cerrar board?');");
- 	  			link_close.appendChild(document.createTextNode("Cerrar Board"));
-				}
-				dnbelements[i].appendChild(link_close);
-			}
-		}
-	}
-}
-
-function set_inputs(id) {
-	if (document.getElementById(id)) {
-		with(document.getElementById(id)) {
-			if(!fielda.value) fielda.value = space(getCookie("weabot_name"));
-			if(!fieldb.value) fieldb.value = getCookie("weabot_email");
+function set_inputs(formid) {
+	if (document.getElementById(formid)) {
+		with(document.getElementById(formid)) {
+			if(typeof(fielda) !== 'undefined' && !fielda.value) fielda.value = localStorage.getItem("weabot_name");
+			if(typeof(fielda) !== 'undefined' && !fieldb.value) fieldb.value = localStorage.getItem("weabot_email");
 			if(!password.value) password.value = get_password("weabot_password");
-			if(getCookie("weabot_noko")=="0") noko.checked="false";
-			if(markup&&!message.value) { markup.value=getCookie("weabot_markup"); select_markup(markup); }
+      if(typeof preview !== 'undefined') {
+        preview.formid = formid;
+        preview.addEventListener('click', preview_post);
+      }
+      addEventListener("submit", save_inputs);
 		}
 	}
 }
@@ -303,95 +90,67 @@ function set_delpass(id) {
 		}
 	}
 }
-
-window.onunload=function(e) {
-	if(style_cookie) {
-		var title=get_active_stylesheet();
-		set_cookie(style_cookie,title,365);
-	}
-}
-
-window.onload=function(e) {
-  delandbanlinks();
-}
-
-if(style_cookie) {
-	var cookie = getCookie(style_cookie);
-	var title = cookie ? cookie : get_preferred_stylesheet();
-
-	set_stylesheet(title);
-}
-
-if (getCookie('weabot_staff')=='yes') {
-	weabot_staff = true;
-}
-
-function reportPost(board, postnum, shownum) {
-  var w = 460
-  var h = 200
-  var left = (screen.width/2)-(w/2);
-  var top = (screen.height/2)-(h/2);
-  window.open(cgi_url + 'report/' + board + '/' + postnum + '/' + shownum, 'Report Post','toolbar=no,menubar=no,resizable=no,scrollbars=no,status=no,location=no,width='+w+',height='+h+',top='+top+',left='+left);
-}
-
 // Textboard data
-function insert(text,thread)
-{
-	var textarea=document.getElementById("postform"+thread).message;
-	if(textarea)
-	{
-		if(textarea.createTextRange && textarea.caretPos) // IE
-		{
+function insert(text) {
+	var textarea=document.forms.postform.message;
+	if(textarea) {
+		if(textarea.createTextRange && textarea.caretPos) { // IE 
 			var caretPos=textarea.caretPos;
 			caretPos.text=caretPos.text.charAt(caretPos.text.length-1)==" "?text+" ":text;
-		}
-		else if(textarea.setSelectionRange) // Firefox
-		{
+		} else if(textarea.setSelectionRange) { // Firefox 
 			var start=textarea.selectionStart;
 			var end=textarea.selectionEnd;
 			textarea.value=textarea.value.substr(0,start)+text+textarea.value.substr(end);
 			textarea.setSelectionRange(start+text.length,start+text.length);
-		}
-		else
-		{
+		} else {
 			textarea.value+=text+" ";
 		}
 		textarea.focus();
 	}
+  return false;
 }
-function delete_post(post,realid)
-{
-	if(confirm("¿Seguro que deseas borrar la respuesta "+post+"?"))
-	{
-		var script=cgi_url+"delete";
-		var password=document.forms[0].password.value;
-    var board=document.forms[0].board.value;
+function first_postform() {
+  forml = document.getElementsByTagName('form');
+  for(i=0;i<forml.length;i++)
+    if(forml[i].id.startsWith('postform')) return forml[i];
+}
+function delete_post(e) {
+  var ids = this.parentElement.firstChild.href.split("/");
+  var post = ids.pop();
+  var realid = ids.pop();
+  
+	if(confirm("¿Seguro que deseas borrar el mensaje "+post+"?")) {
+		var script="/cgi/delete";
+		var password=first_postform().password.value;
+    var board=first_postform().board.value;
 
 		document.location=script
 		+"?board="+board
 		+"&password="+password
 		+"&delete="+realid;
 	}
+  e.preventDefault();
 }
 
-function size_field(id,rows) { document.getElementById(id).message.setAttribute("rows",rows); }
-
-function show(id)
-{
-	var style=document.getElementById(id).style;
-	if(style.display) style.display="";
-	else style.display="none";
+function postClick(e) {
+  insert(">>" + this.innerHTML + "\n");
+  e.preventDefault();
 }
 
-function preview_post(formid,thread)
-{
+function preview_post(e) {
+  var formid = e.target.formid;
+  var thread = '0';
+  if(formid.startsWith('postform')) thread = formid.substr(8);
+  
 	var form=document.getElementById(formid);
 	var preview=document.getElementById("preview"+thread);
-	var board=document.forms[0].board.value;
+	var board=first_postform().board.value;
+  var main=document.getElementById("options");
 
 	if(!form||!preview||!form.message.value) return;
+  if(main) main.style.display="";
 
-	preview.style.display="";
+  preview.style.display="";
 	preview.innerHTML="<em>Cargando...</em>";
 
 	var text;
@@ -400,7 +159,7 @@ function preview_post(formid,thread)
 	if(thread) text+="&parentid="+thread;
   
 	var xmlhttp=get_xmlhttp();
-	xmlhttp.open("POST",cgi_url+"preview");
+	xmlhttp.open("POST", "/cgi/preview");
 	xmlhttp.onreadystatechange=function() {
 		if(xmlhttp.readyState==4) preview.innerHTML=xmlhttp.responseText;
 	}
@@ -408,32 +167,81 @@ function preview_post(formid,thread)
 	xmlhttp.send(text);
 }
 
-function get_xmlhttp()
-{
+function toggleThreads(e) {
+  document.getElementById("header").style.display = "none";
+  document.getElementById("content").className = "grid";
+}
+
+function searchSubjects(e) {
+  var filter = document.getElementById("search").value.toLowerCase();
+  var nodes = document.getElementsByClassName('thread');
+  for (i = 0; i < nodes.length; i++) {
+    if (nodes[i].innerText.toLowerCase().includes(filter)) nodes[i].parentNode.removeAttribute("style");
+    else nodes[i].parentNode.style.display = "none";
+  }
+}
+
+function get_xmlhttp() {
 	var xmlhttp;
 	try { xmlhttp=new ActiveXObject("Msxml2.XMLHTTP"); }
-	catch(e1)
-	{
+	catch(e1) {
 		try { xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); }
 		catch(e1) { xmlhttp=null; }
 	}
-
 	if(!xmlhttp && typeof XMLHttpRequest!='undefined') xmlhttp=new XMLHttpRequest();
-
 	return(xmlhttp);
 }
 
-function is_ie()
-{
+function is_ie() {
 	return(document.all&&!document.opera);
 }
 
-function select_markup(sel)
-{
-	if(!window.markup_descriptions) return;
+document.addEventListener("DOMContentLoaded", function() {
+  var dts = document.getElementsByClassName("date");
+  if (dts[0].dataset.unix) {
+    week = ["dom", "lun", "mar", "mie", "jue", "vie", "sab"];
+    if (document.getElementsByName("board")[0].value == "world")
+      week = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    for(var d=0;d<dts.length;d++) {
+      dts[d].addEventListener('mouseover', function(e) {
+        this.title = "Hace " + timeAgo(this.dataset.unix);
+      });
+      if (dts[d].innerText.includes("ID:")) var id = dts[d].innerText.split(" ")[1];
+      dts[d].innerText = localTime(dts[d].dataset.unix, id);
+    }
+  }
 
-	var el=sel;
-	while(el=el.nextSibling) if(el.nodeName.toLowerCase()=="small") break;
+  var ids = document.getElementsByClassName("num");
+  for(var i=0;i<ids.length;i++) {
+    ids[i].addEventListener('click', postClick);
+  }
 
-	if(el) el.innerHTML=markup_descriptions[sel.value];
-}
+  var forms = document.getElementsByTagName('form');
+  for(var i=0;i<forms.length;i++) {
+    if(forms[i].id.startsWith("postform")) set_inputs(forms[i].id);
+  }
+
+  var sss = document.getElementsByClassName("ss");
+  for(var i=0;i<sss.length;i++) {
+    sss[i].addEventListener('click', function() {
+      set_stylesheet(this.textContent);
+      document.getElementById("cur_stl").removeAttribute("id");
+      this.id = "cur_stl";
+    });
+    if (sss[i].innerText == localStorage.getItem(style_cookie)) sss[i].id = "cur_stl";
+  }
+
+  var dds = document.getElementsByClassName("del");
+  for(var i=0;i<dds.length;i++) {
+    dds[i].children[1].addEventListener("click", delete_post);
+  }
+  
+  if (document.body.className === "mainpage")
+    document.getElementById(document.getElementsByName("board")[0].value).className = "cur_brd";
+  if (document.body.className === "threads") {
+    document.getElementById("search").addEventListener("keyup", searchSubjects);
+    document.getElementById("compact").addEventListener("click", toggleThreads);
+  }
+
+  set_inputs('threadform');
+});

@@ -5,23 +5,30 @@
 <div class="replymode">Filtros</div>
 <?py if mode == 0: ?>
 <table class="managertable">
-  <tr><th>ID</th><th>Boards</th><th>Tipo</th><th>Acción</th><th>Mensaje</th><th>Agregado</th><th>Por</th><th>Acción</th></tr>
-    <?py for filter in filters: ?>
   <tr>
-   <td>#{filter['id']}</td>
-   <td>${filter['boards']}</td>
+    <th>ID</th>
+    <th>Boards</th>
+    <th>Tipo</th>
+    <th>Acción</th>
+    <th>Mensaje</th>
+    <th>Modificado</th>
+    <th>Por</th>
+    <th>Acción</th>
+  </tr>
+  <?py for filter in filters: ?>
+  <tr>
+   <td style="text-align:center">#{filter['id']}</td>
+   <td style="text-align:center">${filter['boards']}</td>
    <td>#{filter['type_formatted']}</td>
    <td>#{filter['action_formatted']}</td>
    <td>${filter['reason']}</td>
-   <td>${filter['added']}</td>
-   <td>${filter['staff']}</td>
-   <td>
-    [<a href="#{cgi_url}manage/filters/add?edit=#{filter['id']}">Editar</a>]
-    [<a href="#{cgi_url}manage/filters/delete/#{filter['id']}">Eliminar</a>]
-   </td>
+   <td style="text-align:center">${filter['added']}</td>
+   <td style="text-align:center">${filter['staff']}</td>
+   <td style="text-align:center">[<a href="#{cgi_url}manage/filters/add?edit=#{filter['id']}">Editar</a>]<br />
+    [<a href="#{cgi_url}manage/filters/delete/#{filter['id']}">Eliminar</a>]</td>
   </tr>
-    <?py #endfor ?>
-  <tr><td colspan="9" align="center">
+  <?py #endfor ?>
+  <tr><td colspan="9" style="text-align:center">
    <form action="#{cgi_url}manage/filters/add" method="get">
     <input type="submit" value="Agregar filtro" />
    </form></td>
@@ -29,58 +36,81 @@
 </table>
 <?py elif mode == 1: ?>
 <form name="banform" method="post">
-<p>Tipo</p>
 <table>
-<tr>
- <td class="postblock"><input type="radio" name="type" value="0"#{checked(startvalues['type'] == '0')} />Palabra</td>
- <td>Regex: <input type="text" name="word" value="${startvalues['word']}" /></td>
-</tr>
-<tr>
- <td class="postblock"><input type="radio" name="type" value="1"#{checked(startvalues['type'] == '1')} />Nombre/Tripcode</td>
- <td>Nombre: <input type="text" name="name" value="${startvalues['name']}" /> (regex)<br />
-     Tripcode: <input type="text" name="trip" value="${startvalues['trip']}" /> (incluir separadores)</td></tr>
+  <tr><th colspan="3" class="postblock">Tipo de filtro</th></tr>
+  <tr>
+    <td class="postblock"><input type="radio" name="type" id="type1" value="0"#{checked(startvalues['type'] == '0')} /><label for="type1">Palabra</label></td>
+    <td style="text-align:right">Regex:</td>
+    <td><input type="text" name="word" value="${startvalues['word']}" /></td>
+  </tr>
+  <tr>
+    <td rowspan="2" class="postblock"><input type="radio" name="type" id="type2" value="1"#{checked(startvalues['type'] == '1')} /><label for="type2">Nombre/Tripcode</label></td>
+    <td style="text-align:right">Nombre:</td>
+    <td><input type="text" name="name" value="${startvalues['name']}" /> (regex)</td>
+  </tr>
+  <tr>
+    <td style="text-align:right">Tripcode:</td>
+    <td><input type="text" name="trip" value="${startvalues['trip']}" /> (incluir separador)</td>
+  </tr>
 </table>
 <br />
-<p>Aplicar a</p>
-<ul>
- <li><input type="checkbox" name="board_all" value="1"#{checked(startvalues['where'] == '')} /><b>Todos los Boards</b></li>
+<div style="text-align:left;display:inline-block;">
+  <div class="postblock" style="display:block;text-align:center;margin-bottom:0.5em;">Aplicar a</div>
+  <div style="padding:0 10px">
+    <input type="checkbox" name="board_all" id="board_all" value="1"#{checked(startvalues['where'] == '')} /><label for="board_all" style="font-weight:bold">Todos los boards</label>
+    <hr />
     <?py for board in boards: ?>
- <li><input type="checkbox" name="board_#{board['dir']}" value="1"#{checked(board['dir'] in startvalues['where'])} />${board['name']}</li>
+    <input type="checkbox" name="board_#{board['dir']}" id="board_#{board['dir']}" value="1"#{checked(board['dir'] in startvalues['where'])} /><label for="board_#{board['dir']}">${board['name']} <span style="opacity:0.5">(/#{board['dir']}/)</span></label><br />
     <?py #endfor ?>
-</ul><br />
-<label for="reason">Mensaje</label> <input type="text" size="75" name="reason" value="#{startvalues['reason']}" /><br />
-<p>Acción</p>
+  </div>
+</div>
+<br /><br />
 <table>
-<tr>
- <td class="postblock"><input type="radio" name="action" value="0"#{checked(startvalues['action'] == '0')} />Abortar Post</td>
- <td> </td>
-</tr>
-<tr>
- <td class="postblock"><input type="radio" name="action" value="1"#{checked(startvalues['action'] == '1')} />Reemplazar</td>
- <td>Cambiar a: <input type="text" name="changeto" value="#{startvalues['changeto']}" size="50" /></td>
-</tr>
-<tr>
- <td class="postblock"><input type="radio" name="action" value="2"#{checked(startvalues['action'] == '2')} />Auto-ban</td>
- <td>Expira en #segundos: <input type="text" name="seconds" value="#{startvalues['seconds']}" />
-    <a href="#" onclick="document.banform.seconds.value=\'0\';return false;">Sin expirar</a>
-    <a href="#" onclick="document.banform.seconds.value=\'3600\';return false;">1hr</a>
-    <a href="#" onclick="document.banform.seconds.value=\'18000\';return false;">5hr</a>
-    <a href="#" onclick="document.banform.seconds.value=\'36000\';return false;">10hr</a>
-    <a href="#" onclick="document.banform.seconds.value=\'86400\';return false;">1d</a>
-    <a href="#" onclick="document.banform.seconds.value=\'172800\';return false;">2d</a>
-    <a href="#" onclick="document.banform.seconds.value=\'259200\';return false;">3d</a>
-    <a href="#" onclick="document.banform.seconds.value=\'604800\';return false;">1w</a>
-    <a href="#" onclick="document.banform.seconds.value=\'1209600\';return false;">2w</a>
-    <a href="#" onclick="document.banform.seconds.value=\'2592000\';return false;">30d</a>
-    <a href="#" onclick="document.banform.seconds.value=\'31536000\';return false;">1yr</a><br />
-    <input type="checkbox" name="blind" value="1"#{checked(startvalues['blind'] == '1')} />Ciego</td>
-</tr>
-<tr>
-  <td class="postblock"><input type="radio" name="action" value="3"#{checked(startvalues['action'] == '3')} />Redireccionar</td>
-  <td>URL: <input type="text" name="redirect_url" value="#{startvalues['redirect_url']}" size="50" /><br />
-      Tiempo en #segundos: <input type="text" name="redirect_time" value="#{startvalues['redirect_time']}" />
-  </td>
-</tr>
+  <tr>
+    <th colspan="3" class="postblock">Acción</th>
+  </tr>
+  <tr>
+    <td class="postblock"><input type="radio" name="action" id="act0" value="0"#{checked(startvalues['action'] == '0')} /><label for="act0">Abortar post</label></td>
+    <td colspan="2"></td>
+  </tr>
+  <tr>
+    <td class="postblock"><input type="radio" name="action" id="act1" value="1"#{checked(startvalues['action'] == '1')} /><label for="act1">Reemplazar</label></td>
+    <td colspan="2"><input type="text" name="changeto" value="#{startvalues['changeto']}" size="40" /></td>
+  </tr>
+  <tr>
+    <td rowspan="2" class="postblock"><input type="radio" name="action" id="act2" value="2"#{checked(startvalues['action'] == '2')} /><label for="act2">Autoban</label></td>
+    <td style="text-align:right">Expira en:</td>
+    <td><input type="text" name="seconds" size="6" value="#{startvalues['seconds']}" /> (segundos)<div style="float:right"><input type="checkbox" name="blind" id="blind" value="1"#{checked(startvalues['blind'] == '1')} /><label for="blind">Ban ciego</label></div></td>
+  </tr>
+  <tr>
+    <td style="text-align:right">Preset:</td>
+    <td>
+      <a href="#" onclick="document.banform.seconds.value='0';return false;">Nunca</a>
+      <a href="#" onclick="document.banform.seconds.value='3600';return false;">1hr</a>
+      <a href="#" onclick="document.banform.seconds.value='18000';return false;">5hr</a>
+      <a href="#" onclick="document.banform.seconds.value='36000';return false;">10hr</a>
+      <a href="#" onclick="document.banform.seconds.value='86400';return false;">1d</a>
+      <a href="#" onclick="document.banform.seconds.value='172800';return false;">2d</a>
+      <a href="#" onclick="document.banform.seconds.value='259200';return false;">3d</a>
+      <a href="#" onclick="document.banform.seconds.value='604800';return false;">1w</a>
+      <a href="#" onclick="document.banform.seconds.value='1209600';return false;">2w</a>
+      <a href="#" onclick="document.banform.seconds.value='2592000';return false;">30d</a>
+      <a href="#" onclick="document.banform.seconds.value='31536000';return false;">1yr</a>
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2" class="postblock"><input type="radio" name="action" id="act3" value="3"#{checked(startvalues['action'] == '3')} /><label for="act3">Redireccionar</label></td>
+    <td colspan="2"><input type="text" name="redirect_url" value="#{startvalues['redirect_url']}" size="40" /></td>
+  </tr>
+  <tr>
+    <td style="text-align:right">Tardar:</td>
+    <td><input type="text" name="redirect_time" size="6" value="#{startvalues['redirect_time']}" /> (segundos)</td>
+  </tr>
+</table>
+<br />
+<table>
+  <tr><th class="postblock" style="padding:2px">Mensaje a mostrar</th></tr>
+  <tr><td><input type="text" size="50" name="reason" value="#{startvalues['reason']}" /></td></tr>
 </table>
 <br />
 <input type="submit" name="add" value="#{submit}" />
