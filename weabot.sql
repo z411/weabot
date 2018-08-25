@@ -419,7 +419,7 @@ CREATE TABLE `staff` (
   `rights` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `staff` (`id`, `username`, `password`) VALUES (NULL, 'admin', '21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO `staff` (`username`, `password`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3');
 
 --
 -- Indexes for dumped tables
